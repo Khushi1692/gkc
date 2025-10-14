@@ -18,7 +18,9 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: true,
+      required: function (this: IUser) {
+        return this.authProvider === "local";
+      },
     },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
@@ -28,10 +30,23 @@ const userSchema = new Schema<IUser>(
     },
     verificationToken: String,
     verificationTokenExpires: Date,
+    googleId: {
+      type: String,
+      sparse: true,
+      unique: true,
+    },
+    avatar: String,
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
   },
   {
     timestamps: true,
   }
 );
+
+userSchema.index({ email: 1, authProvider: 1 });
 
 export const User = mongoose.model<IUser>("User", userSchema);

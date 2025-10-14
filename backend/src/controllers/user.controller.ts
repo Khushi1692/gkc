@@ -7,6 +7,7 @@ import { IUserInput } from "../types/user.types";
 import { createCustomError } from "../utils/error";
 import { EmailService } from "../services/email.service";
 import crypto from "crypto";
+import { GoogleAuthService } from "../services/google-auth.service";
 
 export class UserController {
   // User signup method
@@ -94,11 +95,21 @@ export class UserController {
       const { email, password } = req.body;
 
       // Find user by email
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email, authProvider: "local" });
       if (!user) {
         res.status(401).json({
           status: "error",
           message: "Invalid credentials",
+        });
+        return;
+      }
+
+      // Check if password exists (safety check for OAuth users)
+      if (!user.password) {
+        res.status(401).json({
+          status: "error",
+          message:
+            "This account uses Google sign-in. Please login with Google.",
         });
         return;
       }
@@ -112,6 +123,7 @@ export class UserController {
         return;
       }
 
+
       // Validate password
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
@@ -124,7 +136,7 @@ export class UserController {
 
       // Generate JWT token
       const token = jwt.sign({ userId: user._id }, config.jwt.secret, {
-        expiresIn: config.jwt.expiresIn,
+        expiresIn: config.jwt.expiresIn as any,
       });
 
       res.json({
@@ -280,6 +292,125 @@ export class UserController {
         message: "Password reset successfully",
       });
     } catch (error) {
+      res.status(500).json({
+        status: "error",
+        message: "Internal server error",
+      });
+    }
+  }
+
+  /**
+   * Google OAuth login/signup
+   * Receives Google ID token from frontend, verifies it, and creates/logs in user
+   */
+  static async googleAuth(req: Request, res: Response): Promise<void> {
+    try {
+      const { credential } = req.body; // Google ID token from frontend
+
+      if (!credential) {
+        res.status(400).json({
+          status: "error",
+          message: "Google credential is required",
+        });
+        return;
+      }
+
+      // Verify Google token
+      const googleUser = await GoogleAuthService.verifyToken(credential);
+
+      // Check if user exists with Google ID
+      let user = await User.findOne({ googleId: googleUser.googleId });
+
+      if (user) {
+        // Existing Google user - log them in
+        const token = jwt.sign({ userId: user._id }, config.jwt.secret, {
+          expiresIn: config.jwt.expiresIn as any,
+        });
+
+        res.json({
+          status: "success",
+          message: "Login successful",
+          data: {
+            token,
+            user: {
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              avatar: user.avatar,
+            },
+          },
+        });
+        return;
+      }
+
+      // Check if user exists with same email (from email/password signup)
+      user = await User.findOne({ email: googleUser.email });
+
+      if (user) {
+        // Link Google account to existing user
+        user.googleId = googleUser.googleId;
+        user.avatar = googleUser.avatar;
+        user.isVerified = true; // Google emails are verified
+        await user.save();
+
+        const token = jwt.sign({ userId: user._id }, config.jwt.secret, {
+          expiresIn: config.jwt.expiresIn as any,
+        });
+
+        res.json({
+          status: "success",
+          message: "Google account linked successfully",
+          data: {
+            token,
+            user: {
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              avatar: user.avatar,
+            },
+          },
+        });
+        return;
+      }
+
+      // Create new user with Google
+      user = await User.create({
+        googleId: googleUser.googleId,
+        email: googleUser.email,
+        name: googleUser.name,
+        avatar: googleUser.avatar,
+        authProvider: "google",
+        isVerified: true, // Google users are auto-verified
+      });
+
+      const token = jwt.sign({ userId: user._id }, config.jwt.secret, {
+        expiresIn: config.jwt.expiresIn as any,
+      });
+
+      res.status(201).json({
+        status: "success",
+        message: "Registration successful",
+        data: {
+          token,
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
+          },
+        },
+      });
+    } catch (error: any) {
+      console.error("Google auth error:", error);
+
+      if (error.message === "Invalid Google token") {
+        res.status(401).json({
+          status: "error",
+          message: "Invalid Google authentication",
+        });
+        return;
+      }
+
       res.status(500).json({
         status: "error",
         message: "Internal server error",

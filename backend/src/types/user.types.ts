@@ -1,6 +1,6 @@
 /**
  * Interface representing a User.
- * 
+ *
  * @interface IUser
  * @property {string} _id - Unique identifier for the user.
  * @property {string} name - Name of the user.
@@ -15,21 +15,24 @@
  * @property {Date} updatedAt - Date when the user was last updated.
  */
 export interface IUser {
-    _id: string;
-    name: string;
-    email: string;
-    password: string;
-    isVerified: Boolean;
-    resetPasswordToken?: string;
-    resetPasswordExpires?: Date;
-    verificationToken?: string;
-    verificationTokenExpires?: Date;
-    createdAt: Date;
-    updatedAt: Date;
-  }
+  _id: string;
+  name: string;
+  email: string;
+  password?: string;
+  isVerified: Boolean;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
+  verificationToken?: string;
+  verificationTokenExpires?: Date;
+  googleId?: string;
+  avatar?: string;
+  authProvider: "local" | "google";
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-  export interface IUserInput {
-    name: string;
-    email: string;
-    password: string;
-  }
+export interface IUserInput {
+  name: string;
+  email: string;
+  password: string;
+}

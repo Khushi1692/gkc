@@ -5,7 +5,6 @@ import { config } from '../config/config';
 export interface AuthRequest extends Request {
   userId?: string;
 }
-
 /**
  * Middleware to authenticate a JWT token from the request headers.
  *

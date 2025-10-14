@@ -28,4 +28,7 @@ router.post(
   UserController.resetPassword
 );
 
+// Google OAuth route
+router.post("/auth/google", UserController.googleAuth);
+
 export default router;

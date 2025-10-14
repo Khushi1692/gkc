@@ -2,6 +2,10 @@ import nodemailer from "nodemailer";
 import fs from "fs/promises";
 import path from "path";
 import { config } from "../config/config";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class EmailService {
   // Create a transporter object using the default SMTP transport
@@ -64,7 +68,7 @@ export class EmailService {
       });
 
       const mailOptions = {
-        from: `"FredAbod" <${config.email.user}>`,
+        from: `"POP101" <${config.email.user}>`,
         to,
         subject: "Verify Your Email",
         html,
@@ -94,7 +98,7 @@ export class EmailService {
       });
 
       const mailOptions = {
-        from: `"FredAbod" <${config.email.user}>`,
+        from: `"POP101" <${config.email.user}>`,
         to,
         subject: "Reset Your Password",
         html,

@@ -3,6 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import userRoutes from "./routes/user.routes";
+import menuRoutes from "./routes/menu.routes";
+import branchRoutes from "./routes/branch.routes";
 
 const app = express();
 
@@ -15,6 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api/menu", menuRoutes);
+app.use("/api/branches", branchRoutes);
 
 // Error handling middleware
 app.use(

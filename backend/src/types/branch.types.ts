@@ -22,7 +22,7 @@ export interface IBranch {
   address?: string;
   location: ILocation;
   operatingHours: IOperatingHour[];
-  menu: IBranchMenuProduct[];
+  menu: IBranchMenu[];
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -64,6 +64,18 @@ export interface IOperatingHour {
 }
 
 /**
+ * Interface for a branch menu category with its products.
+ *
+ * @interface IBranchMenu
+ * @property {string} categoryId - ID of the category.
+ * @property {IBranchMenuProduct[]} products - List of products in this category.
+ */
+export interface IBranchMenu {
+  categoryId: string;
+  products: IBranchMenuProduct[];
+}
+
+/**
  * Interface for a product within a branch menu.
  *
  * @interface IBranchMenuProduct
@@ -73,7 +85,6 @@ export interface IOperatingHour {
  */
 export interface IBranchMenuProduct {
   productId: string;
-  categoryId: string;
   price?: number;
   isAvailable: boolean;
 }

@@ -11,7 +11,7 @@ const productSchema = new Schema<IProduct>(
     categoryId: { type: Schema.Types.ObjectId, ref: "Category", required: true },
     image: { type: String },
     basePrice: { type: Number, required: true },
-    isVegetarian: { type: Boolean, default: false },
+    isVegetarian: { type: Boolean, default: true },
     isActive: { type: Boolean, default: true },
     customizations: [
       {

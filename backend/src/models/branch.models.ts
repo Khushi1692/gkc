@@ -58,16 +58,20 @@ const branchSchema = new Schema<IBranch>(
             message: "Time must be in HH:mm format",
           },
         },
-        isClosed: { type: Boolean, default: false },
+        isClosed: { type: Boolean, default: true },
       },
     ],
 
     menu: [
       {
-        productId: { type: Types.ObjectId, ref: "Product", required: true },
         categoryId: { type: Types.ObjectId, ref: "Category", required: true },
-        price: { type: Number }, // branch-specific price override
-        isAvailable: { type: Boolean, default: true },
+        products: [
+          {
+            productId: { type: Types.ObjectId, ref: "Product", required: true },
+            price: { type: Number },
+            isAvailable: { type: Boolean, default: true },
+          },
+        ],
       },
     ],
 

@@ -23,23 +23,17 @@ export class MenuController {
     try {
       const { branchId } = req.params;
 
-      // Fetch branch menu
       const branch = await Branch.findById(branchId).select("menu").lean();
       if (!branch) {
         res.status(404).json({ status: "error", message: "Branch not found" });
         return;
       }
 
-      // Extract unique category IDs from available menu items
-      const categoryIds = [
-        ...new Set(
-          branch.menu
-            .filter((m) => m.isAvailable)
-            .map((m) => m.categoryId.toString())
-        ),
-      ];
+      // Extract categoryIds that have at least one available product
+      const categoryIds = branch.menu
+        .filter((cat) => cat.products.some((p) => p.isAvailable))
+        .map((cat) => cat.categoryId.toString());
 
-      // Fetch active categories from DB and sort
       const categories = await Category.find({
         _id: { $in: categoryIds },
         isActive: true,
@@ -72,26 +66,34 @@ export class MenuController {
     try {
       const { branchId, categoryId } = req.params;
 
-      // Fetch branch menu
       const branch = await Branch.findById(branchId).select("menu").lean();
       if (!branch) {
         res.status(404).json({ status: "error", message: "Branch not found" });
         return;
       }
 
-      // Filter menu items by category and availability
-      const menuItems = branch.menu.filter(
-        (m) => m.isAvailable && m.categoryId.toString() === categoryId
+      // Find the category block in the menu
+      const categoryBlock = branch.menu.find(
+        (c) => c.categoryId.toString() === categoryId
       );
 
-      // Fetch product details from DB
-      const productIds = menuItems.map((m) => m.productId);
+      if (!categoryBlock) {
+        res
+          .status(404)
+          .json({ status: "error", message: "Category not found in menu" });
+        return;
+      }
+
+      // Filter available products
+      const menuItems = categoryBlock.products.filter((p) => p.isAvailable);
+      const productIds = menuItems.map((p) => p.productId);
+
       const products = await Product.find({
         _id: { $in: productIds },
         isActive: true,
       }).lean();
 
-      // Merge branch-specific price with product details
+      // Merge price
       const productMap = new Map(products.map((p) => [p._id.toString(), p]));
       const result = menuItems.map((item) => ({
         ...productMap.get(item.productId.toString()),

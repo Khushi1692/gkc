@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { Branch } from "../models/branch.models";
+import { Product } from "../models/product.models";
+import { Category } from "../models/category.models";
 
 /**
  * BranchController
@@ -170,6 +172,79 @@ export class BranchController {
       });
     } catch (error) {
       console.error("Check branch status error:", error);
+      res.status(500).json({
+        status: "error",
+        message: "Internal server error",
+      });
+    }
+  }
+
+  /**
+   * @route   POST /branches
+   * @desc    Create a new branch
+   * @access  Admin
+   */
+  static async createBranch(req: Request, res: Response): Promise<void> {
+    try {
+      const {
+        name,
+        email,
+        phone,
+        address,
+        location,
+        operatingHours,
+        menu,
+        isActive,
+      } = req.body;
+
+      // ✅ Validate referenced category & product IDs exist
+      for (const menuCategory of menu) {
+        const categoryExists = await Category.exists({
+          _id: menuCategory.categoryId,
+        });
+        if (!categoryExists) {
+          res.status(400).json({
+            status: "error",
+            message: `Category not found: ${menuCategory.categoryId}`,
+          });
+          return;
+        }
+
+        for (const product of menuCategory.products) {
+          const productExists = await Product.exists({
+            _id: product.productId,
+          });
+          if (!productExists) {
+            res.status(400).json({
+              status: "error",
+              message: `Product not found: ${product.productId}`,
+            });
+            return;
+          }
+        }
+      }
+
+      // ✅ Create and save branch
+      const branch = new Branch({
+        name,
+        email,
+        phone,
+        address,
+        location,
+        operatingHours,
+        menu,
+        isActive,
+      });
+
+      await branch.save();
+
+      res.status(201).json({
+        status: "success",
+        message: "Branch created successfully",
+        branch,
+      });
+    } catch (error) {
+      console.error("Create Branch Error:", error);
       res.status(500).json({
         status: "error",
         message: "Internal server error",

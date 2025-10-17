@@ -8,8 +8,8 @@ const Navbar = () => {
      const [open, setOpen] = useState(false);
 
   const menuItems = [
-    { label: "Home", href: "#" },
-    { label: "Menu", href: "#menu" },
+    { label: "Home", href: "/" },
+    { label: "Menu", href: "/menu" },
     { label: "Deals", href: "#" },
     { label: "Locations", href: "#" },
     { label: "About Us", href: "#" },

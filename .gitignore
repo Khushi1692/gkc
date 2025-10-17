@@ -20,7 +20,7 @@ logs
 *.log
 *.log.*
 logs/
-pids
+pidsx1
 *.pid
 *.seed
 *.pid.lock

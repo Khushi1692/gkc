@@ -1,5 +1,9 @@
 import axios from "axios";
 import { GoogleLogin } from "./components/GoogleLogin";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
+import Menu from "./pages/Menu";
 
 function App() {
 
@@ -28,10 +32,18 @@ function App() {
 
   return (
     <>
-      <GoogleLogin 
+    <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/menu" element={<Menu />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+      {/* <GoogleLogin 
         onSuccess={handleGoogleSuccess}
         onError={() => alert('Google sign-in failed')}
-      />
+      /> */}
     </>
   );
 }

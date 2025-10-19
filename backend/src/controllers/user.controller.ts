@@ -9,6 +9,7 @@ import { EmailService } from "../services/email.service";
 import crypto from "crypto";
 import { GoogleAuthService } from "../services/google-auth.service";
 import { AuthRequest } from "../middleware/auth";
+import { CartService } from "../services/cart.service";
 
 export class UserController {
   // User signup method
@@ -93,9 +94,10 @@ export class UserController {
   }
 
   // User login method
-  static async login(req: Request, res: Response): Promise<void> {
+  static async login(req: AuthRequest, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
+      const sessionId = req.sessionId;
 
       // Find user by email
       const user = await User.findOne({ email, authProvider: "local" });
@@ -147,6 +149,13 @@ export class UserController {
         sameSite: "strict",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
+
+      if (sessionId) {
+        await CartService.mergeGuestCartWithUserCart(
+          user._id.toString(),
+          sessionId
+        );
+      }
 
       res.json({
         status: "success",

@@ -8,6 +8,7 @@ import menuRoutes from "./routes/menu.routes";
 import branchRoutes from "./routes/branch.routes";
 import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
+import cartRoutes from "./routes/cart.routes";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/api/menu", menuRoutes);
 app.use("/api/branches", branchRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Error handling middleware
 app.use(

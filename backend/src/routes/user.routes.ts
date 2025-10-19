@@ -7,7 +7,7 @@ import {
   resetPasswordSchema,
   forgotPasswordSchema,
 } from "../validators/user.validators";
-import { authMiddleware } from "../middleware/auth";
+import { authMiddleware, optionalAuth } from "../middleware/auth";
 
 /**
  * Initializes a new Router instance.
@@ -16,7 +16,12 @@ import { authMiddleware } from "../middleware/auth";
 const router = Router();
 
 router.post("/signup", validateRequest(signupSchema), UserController.signup);
-router.post("/login", validateRequest(loginSchema), UserController.login);
+router.post(
+  "/login",
+  validateRequest(loginSchema),
+  optionalAuth,
+  UserController.login
+);
 router.get("/verify-email/:token", UserController.verifyEmail);
 router.post(
   "/forgot-password",

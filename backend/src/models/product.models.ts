@@ -1,4 +1,4 @@
-import { Schema, model, Types, Document } from "mongoose";
+import { model, Schema } from "mongoose";
 import { IProduct } from "../types/product.types";
 
 /**
@@ -8,7 +8,11 @@ const productSchema = new Schema<IProduct>(
   {
     name: { type: String, required: true, trim: true },
     description: { type: String, trim: true },
-    categoryId: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
     image: { type: String },
     basePrice: { type: Number, required: true },
     isVegetarian: { type: Boolean, default: true },

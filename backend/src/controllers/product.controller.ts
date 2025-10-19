@@ -41,7 +41,7 @@ export class ProductController {
       res.status(201).json({ message: "Product added", product });
     } catch (error) {
       console.error("Add Product Error:", error);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ status: "error", message: "Server error" });
     }
   }
 }

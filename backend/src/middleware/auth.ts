@@ -27,8 +27,6 @@ export const authMiddleware = (
   try {
     const token = req.cookies.token;
 
-    console.log(req.cookies)
-
     if (token) {
       const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
       req.userId = decoded.userId;

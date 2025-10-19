@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { config } from '../config/config';
+import { Request, Response, NextFunction } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { config } from "../config/config";
 
 export interface AuthRequest extends Request {
   userId?: string;
+  sessionId?: string;
 }
 /**
  * Middleware to authenticate a JWT token from the request headers.
@@ -18,23 +19,50 @@ export interface AuthRequest extends Request {
  * This middleware expects the JWT token to be provided in the `Authorization` header in the format `Bearer <token>`.
  * If the token is valid, the `userId` from the token payload is attached to the request object.
  */
-export const authenticateToken = (
+export const authMiddleware = (
   req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader?.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ message: 'Authentication token required' });
-  }
-
   try {
-    const decoded = jwt.verify(token, config.jwt.secret) as { userId: string };
-    req.userId = decoded.userId;
+    const token = req.cookies.token;
+
+    console.log(req.cookies)
+
+    if (token) {
+      const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
+      req.userId = decoded.userId;
+    }
+
+    // Get sessionId from header or cookie for guest users
+    req.sessionId =
+      (req.headers["x-session-id"] as string) || req.cookies.sessionId;
+
     next();
   } catch (error) {
-    return res.status(403).json({ message: 'Invalid or expired token' });
+    return res.status(401).json({ error: "Invalid token" });
+  }
+};
+
+export const optionalAuth = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const token = req.cookies.token;
+
+    if (token) {
+      const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
+      req.userId = decoded.userId;
+    }
+
+    req.sessionId =
+      (req.headers["x-session-id"] as string) || req.cookies.sessionId;
+    next();
+  } catch (error) {
+    req.sessionId =
+      (req.headers["x-session-id"] as string) || req.cookies.sessionId;
+    next();
   }
 };

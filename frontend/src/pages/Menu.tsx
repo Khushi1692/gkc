@@ -1,7 +1,4 @@
 import classicburger from "@/assets/classic-burger.png";
-import menuHero from "@/assets/hero-food.png";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -64,13 +61,12 @@ const categories = [
 const Menu = () => {
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
 
       {/* Hero Section */}
       <section className="relative h-[400px] mt-16">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${menuHero})` }}
+          style={{ backgroundImage: `url(/hero-image.png)` }}
         >
           <div className="absolute inset-0 bg-black/50" />
         </div>
@@ -150,7 +146,6 @@ const Menu = () => {
         </Tabs>
       </section>
 
-      <Footer />
     </div>
   );
 };

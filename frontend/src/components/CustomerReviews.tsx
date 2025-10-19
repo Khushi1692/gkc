@@ -22,20 +22,20 @@ const reviews = [
 
 const CustomerReviews = () => {
   return (
-    <section className="container mx-auto px-4 py-16">
+    <section className="relative mx-auto mt-10 w-full max-w-6xl overflow-hidden rounded-xl">
       <h2 className="text-3xl md:text-4xl font-bold mb-12">Customer Reviews</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {reviews.map((review, index) => (
           <div key={index} className="text-center">
-            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden mb-4 bg-secondary">
+            <div className="w-64 h-64 mx-auto rounded-full overflow-hidden mb-4 bg-secondary">
               <img
                 src={review.image}
                 alt={review.name}
                 className="w-full h-full object-cover"
               />
             </div>
-            <h3 className="font-bold text-lg mb-2">{review.name}</h3>
+            <h3 className="font-semibold text-lg mb-2">{review.name}</h3>
             <p className="text-muted-foreground italic">"{review.review}"</p>
           </div>
         ))}

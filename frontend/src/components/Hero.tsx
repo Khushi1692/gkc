@@ -1,31 +1,34 @@
-import { Button } from "@/components/ui/button";
-import heroFood from "@/assets/hero-food.png";
+import { Button } from '@/components/ui/button';
 
 const Hero = () => {
-  return (
-    <section className="relative mt-16 mx-4 rounded-3xl overflow-hidden">
-      <div className="relative h-[500px] md:h-[600px] flex items-center justify-center">
-        <img
-          src={heroFood}
-          alt="Delicious food selection"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
-        
-        <div className="relative z-10 text-center px-4">
-          <div className="inline-block bg-black/80 text-brand-yellow px-6 py-3 rounded-lg font-bold text-2xl mb-6 border-2 border-brand-yellow/30">
-            Pop101
-          </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-8 max-w-4xl">
-            Your Ultimate Snack Stop!
-          </h1>
-          <Button size="lg" className="text-lg px-8 py-6">
-            Order Now
-          </Button>
-        </div>
-      </div>
-    </section>
-  );
+    return (
+        <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-xl">
+            <div className="relative aspect-[16/12] w-full sm:aspect-[16/8]">
+                <img
+                    src="/hero-image.png"
+                    alt="Delicious food"
+                    className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 px-4 text-center">
+                    <div className="flex -translate-y-1 flex-col items-center sm:-translate-y-4 md:-translate-y-4 lg:-translate-y-4 xl:-translate-y-10">
+                        <img
+                            src="/pop101-logo.png"
+                            alt="Pop101 Logo"
+                            className="w-30 sm:w-30 md:w-36 lg:w-44 xl:w-60"
+                        />
+
+                        <h1 className="mb-6 text-3xl font-bold text-white sm:mb-8 sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl">
+                            Your Ultimate Snack Stop!
+                        </h1>
+
+                        <Button className="rounded-md px-6 py-3 font-semibold sm:px-6 sm:py-4 md:px-8 md:py-5 md:text-lg lg:py-6 lg:text-xl">
+                            Order Now
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
 };
 
 export default Hero;

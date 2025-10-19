@@ -27,7 +27,7 @@ export const GoogleLogin = ({ onSuccess, onError }: GoogleLoginProps) => {
           theme: 'outline',
           size: 'large',
           text: 'continue_with',
-          width: 280,
+          width: 300,
         }
       );
     }
@@ -41,5 +41,5 @@ export const GoogleLogin = ({ onSuccess, onError }: GoogleLoginProps) => {
     }
   };
 
-  return <div id="googleSignInButton"></div>;
+  return <div id="googleSignInButton" className='flex justify-center'></div>;
 };

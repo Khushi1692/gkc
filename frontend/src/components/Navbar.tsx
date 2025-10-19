@@ -1,95 +1,325 @@
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, User } from "lucide-react";
-import { useState } from "react";
+'use client';
+import { SignUpModal } from '@/components/SignUpModal';
+import { Button } from '@/components/ui/button';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from '@/components/ui/navigation-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { LoginModal } from './LoginModal';
+import { ShoppingCart, User } from 'lucide-react';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { logoutUser } from '@/store/slices/authSlice';
 
-
-const Navbar = () => {
-     const [open, setOpen] = useState(false);
-
-  const menuItems = [
-    { label: "Home", href: "/" },
-    { label: "Menu", href: "/menu" },
-    { label: "Deals", href: "#" },
-    { label: "Locations", href: "#" },
-    { label: "About Us", href: "#" },
-  ];
-
+// ================= LOGO =================
+const Logo = (props: React.SVGAttributes<SVGElement>) => {
   return (
-<nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold">🍔 Pop101</span>
-          </div>
+    <svg
+      width="1em"
+      height="1em"
+      viewBox="0 0 324 323"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect
+        x="88.1023"
+        y="144.792"
+        width="151.802"
+        height="36.5788"
+        rx="18.2894"
+        transform="rotate(-38.5799 88.1023 144.792)"
+        fill="currentColor"
+      />
+      <rect
+        x="85.3459"
+        y="244.537"
+        width="151.802"
+        height="36.5788"
+        rx="18.2894"
+        transform="rotate(-38.5799 85.3459 244.537)"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {menuItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-sm font-medium hover:text-primary transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
+// ================= HAMBURGER ICON =================
+const HamburgerIcon = ({ className, ...props }: React.SVGAttributes<SVGElement>) => (
+  <svg
+    className={cn('pointer-events-none', className)}
+    width={16}
+    height={16}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M4 12L20 12"
+      className="origin-center -translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[315deg]"
+    />
+    <path
+      d="M4 12H20"
+      className="origin-center transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.8)] group-aria-expanded:rotate-45"
+    />
+    <path
+      d="M4 12H20"
+      className="origin-center translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[135deg]"
+    />
+  </svg>
+);
 
-          <div className="flex items-center gap-3">
-            <Button className="hidden sm:flex">Order Now</Button>
-            <Button variant="ghost" size="icon" className="rounded-full hidden sm:flex">
-              <User className="h-5 w-5" />
-            </Button>
-
-            {/* Mobile Menu */}
-            <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger asChild className="md:hidden">
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <div className="flex flex-col gap-6 mt-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-2xl font-bold">🍔 Pop101</span>
-                  </div>
-
-                  <nav className="flex flex-col gap-4">
-                    {menuItems.map((item) => (
-                      <a
-                        key={item.label}
-                        href={item.href}
-                        onClick={() => setOpen(false)}
-                        className="text-lg font-medium hover:text-primary transition-colors py-2"
-                      >
-                        {item.label}
-                      </a>
-                    ))}
-                  </nav>
-
-                  <div className="flex flex-col gap-3 mt-6">
-                    <Button className="w-full" onClick={() => setOpen(false)}>
-                      Order Now
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => setOpen(false)}
-                    >
-                      <User className="h-5 w-5 mr-2" />
-                      Account
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-      </div>
-    </nav>
-  )
+// ================= TYPES =================
+export interface NavbarNavLink {
+  href: string;
+  label: string;
 }
 
-export default Navbar
+// ================= DEFAULT LINKS =================
+const navigationLinks: NavbarNavLink[] = [
+  { href: '/', label: 'Home' },
+  { href: '/menu', label: 'Menu' },
+  { href: '/about', label: 'About Us' },
+  { href: '/contact', label: 'Contact Us' },
+];
 
+// ================= MAIN COMPONENT =================
+export const Navbar = React.forwardRef<HTMLElement>((_, ref) => {
+  const { user } = useAppSelector((s) => s.auth);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef<HTMLElement>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [signUpOpen, setSignUpOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+
+  useEffect(() => {
+    const checkWidth = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.offsetWidth;
+        setIsMobile(width < 768);
+      }
+    };
+    checkWidth();
+    const resizeObserver = new ResizeObserver(checkWidth);
+    if (containerRef.current) resizeObserver.observe(containerRef.current);
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  const combinedRef = React.useCallback(
+    (node: HTMLElement | null) => {
+      containerRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref]
+  );
+
+  const isActive = (href: string) => {
+    if (href === '/') return location.pathname === '/';
+    return location.pathname.startsWith(href);
+  };
+
+  const handleNavigation = (href: string) => {
+    navigate(href);
+  };
+
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
+
+  const cartCount = 3;
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('login') === 'true') {
+      setLoginOpen(true);
+    }
+  }, [location.search]);
+
+  return (
+    <>
+      <header
+        ref={combinedRef}
+        className={
+          'bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b px-4 backdrop-blur md:px-6 [&_*]:no-underline'
+        }
+      >
+        <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-4">
+          {/* LEFT SIDE */}
+          <div className="flex items-center gap-14">
+            {/* Mobile menu */}
+
+            {/* Logo */}
+            <button
+              onClick={() => navigate('/')}
+              className="text-primary hover:text-primary/90 flex items-center space-x-2 transition-colors"
+            >
+              <div className="text-2xl">
+                <Logo />
+              </div>
+              <span className="inline-block text-xl font-bold">Pop101</span>
+            </button>
+
+            {/* Desktop navigation */}
+            {!isMobile && (
+              <NavigationMenu className="flex">
+                <NavigationMenuList className="gap-1">
+                  {navigationLinks.map((link, index) => (
+                    <NavigationMenuItem key={index}>
+                      <button
+                        onClick={() => handleNavigation(link.href)}
+                        className={cn(
+                          'group hover:bg-accent hover:text-accent-foreground inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors',
+                          isActive(link.href)
+                            ? 'bg-accent text-accent-foreground'
+                            : 'text-foreground/80 hover:text-foreground'
+                        )}
+                      >
+                        {link.label}
+                      </button>
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
+            )}
+          </div>
+
+          {/* RIGHT SIDE */}
+          <div className="flex items-center gap-3">
+            {/* CART ICON */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-accent hover:text-accent-foreground relative"
+              onClick={() => navigate('/cart')}
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {/* Optional cart count badge */}
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
+                  {cartCount}
+                </span>
+              )}
+            </Button>
+
+            {user ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-accent hover:text-accent-foreground rounded-full"
+                  >
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.name}
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="h-5 w-5" />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-48 p-2">
+                  <div className="flex flex-col space-y-2">
+                    <div className="border-b pb-2">
+                      <p className="text-sm font-medium">{user.name}</p>
+                      <p className="text-muted-foreground text-xs">{user.email}</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-sm"
+                      onClick={() => navigate('/profile')}
+                    >
+                      Profile
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="justify-start text-sm text-red-600"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hover:bg-accent hover:text-accent-foreground text-sm font-medium"
+                  onClick={() => setLoginOpen(true)}
+                >
+                  Log In
+                </Button>
+                <Button
+                  size="sm"
+                  className="h-9 rounded-md px-4 text-sm font-medium shadow-sm"
+                  onClick={() => setSignUpOpen(true)}
+                >
+                  Register
+                </Button>
+              </>
+            )}
+
+            {isMobile && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    className="group hover:bg-accent hover:text-accent-foreground h-9 w-9"
+                    variant="ghost"
+                    size="icon"
+                  >
+                    <HamburgerIcon />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-48 p-2">
+                  <NavigationMenu className="max-w-none">
+                    <NavigationMenuList className="flex-col items-start gap-1">
+                      {navigationLinks.map((link, index) => (
+                        <NavigationMenuItem key={index} className="w-full">
+                          <button
+                            onClick={() => handleNavigation(link.href)}
+                            className={cn(
+                              'hover:bg-accent hover:text-accent-foreground flex w-full cursor-pointer items-center rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                              isActive(link.href)
+                                ? 'bg-accent text-accent-foreground'
+                                : 'text-foreground/80'
+                            )}
+                          >
+                            {link.label}
+                          </button>
+                        </NavigationMenuItem>
+                      ))}
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
+        </div>
+      </header>
+      <SignUpModal open={signUpOpen} onOpenChange={setSignUpOpen} />
+      <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
+    </>
+  );
+});
+
+Navbar.displayName = 'Navbar';

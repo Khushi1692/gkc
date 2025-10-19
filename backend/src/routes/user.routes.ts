@@ -7,6 +7,7 @@ import {
   resetPasswordSchema,
   forgotPasswordSchema,
 } from "../validators/user.validators";
+import { authMiddleware } from "../middleware/auth";
 
 /**
  * Initializes a new Router instance.
@@ -27,6 +28,8 @@ router.post(
   validateRequest(resetPasswordSchema),
   UserController.resetPassword
 );
+router.get("/me", authMiddleware, UserController.getCurrentUser);
+router.post("/logout", authMiddleware, UserController.logout);
 
 // Google OAuth route
 router.post("/auth/google", UserController.googleAuth);

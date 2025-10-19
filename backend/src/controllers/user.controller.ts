@@ -8,6 +8,7 @@ import { createCustomError } from "../utils/error";
 import { EmailService } from "../services/email.service";
 import crypto from "crypto";
 import { GoogleAuthService } from "../services/google-auth.service";
+import { AuthRequest } from "../middleware/auth";
 
 export class UserController {
   // User signup method
@@ -77,7 +78,9 @@ export class UserController {
           status: "warning",
           message:
             "Account created but verification email could not be sent. Please contact support.",
-          userId: user._id,
+          data: {
+            userId: user._id,
+          },
         });
       }
     } catch (error) {
@@ -123,7 +126,6 @@ export class UserController {
         return;
       }
 
-
       // Validate password
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
@@ -139,10 +141,17 @@ export class UserController {
         expiresIn: config.jwt.expiresIn as any,
       });
 
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
       res.json({
         status: "success",
+        message: "Login successful",
         data: {
-          token,
           user: {
             id: user._id,
             name: user.name,
@@ -162,6 +171,8 @@ export class UserController {
   static async verifyEmail(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.params;
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Find user by verification token
       const user = await User.findOne({
@@ -183,7 +194,7 @@ export class UserController {
       user.verificationTokenExpires = undefined;
       await user.save();
 
-      res.json({
+      res.status(200).json({
         status: "success",
         message: "Email verified successfully",
       });
@@ -327,17 +338,21 @@ export class UserController {
           expiresIn: config.jwt.expiresIn as any,
         });
 
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
         res.json({
           status: "success",
           message: "Login successful",
           data: {
-            token,
-            user: {
-              id: user._id,
-              name: user.name,
-              email: user.email,
-              avatar: user.avatar,
-            },
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
           },
         });
         return;
@@ -357,17 +372,21 @@ export class UserController {
           expiresIn: config.jwt.expiresIn as any,
         });
 
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
         res.json({
           status: "success",
           message: "Google account linked successfully",
           data: {
-            token,
-            user: {
-              id: user._id,
-              name: user.name,
-              email: user.email,
-              avatar: user.avatar,
-            },
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
           },
         });
         return;
@@ -387,17 +406,21 @@ export class UserController {
         expiresIn: config.jwt.expiresIn as any,
       });
 
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
       res.status(201).json({
         status: "success",
         message: "Registration successful",
         data: {
-          token,
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            avatar: user.avatar,
-          },
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
         },
       });
     } catch (error: any) {
@@ -416,5 +439,51 @@ export class UserController {
         message: "Internal server error",
       });
     }
+  }
+
+  static async getCurrentUser(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.userId;
+      if (!userId) {
+        res.status(401).json({ status: "error", message: "Unauthorized" });
+        return;
+      }
+      const user = await User.findById(userId).select("_id name email avatar");
+
+      if (!user) {
+        res.status(401).json({ status: "error", message: "User not found" });
+        return;
+      }
+
+      res.status(200).json({
+        status: "success",
+        message: " User fetched successfully",
+        data: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+        },
+      });
+    } catch (error) {
+      res.status(401).json({
+        status: "error",
+        message: "Invalid or expired token",
+      });
+    }
+  }
+
+  static logout(req: Request, res: Response): void {
+    // Clear the token cookie
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Logged out successfully",
+    });
   }
 }

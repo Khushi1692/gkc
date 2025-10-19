@@ -71,7 +71,7 @@ const productSchema = new Schema(
     name: { type: String, required: true },
     description: { type: String },
     categoryId: { type: Types.ObjectId, ref: "Category", required: true },
-    images: { type: String },
+    image: { type: String },
     actualPrice: { type: Number, required: true },
     discountedPrice: { type: Number, required: true }, // automatically calculated
     discountPercentage: { type: Number, required: true },
@@ -100,7 +100,6 @@ const cartSchema = new Schema(
   {
     userId: { type: Types.ObjectId, ref: "User" }, // optional for guest
     sessionId: { type: String }, // guest identifier
-    // branchId: { type: Types.ObjectId, ref: "Branch", required: true },
     items: [
       {
         productId: { type: Types.ObjectId, ref: "Product", required: true },

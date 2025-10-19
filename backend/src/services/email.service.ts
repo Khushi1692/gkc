@@ -60,7 +60,7 @@ export class EmailService {
   ): Promise<void> {
     try {
       const template = await this.getTemplate("verifyEmail");
-      const verificationLink = `${config.frontend.url}/verify-email?token=${verificationToken}`;
+      const verificationLink = `${config.frontend.url}/verify-email/${verificationToken}`;
 
       const html = this.replaceTemplateVariables(template, {
         name,

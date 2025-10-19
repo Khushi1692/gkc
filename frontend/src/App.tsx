@@ -1,49 +1,33 @@
-import axios from "axios";
-import { GoogleLogin } from "./components/GoogleLogin";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import Menu from "./pages/Menu";
+import { useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Footer from './components/Footer';
+import { Navbar } from './components/Navbar';
+import Home from './pages/Home';
+import Menu from './pages/Menu';
+import NotFound from './pages/NotFound';
+import VerifyEmail from './pages/VerifyEmail';
+import { useAppDispatch } from './store/hooks';
+import { fetchCurrentUser } from './store/slices/authSlice';
 
 function App() {
+  const dispatch = useAppDispatch();
 
-  const handleGoogleSuccess = async (credential: string) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/users/auth/google",
-        {
-          credential,
-        }
-      );
-
-      const { token, user } = response.data.data;
-
-      // Store token
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      // Redirect to dashboard
-      window.location.href = "/dashboard";
-    } catch (error) {
-      console.error("Google login failed:", error);
-      alert("Login failed. Please try again.");
-    }
-  };
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+  }, [dispatch]);
 
   return (
     <>
-    <BrowserRouter>
+      <BrowserRouter>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
-      {/* <GoogleLogin 
-        onSuccess={handleGoogleSuccess}
-        onError={() => alert('Google sign-in failed')}
-      /> */}
     </>
   );
 }

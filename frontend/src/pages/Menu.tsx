@@ -1,152 +1,115 @@
-import classicburger from "@/assets/classic-burger.png";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-const menuItems = [
-  {
-    id: 1,
-    title: "Classic Cheeseburger",
-    description:
-      "Juicy beef patty, melted cheddar, crisp lettuce, ripe tomato, and tangy pickles on a toasted sesame seed bun.",
-    image: classicburger,
-    category: "burger",
-  },
-  {
-    id: 2,
-    title: "Spicy Jalapeno Burger",
-    description:
-      "Fiery jalapenos, pepper jack cheese, chipotle mayo, and a juicy beef patty on a toasted bun.",
-    image: classicburger,
-    category: "burger",
-  },
-  {
-    id: 3,
-    title: "Mushroom Swiss Burger",
-    description:
-      "Savory sauteed mushrooms, melted Swiss cheese, and a juicy beef patty on a toasted bun.",
-    image: classicburger,
-    category: "burger",
-  },
-  {
-    id: 4,
-    title: "BBQ Bacon Burger",
-    description:
-      "Crispy bacon, tangy BBQ sauce, cheddar cheese, and a juicy beef patty on a toasted bun.",
-    image: classicburger,
-    category: "burger",
-  },
-  {
-    id: 5,
-    title: "Veggie Burger",
-    description:
-      "Plant-based patty, lettuce, tomato, onion, and pickles on a toasted bun.",
-    image: classicburger,
-    category: "burger",
-  },
-];
-
-const categories = [
-  "Burger",
-  "Pasta",
-  "Fries",
-  "Soda",
-  "Nachos",
-  "Corn Cups",
-  "Dips",
-  "Quesadilla",
-  "Combo",
-];
+import { Loader } from '@/components/Loader';
+import { ProductCard } from '@/components/Menu/ProductCard';
+import { ProductDetailsModal } from '@/components/Menu/ProductDetailsModal';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import {
+  fetchCategories,
+  fetchProductsByCategory,
+  setSelectedCategory,
+} from '@/store/slices/menuSlice';
+import type { Product } from '@/types/menu';
+import { useEffect, useState } from 'react';
 
 const Menu = () => {
+  const dispatch = useAppDispatch();
+  const { categories, products, selectedCategoryId, loading } = useAppSelector(
+    (state) => state.menu
+  );
+
+  const [selectedItem, setSelectedItem] = useState<Product | null>(null);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (selectedCategoryId) {
+      dispatch(fetchProductsByCategory(selectedCategoryId));
+    }
+  }, [dispatch, selectedCategoryId]);
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      {loading.categories || loading.products ? <Loader loading message="Loading menu..." /> : null}
 
-      {/* Hero Section */}
-      <section className="relative h-[400px] mt-16">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(/hero-image.png)` }}
-        >
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-        <div className="relative container mx-auto px-4 h-full flex flex-col items-center justify-center text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-            Your Favorite Food, Delivered Fast
-          </h1>
-          <p className="text-lg md:text-xl text-white/90 mb-8 max-w-3xl">
-            Craving something delicious? Pop 101 brings your favorite meals
-            right to you door. Order now and enjoy a feast without leaving your
-            couch.
-          </p>
-          <Button
-            size="lg"
-            className="bg-destructive hover:bg-destructive/90 text-white"
-          >
-            Order Now
-          </Button>
-        </div>
-      </section>
-
-      {/* Menu Section */}
-      <section className="container mx-auto px-4 py-12">
-        <Tabs defaultValue="Burger" className="w-full">
-          <TabsList className="w-full justify-start overflow-x-auto flex-wrap h-auto gap-2 bg-transparent border-b rounded-none pb-4">
-            {categories.map((category) => (
-              <TabsTrigger
-                key={category}
-                value={category}
-                className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6"
-              >
-                {category}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <TabsContent value="Burger" className="mt-8">
-            <div className="space-y-6">
-              {menuItems.map((item) => (
-                <Card key={item.id} className="overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="grid md:grid-cols-[1fr_300px] gap-0">
-                      <div className="p-6 md:p-8 flex flex-col justify-center">
-                        <h3 className="text-2xl font-bold mb-3">
-                          {item.title}
-                        </h3>
-                        <p className="text-muted-foreground mb-6">
-                          {item.description}
-                        </p>
-                        <Button variant="secondary" className="w-fit">
-                          Add to Cart
-                        </Button>
-                      </div>
-                      <div className="h-[250px] md:h-auto">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          {categories.slice(1).map((category) => (
-            <TabsContent key={category} value={category} className="mt-8">
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">
-                  {category} menu items coming soon...
+      <div className="bg-background min-h-screen px-4 py-6 sm:px-8 md:px-12 md:py-10 lg:px-20 xl:px-32 2xl:px-40">
+        {/* Hero Section */}
+        <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-xl">
+          <div className="relative aspect-[16/12] w-full sm:aspect-[16/8]">
+            <img
+              src="/hero-menu.png"
+              alt="Delicious food"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 px-4 text-center">
+              <div className="flex -translate-y-1 flex-col items-center sm:translate-y-4 md:translate-y-4 lg:translate-y-4 xl:translate-y-10">
+                <h1 className="mb-2 text-3xl font-bold text-white sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl">
+                  Your Favorite Food, Delivered Fast
+                </h1>
+                <p className="mb-6 w-[90%] text-sm text-white sm:mb-8 sm:text-lg">
+                  Craving something delicious? Pop 101 brings your favorite meals right to your
+                  door. Order now and enjoy a feast without leaving your couch.
                 </p>
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
-      </section>
 
-    </div>
+                <Button className="rounded-md px-6 py-3 font-semibold sm:px-6 sm:py-4 md:px-8 md:py-5 md:text-lg lg:py-6 lg:text-xl">
+                  Order Now
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Menu Section */}
+        <section className="relative mx-auto mt-10 w-full max-w-6xl overflow-hidden rounded-xl">
+          {categories.length === 0 ? (
+            <div className="text-muted-foreground py-12 text-center">No categories available.</div>
+          ) : (
+            <Tabs
+              value={selectedCategoryId ?? ''}
+              className="w-full"
+              onValueChange={(val) => dispatch(setSelectedCategory(val))}
+            >
+              <div className="w-full overflow-x-auto">
+                <TabsList className="scrollbar-hide flex h-auto w-full min-w-max flex-nowrap items-center justify-start gap-2 rounded-none border-b bg-transparent px-2">
+                  {categories.map((category) => (
+                    <TabsTrigger
+                      key={category._id}
+                      value={category._id}
+                      className="data-[state=active]:border-primary rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                    >
+                      {category.name}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+
+              <TabsContent value={selectedCategoryId ?? ''} className="mt-8">
+                {products.length === 0 ? (
+                  <div className="text-muted-foreground py-12 text-center">
+                    No items available in this category.
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {products.map((item) => (
+                      <ProductCard key={item._id} item={item} onAddToCart={setSelectedItem} />
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          )}
+        </section>
+      </div>
+
+      {selectedItem && (
+        <ProductDetailsModal
+          open={!!selectedItem}
+          product={selectedItem}
+          onClose={() => setSelectedItem(null)}
+        />
+      )}
+    </>
   );
 };
 

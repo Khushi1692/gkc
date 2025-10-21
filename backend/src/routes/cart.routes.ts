@@ -15,13 +15,13 @@ router.post(
 );
 
 router.patch(
-  "/:branchId/item/:itemId",
+  "/item/:itemId",
   optionalAuth,
   CartController.updateQuantity
 );
 
 router.delete(
-  "/:branchId/item/:itemId",
+  "/item/:itemId",
   optionalAuth,
   CartController.removeItem
 );

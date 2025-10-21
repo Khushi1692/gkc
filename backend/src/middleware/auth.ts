@@ -33,8 +33,7 @@ export const authMiddleware = (
     }
 
     // Get sessionId from header or cookie for guest users
-    req.sessionId =
-      (req.headers["x-session-id"] as string) || req.cookies.sessionId;
+    req.sessionId = req.cookies.sessionId;
 
     next();
   } catch (error) {
@@ -55,12 +54,11 @@ export const optionalAuth = (
       req.userId = decoded.userId;
     }
 
-    req.sessionId =
-      (req.headers["x-session-id"] as string) || req.cookies.sessionId;
+    req.sessionId = req.cookies.sessionId;
+
     next();
   } catch (error) {
-    req.sessionId =
-      (req.headers["x-session-id"] as string) || req.cookies.sessionId;
+    req.sessionId = req.cookies.sessionId;
     next();
   }
 };

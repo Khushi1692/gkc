@@ -2,8 +2,7 @@ import { apiClient } from '@/api/axiosClient';
 import type { ApiResponse } from '@/types/api';
 import { getErrorMessage } from '@/utils/errorHandler';
 import type { LoginFormData, SignupFormData } from '@/validators/auth';
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 interface User {
   id: string;

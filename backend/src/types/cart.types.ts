@@ -11,8 +11,10 @@ export interface ICartItem {
 }
 
 export interface CartItemCustomization {
+  _id: string;
   groupName: string;
   selectedOptions: {
+    _id: string;
     name: string;
     priceModifier: number;
   }[];
@@ -30,10 +32,19 @@ export interface ICart {
 }
 
 export interface ICartItemSubDocument
-  extends Omit<ICartItem, "_id" | "productId">,
+  extends Omit<ICartItem, "_id" | "productId" | "customizations">,
     Document {
   _id: Types.ObjectId;
   productId: Types.ObjectId;
+  customizations: {
+    _id: Types.ObjectId;
+    groupName: string;
+    selectedOptions: {
+      _id: Types.ObjectId;
+      name: string;
+      priceModifier: number;
+    }[];
+  }[];
 }
 
 export interface ICartDocument
@@ -42,4 +53,15 @@ export interface ICartDocument
   _id: Types.ObjectId;
   userId?: Types.ObjectId;
   items: Types.DocumentArray<ICartItemSubDocument>;
+}
+
+export interface IPopulatedProduct {
+  _id: Types.ObjectId;
+  name: string;
+  description?: string;
+  image?: string;
+}
+
+export interface ICartItemPopulated extends Omit<ICartItem, "productId"> {
+  productId: IPopulatedProduct;
 }

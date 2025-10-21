@@ -5,6 +5,7 @@ import { ICartItem, ICartItemSubDocument } from "../types/cart.types";
 import { isProductAvailableInBranch } from "../utils/branchUtils";
 import { calculateCartTotal } from "../utils/cartUtils";
 import { AddItemToCartInput } from "../validators/cart.validators";
+import crypto from "crypto";
 
 export class CartController {
   static async getCart(req: AuthRequest, res: Response) {
@@ -27,7 +28,7 @@ export class CartController {
         for (const item of cart.items) {
           const available = await isProductAvailableInBranch(
             branchId,
-            item.productId._id.toString()
+            item.productId.toString()
           );
           if (available) {
             validItems.push(item);
@@ -46,11 +47,16 @@ export class CartController {
         }
       }
 
+      await cart.populate({
+        path: "items.productId",
+        select: "_id name description image",
+      })
+
       res.status(200).json({
         status: "success",
         message: "Cart fetched successfully",
         data: {
-          cart,
+          cart: cart,
           skippedItems,
         },
       });
@@ -85,14 +91,39 @@ export class CartController {
         return;
       }
 
+      let sessionId;
+
+      if (!req.sessionId) {
+        sessionId = crypto.randomBytes(32).toString("hex");
+
+        res.cookie("sessionId", sessionId, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+      } else {
+        sessionId = req.sessionId;
+      }
+
       const cart = await CartService.addToCart(
         productData,
         req.userId,
-        req.sessionId
+        sessionId
       );
 
-      res.status(201).json({ status: "success", data: cart });
+      await cart.populate({
+        path: "items.productId",
+        select: "_id name description image",
+      });
+
+      res.status(201).json({
+        status: "success",
+        message: "Item added to cart successfully",
+        data: cart,
+      });
     } catch (error) {
+      console.error("Add to cart error", error);
       res.status(500).json({ status: "error", message: "Server error" });
     }
   }
@@ -114,7 +145,16 @@ export class CartController {
         req.sessionId
       );
 
-      res.status(200).json({ status: "success", data: cart });
+      await cart.populate({
+        path: "items.productId",
+        select: "_id name description image",
+      });
+
+      res.status(200).json({
+        status: "success",
+        message: "Quantity updated successfully",
+        data: cart,
+      });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to update cart";
@@ -132,7 +172,16 @@ export class CartController {
         req.sessionId
       );
 
-      res.status(200).json({ status: "success", data: cart });
+      await cart.populate({
+        path: "items.productId",
+        select: "_id name description image",
+      });
+
+      res.status(200).json({
+        status: "success",
+        message: "Item removed successfully",
+        data: cart,
+      });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to remove item";
@@ -144,7 +193,9 @@ export class CartController {
     try {
       const cart = await CartService.clearCart(req.userId, req.sessionId);
 
-      res.status(200).json({ status: "success", data: cart });
+      res
+        .status(200)
+        .json({ status: "success", message: "Cart clear", data: cart });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to clear cart";

@@ -66,19 +66,13 @@ export class CartService {
     }
   }
 
-  static async getCart(userId?: string, sessionId?: string, branchId?: string) {
+  static async getCart(userId?: string, sessionId?: string) {
     if (userId) {
       return await Cart.findOne({
         userId: new Types.ObjectId(userId),
-      }).populate({
-        path: "items.productId",
-        select: "_id name description image",
       });
     } else if (sessionId) {
-      return await Cart.findOne({ sessionId }).populate({
-        path: "items.productId",
-        select: "_id name description image",
-      });
+      return await Cart.findOne({ sessionId });
     }
     return null;
   }
@@ -186,7 +180,10 @@ export class CartService {
     return cart as unknown as ICartDocument;
   }
 
-  static async clearCart(userId?: string, sessionId?: string): Promise<ICartDocument> {
+  static async clearCart(
+    userId?: string,
+    sessionId?: string
+  ): Promise<ICartDocument> {
     const cart = await this.getCart(userId, sessionId);
 
     if (!cart) {

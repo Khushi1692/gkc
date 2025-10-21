@@ -61,7 +61,11 @@ export class BranchController {
         return;
       }
 
-      res.json({ status: "success", branch: branches[0] });
+      res.json({
+        status: "success",
+        message: "Nearest branch fetched successfully",
+        data: branches[0],
+      });
     } catch (error) {
       console.error("Get nearest branches error:", error);
       res.status(500).json({
@@ -88,9 +92,14 @@ export class BranchController {
 
       const coords = validateCoordinates(lat as string, lng as string);
       if (!coords) {
-        res.status(400).json({
-          status: "error",
-          message: "Invalid latitude or longitude values",
+        const branches = await Branch.find({ isActive: true }).select(
+          "name address phone email location"
+        );
+
+        res.json({
+          status: "success",
+          message: "Branches fetched successfully (without location sorting)",
+          data: branches,
         });
         return;
       }
@@ -118,7 +127,11 @@ export class BranchController {
         },
       ]);
 
-      res.json({ status: "success", branches });
+      res.json({
+        status: "success",
+        message: "Branches fetched successfully",
+        data: branches,
+      });
     } catch (error) {
       console.error("Get all branches error:", error);
       res.status(500).json({

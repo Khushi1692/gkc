@@ -1,7 +1,4 @@
-import {
-  CartItemCustomization,
-  ICartItem
-} from "../types/cart.types";
+import { CartItemCustomization, ICartItem } from "../types/cart.types";
 export const calculateItemSubtotal = (item: ICartItem): number => {
   let subtotal = item.price * item.quantity;
 
@@ -27,13 +24,39 @@ export const calculateCartTotal = (items: ICartItem[]): number => {
 };
 
 export const itemsAreEqual = (item1: ICartItem, item2: ICartItem): boolean => {
+  if (!item1 || !item2) return false;
+
+  // Compare productId first (quick exit)
   if (item1.productId.toString() !== item2.productId.toString()) {
     return false;
   }
 
-  // Compare customizations
-  const customs1 = JSON.stringify(item1.customizations || []);
-  const customs2 = JSON.stringify(item2.customizations || []);
+  const customs1 = item1.customizations || [];
+  const customs2 = item2.customizations || [];
 
-  return customs1 === customs2;
+  // If length differs, no need to go deeper
+  if (customs1.length !== customs2.length) {
+    return false;
+  }
+
+  // Normalize both customization arrays
+  const normalize = (customs: CartItemCustomization[]) =>
+    customs
+      .map((c) => ({
+        groupName: c.groupName,
+        selectedOptions: [...c.selectedOptions]
+          .sort((a, b) => a._id.localeCompare(b._id))
+          .map((o) => ({
+            _id: o._id,
+            name: o.name,
+            priceModifier: o.priceModifier,
+          })),
+      }))
+      .sort((a, b) => a.groupName.localeCompare(b.groupName));
+
+  const normalized1 = normalize(customs1);
+  const normalized2 = normalize(customs2);
+
+  // Deep compare after normalization
+  return JSON.stringify(normalized1) === JSON.stringify(normalized2);
 };

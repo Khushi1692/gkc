@@ -41,7 +41,11 @@ export class MenuController {
         .sort({ sortOrder: 1 })
         .lean();
 
-      res.json({ status: "success", categories });
+      res.json({
+        status: "success",
+        message: "Categories fetched successfully",
+        data: categories,
+      });
     } catch (error) {
       console.error("Get menu categories error:", error);
       res.status(500).json({
@@ -101,7 +105,11 @@ export class MenuController {
           item.price ?? productMap.get(item.productId.toString())?.basePrice,
       }));
 
-      res.json({ status: "success", products: result });
+      res.json({
+        status: "success",
+        message: "Products fetched successfully",
+        data: result,
+      });
     } catch (error) {
       console.error("Get menu products error:", error);
       res.status(500).json({

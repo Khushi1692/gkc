@@ -9,13 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { useAppDispatch } from '@/store/hooks';
 import { addItemToCart } from '@/store/slices/cartSlice';
 import type { AddItemToCartInput } from '@/types/cart';
 import type { Product } from '@/types/menu';
+import { Minus, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -209,20 +209,21 @@ export const ProductDetailsModal = ({
             <h4 className="font-semibold">Quantity</h4>
             <div className="flex items-center space-x-2">
               <Button
-                size="sm"
                 variant="outline"
+                size="icon"
+                className="h-8 w-8 sm:h-9 sm:w-9"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
               >
-                -
+                <Minus className="h-4 w-4" />
               </Button>
-              <Input
-                type="number"
-                value={quantity}
-                readOnly
-                className="w-fit p-0 text-center focus-visible:ring-0"
-              />
-              <Button size="sm" variant="outline" onClick={() => setQuantity((q) => q + 1)}>
-                +
+              <span className="w-8 text-center font-medium">{quantity}</span>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 sm:h-9 sm:w-9"
+                onClick={() => setQuantity((q) => q + 1)}
+              >
+                <Plus className="h-4 w-4" />
               </Button>
             </div>
           </div>

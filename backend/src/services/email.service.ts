@@ -82,6 +82,41 @@ export class EmailService {
     }
   }
 
+  // inside EmailService class
+  static async sendContactEmail(
+    to: string,
+    name: string,
+    subject: string,
+    message: string
+  ): Promise<void> {
+    try {
+      // Load the contact email template
+      const template = await this.getTemplate("contactUs");
+
+      // Replace variables
+      const html = this.replaceTemplateVariables(template, {
+        name,
+        email: to,
+        subject,
+        message,
+      });
+
+      const mailOptions = {
+        from: `"POP101" <${config.email.user}>`, // Verified sender
+        replyTo: to, // User email
+        to: config.adminEmail,
+        subject: `[Contact Us] ${subject}`,
+        html,
+      };
+
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log("Contact email sent successfully:", info.messageId);
+    } catch (error) {
+      console.error("Error sending contact email:", error);
+      throw new Error("Failed to send contact email");
+    }
+  }
+
   // Send a password reset email to the specified recipient
   static async sendPasswordResetEmail(
     to: string,

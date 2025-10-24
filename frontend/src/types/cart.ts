@@ -48,3 +48,9 @@ export interface Cart {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CheckoutPayload {
+  branchId: string;
+  specialInstructions: string;
+  paymentMethodId: string; // obtained from Stripe CardElement
+}

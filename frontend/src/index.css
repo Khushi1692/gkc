@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -142,4 +142,8 @@
 }
 .scrollbar-hide {
   scroll-behavior: smooth;
+}
+
+.order-modal-scroll {
+  scrollbar-width: thin;
 }

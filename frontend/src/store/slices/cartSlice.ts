@@ -1,6 +1,12 @@
 import { apiClient } from '@/api/axiosClient';
 import type { ApiResponse } from '@/types/api';
-import type { AddItemToCartInput, Cart, CartItem, GetCartResponse } from '@/types/cart';
+import type {
+  AddItemToCartInput,
+  Cart,
+  CartItem,
+  CheckoutPayload,
+  GetCartResponse,
+} from '@/types/cart';
 import { getErrorMessage } from '@/utils/errorHandler';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
@@ -13,6 +19,7 @@ interface CartState {
     update: boolean;
     remove: boolean;
     clear: boolean;
+    checkout: boolean;
   };
   error: {
     fetch: string | null;
@@ -20,7 +27,9 @@ interface CartState {
     update: string | null;
     remove: string | null;
     clear: string | null;
+    checkout: string | null;
   };
+  lastOrderId?: string;
 }
 
 const initialState: CartState = {
@@ -32,6 +41,7 @@ const initialState: CartState = {
     update: false,
     remove: false,
     clear: false,
+    checkout: false,
   },
   error: {
     fetch: null,
@@ -39,17 +49,21 @@ const initialState: CartState = {
     update: null,
     remove: null,
     clear: null,
+    checkout: null,
   },
+  lastOrderId: undefined,
 };
+
+const branchId = localStorage.getItem('selectedBranchId');
 
 // -------------------- ASYNC THUNKS --------------------
 
 // Fetch cart
 export const fetchCart = createAsyncThunk<
   ApiResponse<GetCartResponse>,
-  { branchId: string },
+  void,
   { rejectValue: string }
->('cart/fetchCart', async ({ branchId }, { rejectWithValue }) => {
+>('cart/fetchCart', async (_, { rejectWithValue }) => {
   try {
     const response = await apiClient.get<ApiResponse<GetCartResponse>>(`/cart/${branchId}`);
     return response.data;
@@ -65,7 +79,6 @@ export const addItemToCart = createAsyncThunk<
   { rejectValue: string }
 >('cart/addItemToCart', async ({ payload }, { rejectWithValue }) => {
   try {
-    const branchId = '68eff0c436899a0470a6b158';
     const response = await apiClient.post<ApiResponse<Cart>>(`/cart/${branchId}/add`, payload);
     return response.data;
   } catch (err: any) {
@@ -90,18 +103,17 @@ export const updateCartItemQuantity = createAsyncThunk<
 });
 
 // Remove item
-export const removeCartItem = createAsyncThunk<
-  ApiResponse<Cart>,
-  { itemId: string },
-  { rejectValue: string }
->('cart/removeCartItem', async ({ itemId }, { rejectWithValue }) => {
-  try {
-    const response = await apiClient.delete<ApiResponse<Cart>>(`/cart/item/${itemId}`);
-    return response.data;
-  } catch (err: any) {
-    return rejectWithValue(getErrorMessage(err));
+export const removeCartItem = createAsyncThunk<ApiResponse<Cart>, string, { rejectValue: string }>(
+  'cart/removeCartItem',
+  async (itemId, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.delete<ApiResponse<Cart>>(`/cart/item/${itemId}`);
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(getErrorMessage(err));
+    }
   }
-});
+);
 
 // Clear cart
 export const clearCart = createAsyncThunk<ApiResponse<Cart>, void, { rejectValue: string }>(
@@ -112,6 +124,24 @@ export const clearCart = createAsyncThunk<ApiResponse<Cart>, void, { rejectValue
       return response.data;
     } catch (err: any) {
       return rejectWithValue(getErrorMessage(err));
+    }
+  }
+);
+
+export const createPaymentIntent = createAsyncThunk(
+  'checkout/createPaymentIntent',
+  async (
+    { branchId, specialInstructions }: { branchId: string; specialInstructions: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data } = await apiClient.post('/payments/create-intent', {
+        branchId,
+        specialInstructions,
+      });
+      return data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
@@ -203,6 +233,20 @@ const cartSlice = createSlice({
       .addCase(clearCart.rejected, (state, action) => {
         state.loading.clear = false;
         state.error.clear = action.payload ?? 'Failed to clear cart';
+      });
+
+    builder
+      .addCase(createPaymentIntent.pending, (state) => {
+        state.loading.checkout = true;
+        state.error.checkout = null;
+      })
+      .addCase(createPaymentIntent.fulfilled, (state, action) => {
+        state.loading.checkout = false;
+        state.lastOrderId = action.payload.orderId;
+      })
+      .addCase(createPaymentIntent.rejected, (state, action) => {
+        state.loading.checkout = false;
+        state.error.checkout = action.payload as string;
       });
   },
 });

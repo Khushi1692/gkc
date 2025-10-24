@@ -6,6 +6,7 @@ import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/tool
 
 interface BranchState {
   selectedBranch: Branch | null;
+  nearestBranch: Branch | null;
   allBranches: Branch[];
   loading: {
     list: boolean;
@@ -19,6 +20,7 @@ interface BranchState {
 
 const initialState: BranchState = {
   selectedBranch: null,
+  nearestBranch: null,
   allBranches: [],
   loading: {
     list: false,
@@ -74,6 +76,7 @@ const branchSlice = createSlice({
     setSelectedBranch: (state, action: PayloadAction<Branch>) => {
       state.selectedBranch = action.payload;
       localStorage.setItem('selectedBranch', JSON.stringify(action.payload));
+      localStorage.setItem('selectedBranchId', action.payload._id);
     },
     loadBranchFromStorage: (state) => {
       const saved = localStorage.getItem('selectedBranch');
@@ -91,7 +94,7 @@ const branchSlice = createSlice({
       })
       .addCase(fetchNearestBranch.fulfilled, (state, action) => {
         state.loading.select = false;
-        state.selectedBranch = action.payload.data;
+        state.nearestBranch = action.payload.data;
       })
       .addCase(fetchNearestBranch.rejected, (state, action) => {
         state.loading.select = false;

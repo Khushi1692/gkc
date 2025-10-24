@@ -32,13 +32,14 @@ const initialState: MenuState = {
   },
 };
 
+const branchId = localStorage.getItem('selectedBranchId')
+
 export const fetchCategories = createAsyncThunk<
   ApiResponse<Category[]>,
   void,
   { rejectValue: string }
 >('menu/fetchCategories', async (_, { rejectWithValue }) => {
   try {
-    const branchId = '68eff0c436899a0470a6b158';
     const res = await apiClient.get<ApiResponse<Category[]>>(`/menu/${branchId}/categories`);
     return res.data;
   } catch (error) {
@@ -52,10 +53,6 @@ export const fetchProductsByCategory = createAsyncThunk<
   { rejectValue: string }
 >('menu/fetchProductsByCategory', async (categoryId, { rejectWithValue }) => {
   try {
-    const branchId = '68eff0c436899a0470a6b158';
-
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-
     const res = await apiClient.get<ApiResponse<Product[]>>(
       `/menu/${branchId}/products/${categoryId}`
     );

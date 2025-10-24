@@ -2,6 +2,9 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import branchReducer from './slices/branchSlice';
 import menuReducer from './slices/menuSlice';
+import cartReducer from './slices/cartSlice';
+import ordersReducer from './slices/orderSlice';
+import contactReducer from './slices/contactSlice';
 // ...
 
 export const store = configureStore({
@@ -9,6 +12,9 @@ export const store = configureStore({
     auth: authReducer,
     branch: branchReducer,
     menu: menuReducer,
+    cart: cartReducer,
+    orders: ordersReducer,
+    contact: contactReducer,
   },
 });
 

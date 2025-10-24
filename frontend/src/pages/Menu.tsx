@@ -1,7 +1,6 @@
 import { Loader } from '@/components/Loader';
 import { ProductCard } from '@/components/Menu/ProductCard';
 import { ProductDetailsModal } from '@/components/Menu/ProductDetailsModal';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -17,18 +16,19 @@ const Menu = () => {
   const { categories, products, selectedCategoryId, loading } = useAppSelector(
     (state) => state.menu
   );
+  const { selectedBranch } = useAppSelector((s) => s.branch);
 
   const [selectedItem, setSelectedItem] = useState<Product | null>(null);
 
   useEffect(() => {
     dispatch(fetchCategories());
-  }, [dispatch]);
+  }, [dispatch, selectedBranch]);
 
   useEffect(() => {
     if (selectedCategoryId) {
       dispatch(fetchProductsByCategory(selectedCategoryId));
     }
-  }, [dispatch, selectedCategoryId]);
+  }, [dispatch, selectedCategoryId, selectedBranch]);
   return (
     <>
       {loading.categories || loading.products ? <Loader loading message="Loading menu..." /> : null}
@@ -52,9 +52,9 @@ const Menu = () => {
                   door. Order now and enjoy a feast without leaving your couch.
                 </p>
 
-                <Button className="rounded-md px-6 py-3 font-semibold sm:px-6 sm:py-4 md:px-8 md:py-5 md:text-lg lg:py-6 lg:text-xl">
+                {/* <Button className="rounded-md px-6 py-3 font-semibold sm:px-6 sm:py-4 md:px-8 md:py-5 md:text-lg lg:py-6 lg:text-xl">
                   Order Now
-                </Button>
+                </Button> */}
               </div>
             </div>
           </div>

@@ -6,6 +6,7 @@ dotenv.config();
 
 export const config = {
   port: process.env.PORT || 3000,
+  adminEmail: process.env.ADMIN_EMAIL,
   mongodb: {
     uri: process.env.MONGODB_URI || "mongodb://localhost:27017/pop101",
   },
@@ -27,5 +28,9 @@ export const config = {
   },
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID || "",
+  },
+  stripe: {
+    secretKey: process.env.STRIPE_SECRET_KEY || "",
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
   },
 } as const;

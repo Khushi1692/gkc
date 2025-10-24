@@ -3,14 +3,27 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
+
 import userRoutes from "./routes/user.routes";
 import menuRoutes from "./routes/menu.routes";
 import branchRoutes from "./routes/branch.routes";
 import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
 import cartRoutes from "./routes/cart.routes";
+import paymentRoutes from "./routes/payment.routes";
+import orderRoutes from "./routes/order.routes";
+import contactRoutes from "./routes/contact.routes";
+
+import stripeWebhook from "./routes/stripeWebhook";
 
 const app = express();
+
+app.use(
+  "/api/payments/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  stripeWebhook
+);
 
 // Middleware
 app.use(helmet());
@@ -32,6 +45,9 @@ app.use("/api/branches", branchRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Error handling middleware
 app.use(

@@ -84,7 +84,7 @@ function App() {
           }
         });
     }
-  }, [dispatch, selectedBranch]);
+  }, [dispatch, selectedBranch, skipSelectBranch]);
 
   const handleConfirm = (dontAskAgain: boolean) => {
     if (dontAskAgain && selectedBranch && nearestBranch) {
@@ -135,20 +135,24 @@ function App() {
           <Footer />
         </BrowserRouter>
 
-        <BranchConfirmationModal
-          open={showConfirmModal}
-          nearestBranchName={nearestBranch?.name || ''}
-          selectedBranchName={selectedBranch?.name || ''}
-          onConfirm={handleConfirm}
-          onChangeBranch={handleChangeBranch}
-          onClose={() => setShowConfirmModal(false)}
-        />
+        {showConfirmModal && (
+          <BranchConfirmationModal
+            open={showConfirmModal}
+            nearestBranchName={nearestBranch?.name || ''}
+            selectedBranchName={selectedBranch?.name || ''}
+            onConfirm={handleConfirm}
+            onChangeBranch={handleChangeBranch}
+            onClose={() => setShowConfirmModal(false)}
+          />
+        )}
 
-        <SelectBranchModal
-          open={showSelectModal}
-          onSelect={handleSelectBranch}
-          onClose={() => setShowSelectModal(false)}
-        />
+        {showSelectModal && (
+          <SelectBranchModal
+            open={showSelectModal}
+            onSelect={handleSelectBranch}
+            onClose={() => setShowSelectModal(false)}
+          />
+        )}
       </APIProvider>
     </>
   );

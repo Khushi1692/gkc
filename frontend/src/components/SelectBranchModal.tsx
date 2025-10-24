@@ -37,9 +37,12 @@ const SelectBranchModal = ({ open, onSelect }: Props) => {
 
   useEffect(() => {
     if (allBranches.length === 0) {
+      console.log('first');
       dispatch(fetchAllBranches({}));
     }
-  }, [dispatch, allBranches]);
+  }, [dispatch]);
+
+  if (allBranches.length === 0) return null;
 
   return (
     <Dialog open={open} onOpenChange={handleConfirm}>

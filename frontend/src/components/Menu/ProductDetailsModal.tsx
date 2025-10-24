@@ -16,7 +16,7 @@ import { addItemToCart } from '@/store/slices/cartSlice';
 import type { AddItemToCartInput } from '@/types/cart';
 import type { Product } from '@/types/menu';
 import { Minus, Plus } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 interface ProductDetailsModalProps {
@@ -71,7 +71,25 @@ export const ProductDetailsModal = ({
     return (base + addons) * quantity;
   }, [selectedOptions, quantity, product]);
 
+  const effectivePrice = useMemo(() => {
+    const addons =
+      product.customizations
+        ?.flatMap((g) => g.options)
+        .filter((opt) => Object.values(selectedOptions).flat().includes(opt._id))
+        .reduce((sum, opt) => sum + opt.priceModifier, 0) || 0;
+    return product.basePrice + addons;
+  }, [selectedOptions, product]);
+
   const handleConfirm = () => {
+    const missingRequiredGroups = product.customizations
+      ?.filter((group) => group.required && !(selectedOptions[group._id]?.length > 0))
+      .map((g) => g.groupName);
+
+    if (missingRequiredGroups && missingRequiredGroups.length > 0) {
+      toast.error(`Please select options for: ${missingRequiredGroups.join(', ')}`);
+      return;
+    }
+
     const customizationPayload =
       product.customizations
         ?.map((group) => {
@@ -118,6 +136,28 @@ export const ProductDetailsModal = ({
         toast.error(err);
       });
   };
+
+  useEffect(() => {
+    if (!product?.customizations?.length) return;
+
+    const defaults: Record<string, string[]> = {};
+
+    product.customizations.forEach((group) => {
+      // Only preselect if required and nothing already selected
+      if (group.required) {
+        if (group.type === 'radio') {
+          // Select first option by default
+          defaults[group._id] = [group.options[0]._id];
+        } else if (group.type === 'checkbox') {
+          // Optional: select first option for required checkbox groups too
+          defaults[group._id] = [group.options[0]._id];
+        }
+      }
+    });
+
+    setSelectedOptions(defaults);
+  }, [product]);
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] max-w-lg overflow-auto">
@@ -234,6 +274,12 @@ export const ProductDetailsModal = ({
               <span>Price:</span>
               <span>${product.basePrice.toFixed(2)}</span>
             </div>
+            {product.basePrice.toFixed(2) !== effectivePrice.toFixed(2) && (
+              <div className="flex justify-between text-lg font-semibold">
+                <span>Current Price:</span>
+                <span>${effectivePrice.toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-lg font-semibold">
               <span>Subtotal:</span>
               <span>${subtotal.toFixed(2)}</span>

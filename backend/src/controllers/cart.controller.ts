@@ -1,11 +1,11 @@
+import crypto from "crypto";
 import { Response } from "express";
 import { AuthRequest } from "../middleware/auth";
+import { Branch } from "../models/branch.models";
 import { CartService } from "../services/cart.service";
-import { ICartItem, ICartItemSubDocument } from "../types/cart.types";
+import { CartItemResponse, ICartItemSubDocument } from "../types/cart.types";
 import { isProductAvailableInBranch } from "../utils/branchUtils";
-import { calculateCartTotal } from "../utils/cartUtils";
 import { AddItemToCartInput } from "../validators/cart.validators";
-import crypto from "crypto";
 
 export class CartController {
   static async getCart(req: AuthRequest, res: Response) {
@@ -13,50 +13,101 @@ export class CartController {
       const { userId, sessionId } = req;
       const { branchId } = req.params;
 
-      const cart = await CartService.getCart(userId, sessionId);
+      if (!branchId) {
+        return res
+          .status(400)
+          .json({ status: "error", message: "Branch ID is required" });
+      }
+
+      let cart = await CartService.getCart(userId, sessionId);
 
       if (!cart) {
-        res.status(200).json({ status: "success", message: "Cart not found" });
-        return;
+        return res.status(200).json({
+          status: "success",
+          message: "Cart not found",
+          data: { cart: null, skippedItems: [] },
+        });
       }
 
-      const skippedItems: ICartItem[] = [];
-
-      if (branchId) {
-        const validItems: ICartItemSubDocument[] = [];
-
-        for (const item of cart.items) {
-          const available = await isProductAvailableInBranch(
-            branchId,
-            item.productId.toString()
-          );
-          if (available) {
-            validItems.push(item);
-          } else {
-            skippedItems.push(item.toObject() as unknown as ICartItem);
-          }
-        }
-
-        // If some items are skipped, update cart
-        if (skippedItems.length > 0) {
-          cart.items = validItems as any;
-          cart.totalAmount = calculateCartTotal(
-            validItems.map((i) => i.toObject() as unknown as ICartItem)
-          );
-          await cart.save();
-        }
+      const branch = await Branch.findById(branchId).lean();
+      if (!branch) {
+        return res
+          .status(404)
+          .json({ status: "error", message: "Branch not found" });
       }
 
+      // Populate product details before any computation
       await cart.populate({
         path: "items.productId",
         select: "_id name description image",
-      })
+      });
 
-      res.status(200).json({
+      // Build a map of productId => branch product details for fast lookup
+      const branchProductMap = new Map<string, any>();
+      branch.menu.forEach((category: any) => {
+        category.products.forEach((p: any) => {
+          branchProductMap.set(p.productId.toString(), {
+            price: p.price,
+            discountPercentage: p.discountPercentage ?? 0,
+            isAvailable: p.isAvailable,
+          });
+        });
+      });
+
+      const updatedItems: CartItemResponse[] = [];
+      const skippedItems: ICartItemSubDocument[] = [];
+
+      cart.items.forEach((item) => {
+        const branchProduct = branchProductMap.get(
+          item.productId._id.toString()
+        );
+
+        if (!branchProduct || !branchProduct.isAvailable) {
+          skippedItems.push(item);
+          return;
+        }
+
+        const price = branchProduct.price;
+        const discountPercentage = branchProduct.discountPercentage;
+        const discountedPrice = price - (price * discountPercentage) / 100;
+
+        const customizationTotal =
+          item.customizations?.reduce(
+            (sum, c) =>
+              sum +
+              c.selectedOptions.reduce((s, o) => s + (o.priceModifier || 0), 0),
+            0
+          ) ?? 0;
+
+        const subtotal =
+          discountedPrice * item.quantity + customizationTotal * item.quantity;
+
+        updatedItems.push({
+          ...item.toObject(),
+          productId: item.productId,
+          price,
+          discountPercentage,
+          discountedPrice,
+          subtotal,
+        });
+      });
+
+      if (skippedItems.length > 0) {
+        skippedItems.forEach((item) => cart.items.pull({ _id: item._id }));
+        await cart.save();
+      }
+
+      const totalAmount = updatedItems.reduce((sum, i) => sum + i.subtotal, 0);
+
+      return res.status(200).json({
         status: "success",
         message: "Cart fetched successfully",
         data: {
-          cart: cart,
+          cart: {
+            ...cart.toObject(),
+            items: updatedItems,
+            totalAmount,
+          },
           skippedItems,
         },
       });
@@ -106,21 +157,11 @@ export class CartController {
         sessionId = req.sessionId;
       }
 
-      const cart = await CartService.addToCart(
-        productData,
-        req.userId,
-        sessionId
-      );
-
-      await cart.populate({
-        path: "items.productId",
-        select: "_id name description image",
-      });
+      await CartService.addToCart(productData, req.userId, sessionId);
 
       res.status(201).json({
         status: "success",
         message: "Item added to cart successfully",
-        data: cart,
       });
     } catch (error) {
       console.error("Add to cart error", error);
@@ -138,22 +179,16 @@ export class CartController {
         return;
       }
 
-      const cart = await CartService.updateItemQuantity(
+      await CartService.updateItemQuantity(
         itemId,
         quantity,
         req.userId,
         req.sessionId
       );
 
-      await cart.populate({
-        path: "items.productId",
-        select: "_id name description image",
-      });
-
       res.status(200).json({
         status: "success",
         message: "Quantity updated successfully",
-        data: cart,
       });
     } catch (error) {
       const errorMessage =
@@ -166,21 +201,11 @@ export class CartController {
     try {
       const { itemId } = req.params;
 
-      const cart = await CartService.removeItem(
-        itemId,
-        req.userId,
-        req.sessionId
-      );
-
-      await cart.populate({
-        path: "items.productId",
-        select: "_id name description image",
-      });
+      await CartService.removeItem(itemId, req.userId, req.sessionId);
 
       res.status(200).json({
         status: "success",
         message: "Item removed successfully",
-        data: cart,
       });
     } catch (error) {
       const errorMessage =
@@ -191,11 +216,9 @@ export class CartController {
 
   static async clearCart(req: AuthRequest, res: Response): Promise<void> {
     try {
-      const cart = await CartService.clearCart(req.userId, req.sessionId);
+      await CartService.clearCart(req.userId, req.sessionId);
 
-      res
-        .status(200)
-        .json({ status: "success", message: "Cart clear", data: cart });
+      res.status(200).json({ status: "success", message: "Cart clear" });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to clear cart";

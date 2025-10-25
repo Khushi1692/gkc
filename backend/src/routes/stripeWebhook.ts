@@ -21,29 +21,41 @@ router.post(
 
     let event: Stripe.Event;
 
+    
     try {
       event = stripe.webhooks.constructEvent(req.body, sig!, endpointSecret);
     } catch (err: any) {
       console.error(`Webhook signature failed.`, err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-
+    
+    console.log(event,"-------------------------")
     switch (event.type) {
       case "payment_intent.succeeded":
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        const order = await Order.findOneAndUpdate(
-          { paymentIntentId: paymentIntent.id },
-          { paymentStatus: "paid" }
-        );
-        if (order) console.log(`✅ Order ${order.orderId} paid successfully`);
+        try {
+          const order = await Order.findOneAndUpdate(
+            { paymentIntentId: paymentIntent.id },
+            { paymentStatus: "paid" },
+            { new: true }
+          );
+          if (order) console.log(`✅ Order ${order.orderId} paid successfully`);
+        } catch (err) {
+          console.error("Failed to update order payment status:", err);
+        }
         break;
 
       case "payment_intent.payment_failed":
         const failedIntent = event.data.object as Stripe.PaymentIntent;
-        await Order.findOneAndUpdate(
-          { paymentIntentId: failedIntent.id },
-          { paymentStatus: "failed" }
-        );
+        try {
+          await Order.findOneAndUpdate(
+            { paymentIntentId: failedIntent.id },
+            { paymentStatus: "failed" },
+            { new: true }
+          );
+        } catch (err) {
+          console.error("Failed to update order payment status:", err);
+        }
         break;
 
       default:

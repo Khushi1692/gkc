@@ -12,7 +12,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { useAppDispatch } from '@/store/hooks';
-import { addItemToCart } from '@/store/slices/cartSlice';
+import { addItemToCart, fetchCart } from '@/store/slices/cartSlice';
 import type { AddItemToCartInput } from '@/types/cart';
 import type { Product } from '@/types/menu';
 import { Minus, Plus } from 'lucide-react';
@@ -23,7 +23,6 @@ interface ProductDetailsModalProps {
   open: boolean;
   onClose: () => void;
   product: Product;
-  //   onConfirm: (payload: { productId: string; quantity: number; selectedOptions: string[] }) => void;
 }
 
 export const ProductDetailsModal = ({
@@ -62,7 +61,7 @@ export const ProductDetailsModal = ({
   };
 
   const subtotal = useMemo(() => {
-    const base = product.basePrice;
+    const base = product.discountedPrice;
     const addons =
       product.customizations
         ?.flatMap((g) => g.options)
@@ -77,7 +76,7 @@ export const ProductDetailsModal = ({
         ?.flatMap((g) => g.options)
         .filter((opt) => Object.values(selectedOptions).flat().includes(opt._id))
         .reduce((sum, opt) => sum + opt.priceModifier, 0) || 0;
-    return product.basePrice + addons;
+    return product.discountedPrice + addons;
   }, [selectedOptions, product]);
 
   const handleConfirm = () => {
@@ -119,8 +118,6 @@ export const ProductDetailsModal = ({
     const payload: AddItemToCartInput = {
       productId: product._id,
       quantity,
-      price: product.basePrice,
-      subtotal,
       customizations: customizationPayload.length ? customizationPayload : undefined,
     };
 
@@ -128,6 +125,7 @@ export const ProductDetailsModal = ({
       .unwrap()
       .then((res) => {
         if (res.status === 'success') {
+          dispatch(fetchCart());
           toast.success(res.message);
           onClose();
         }
@@ -272,9 +270,9 @@ export const ProductDetailsModal = ({
           <div className="flex flex-col">
             <div className="flex justify-between text-lg font-semibold">
               <span>Price:</span>
-              <span>${product.basePrice.toFixed(2)}</span>
+              <span>${product.discountedPrice.toFixed(2)}</span>
             </div>
-            {product.basePrice.toFixed(2) !== effectivePrice.toFixed(2) && (
+            {product.discountedPrice.toFixed(2) !== effectivePrice.toFixed(2) && (
               <div className="flex justify-between text-lg font-semibold">
                 <span>Current Price:</span>
                 <span>${effectivePrice.toFixed(2)}</span>

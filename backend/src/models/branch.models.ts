@@ -1,5 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 import { IBranch } from "../types/branch.types";
+import { Product } from "./product.models";
+import { number } from "zod";
 
 /**
  * Branch Schema
@@ -68,7 +70,13 @@ const branchSchema = new Schema<IBranch>(
         products: [
           {
             productId: { type: Types.ObjectId, ref: "Product", required: true },
-            price: { type: Number },
+            price: { type: Number, min: 0 },
+            discountPercentage: {
+              type: Number, // discount percentage
+              min: [0, "Discount cannot be negative"],
+              max: [100, "Discount cannot exceed 100%"],
+              default: 0,
+            },
             isAvailable: { type: Boolean, default: true },
           },
         ],
@@ -84,6 +92,26 @@ branchSchema.index({ location: "2dsphere" });
 branchSchema.index({ "menu.categoryId": 1 });
 branchSchema.index({ "menu.productId": 1 });
 branchSchema.index({ "menu.isAvailable": 1 });
+
+branchSchema.pre("save", async function (next) {
+  try {
+    for (const menuItem of this.menu) {
+      for (const product of menuItem.products) {
+        if (!product.price && product.productId) {
+          const base = await Product.findById(product.productId).select(
+            "basePrice"
+          );
+          if (base && base.basePrice != null) {
+            product.price = base.basePrice;
+          }
+        }
+      }
+    }
+    next();
+  } catch (err: any) {
+    next(err);
+  }
+});
 
 branchSchema.methods.isOpenNow = function (): boolean {
   const now = new Date();

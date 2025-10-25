@@ -1,24 +1,30 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import branchReducer from './slices/branchSlice';
 import menuReducer from './slices/menuSlice';
 import cartReducer from './slices/cartSlice';
 import ordersReducer from './slices/orderSlice';
 import contactReducer from './slices/contactSlice';
-// ...
 
-export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    branch: branchReducer,
-    menu: menuReducer,
-    cart: cartReducer,
-    orders: ordersReducer,
-    contact: contactReducer,
-  },
+const appReducer = combineReducers({
+  auth: authReducer,
+  branch: branchReducer,
+  menu: menuReducer,
+  cart: cartReducer,
+  orders: ordersReducer,
+  contact: contactReducer,
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
+const rootReducer = (state: any, action: any) => {
+  if (action.type === 'auth/logoutUser/fulfilled') {
+    state = undefined; // resets all slices to their initialState
+  }
+  return appReducer(state, action);
+};
+
+export const store = configureStore({
+  reducer: rootReducer,
+});
+
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;

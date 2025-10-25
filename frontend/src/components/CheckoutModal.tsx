@@ -1,17 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { clearCart, createPaymentIntent } from '@/store/slices/cartSlice';
+import { clearCart, createPaymentIntent, fetchCart } from '@/store/slices/cartSlice';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -60,7 +61,16 @@ const CheckoutModal = ({ isOpen, onClose, setSuccessOrderId }: CheckoutModalProp
       }
 
       if (paymentResult.paymentIntent?.status === 'succeeded') {
-        dispatch(clearCart());
+        dispatch(clearCart())
+          .unwrap()
+          .then((res) => {
+            if (res.status === 'success') {
+              dispatch(fetchCart());
+            }
+          })
+          .catch((err) => {
+            toast.error(err);
+          });
         setSuccessOrderId(orderId);
       }
     } catch (err: any) {

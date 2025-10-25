@@ -54,7 +54,8 @@ const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) => {
                   )}
 
                   <p className="text-foreground mt-1 text-sm font-medium">
-                    ${item.subtotal.toFixed(2)} ({item.quantity}x ${item.price.toFixed(2)})
+                    ${item.subtotal.toFixed(2)} ({item.quantity} x ${item.discountedPrice.toFixed(2)}
+                    )
                   </p>
                 </div>
               </CardContent>

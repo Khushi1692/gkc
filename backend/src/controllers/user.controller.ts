@@ -323,9 +323,10 @@ export class UserController {
    * Google OAuth login/signup
    * Receives Google ID token from frontend, verifies it, and creates/logs in user
    */
-  static async googleAuth(req: Request, res: Response): Promise<void> {
+  static async googleAuth(req: AuthRequest, res: Response): Promise<void> {
     try {
       const { credential } = req.body; // Google ID token from frontend
+      const sessionId = req.sessionId;
 
       if (!credential) {
         res.status(400).json({
@@ -353,6 +354,13 @@ export class UserController {
           sameSite: "strict",
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
+
+        if (sessionId) {
+          await CartService.mergeGuestCartWithUserCart(
+            user._id.toString(),
+            sessionId
+          );
+        }
 
         res.json({
           status: "success",
@@ -388,6 +396,13 @@ export class UserController {
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
+        if (sessionId) {
+          await CartService.mergeGuestCartWithUserCart(
+            user._id.toString(),
+            sessionId
+          );
+        }
+
         res.json({
           status: "success",
           message: "Google account linked successfully",
@@ -421,6 +436,13 @@ export class UserController {
         sameSite: "strict",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
+
+      if (sessionId) {
+        await CartService.mergeGuestCartWithUserCart(
+          user._id.toString(),
+          sessionId
+        );
+      }
 
       res.status(201).json({
         status: "success",

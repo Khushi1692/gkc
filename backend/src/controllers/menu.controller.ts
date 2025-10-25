@@ -88,7 +88,6 @@ export class MenuController {
         return;
       }
 
-      // Filter available products
       const menuItems = categoryBlock.products.filter((p) => p.isAvailable);
       const productIds = menuItems.map((p) => p.productId);
 
@@ -97,13 +96,26 @@ export class MenuController {
         isActive: true,
       }).lean();
 
-      // Merge price
       const productMap = new Map(products.map((p) => [p._id.toString(), p]));
-      const result = menuItems.map((item) => ({
-        ...productMap.get(item.productId.toString()),
-        price:
-          item.price ?? productMap.get(item.productId.toString())?.basePrice,
-      }));
+      const result = menuItems
+        .map((item) => {
+          const product = productMap.get(item.productId.toString());
+          if (!product) return null;
+
+          const price = item.price ?? product.basePrice;
+
+          const discountPercentage = item.discountPercentage ?? 0;
+          const discountedPrice = price - (price * discountPercentage) / 100;
+
+          return {
+            ...product,
+            basePrice: undefined,
+            price,
+            discountPercentage,
+            discountedPrice,
+          };
+        })
+        .filter(Boolean);
 
       res.json({
         status: "success",

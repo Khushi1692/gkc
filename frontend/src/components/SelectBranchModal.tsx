@@ -37,7 +37,6 @@ const SelectBranchModal = ({ open, onSelect }: Props) => {
 
   useEffect(() => {
     if (allBranches.length === 0) {
-      console.log('first');
       dispatch(fetchAllBranches({}));
     }
   }, [dispatch]);

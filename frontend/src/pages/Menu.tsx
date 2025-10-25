@@ -21,12 +21,16 @@ const Menu = () => {
   const [selectedItem, setSelectedItem] = useState<Product | null>(null);
 
   useEffect(() => {
-    dispatch(fetchCategories());
+    if (selectedBranch) {
+      dispatch(fetchCategories({ branchId: selectedBranch?._id }));
+    }
   }, [dispatch, selectedBranch]);
 
   useEffect(() => {
-    if (selectedCategoryId) {
-      dispatch(fetchProductsByCategory(selectedCategoryId));
+    if (selectedCategoryId && selectedBranch) {
+      dispatch(
+        fetchProductsByCategory({ branchId: selectedBranch._id, categoryId: selectedCategoryId })
+      );
     }
   }, [dispatch, selectedCategoryId, selectedBranch]);
   return (

@@ -32,13 +32,13 @@ const initialState: MenuState = {
   },
 };
 
-const branchId = localStorage.getItem('selectedBranchId')
+const branchId = localStorage.getItem('selectedBranchId');
 
 export const fetchCategories = createAsyncThunk<
   ApiResponse<Category[]>,
-  void,
+  { branchId: string },
   { rejectValue: string }
->('menu/fetchCategories', async (_, { rejectWithValue }) => {
+>('menu/fetchCategories', async ({ branchId }, { rejectWithValue }) => {
   try {
     const res = await apiClient.get<ApiResponse<Category[]>>(`/menu/${branchId}/categories`);
     return res.data;
@@ -49,9 +49,9 @@ export const fetchCategories = createAsyncThunk<
 
 export const fetchProductsByCategory = createAsyncThunk<
   ApiResponse<Product[]>,
-  string,
+  { branchId: string; categoryId: string },
   { rejectValue: string }
->('menu/fetchProductsByCategory', async (categoryId, { rejectWithValue }) => {
+>('menu/fetchProductsByCategory', async ({ branchId, categoryId }, { rejectWithValue }) => {
   try {
     const res = await apiClient.get<ApiResponse<Product[]>>(
       `/menu/${branchId}/products/${categoryId}`

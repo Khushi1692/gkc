@@ -16,12 +16,12 @@ export class CartService {
   static async mergeGuestCartWithUserCart(
     userId: string,
     sessionId: string
-  ): Promise<ICartDocument | null> {
+  ): Promise<void> {
     try {
       const guestCart = await Cart.findOne({ sessionId });
 
       if (!guestCart || guestCart.items.length === 0) {
-        return null;
+        return;
       }
 
       let userCart = await Cart.findOne({ userId: new Types.ObjectId(userId) });
@@ -30,7 +30,7 @@ export class CartService {
         guestCart.userId = new Types.ObjectId(userId);
         guestCart.sessionId = undefined;
         await guestCart.save();
-        return guestCart as unknown as ICartDocument;
+        return;
       }
 
       guestCart.items.forEach((guestItem) => {
@@ -43,24 +43,13 @@ export class CartService {
 
         if (existingItemIndex !== -1) {
           userCart!.items[existingItemIndex].quantity += guestItem.quantity;
-          userCart!.items[existingItemIndex].subtotal = calculateItemSubtotal(
-            userCart!.items[
-              existingItemIndex
-            ].toObject() as unknown as ICartItem
-          );
         } else {
           userCart!.items.push(guestItem);
         }
       });
 
-      userCart.totalAmount = calculateCartTotal(
-        userCart.items.map((item) => item.toObject() as unknown as ICartItem)
-      );
-
       await userCart.save();
       await Cart.deleteOne({ sessionId });
-
-      return userCart as unknown as ICartDocument;
     } catch (error) {
       throw new Error("Error merging carts: " + error);
     }
@@ -81,7 +70,7 @@ export class CartService {
     productData: AddItemToCartInput,
     userId?: string,
     sessionId?: string
-  ): Promise<ICartDocument> {
+  ): Promise<void> {
     let cart = await this.getCart(userId, sessionId);
 
     if (!cart) {
@@ -89,15 +78,11 @@ export class CartService {
         userId: userId ? new Types.ObjectId(userId) : undefined,
         sessionId: !userId ? sessionId : undefined,
         items: [],
-        totalAmount: 0,
       });
     }
 
-    const subtotal = calculateItemSubtotal(productData as ICartItem);
-
     const newItem: Partial<ICartItem> = {
       ...productData,
-      subtotal,
       _id: new Types.ObjectId().toString(),
     };
 
@@ -110,19 +95,11 @@ export class CartService {
 
     if (existingItemIndex !== -1) {
       cart.items[existingItemIndex].quantity += newItem.quantity!;
-      cart.items[existingItemIndex].subtotal = calculateItemSubtotal(
-        cart.items[existingItemIndex].toObject() as unknown as ICartItem
-      );
     } else {
       cart.items.push(newItem as unknown as ICartItemSubDocument);
     }
 
-    cart.totalAmount = calculateCartTotal(
-      cart.items.map((item) => item.toObject() as unknown as ICartItem)
-    );
-
     await cart.save();
-    return cart as unknown as ICartDocument;
   }
 
   static async updateItemQuantity(
@@ -130,7 +107,7 @@ export class CartService {
     quantity: number,
     userId?: string,
     sessionId?: string
-  ): Promise<ICartDocument> {
+  ): Promise<void> {
     const cart = await this.getCart(userId, sessionId);
 
     if (!cart) {
@@ -146,24 +123,16 @@ export class CartService {
       cart.items.pull(itemId);
     } else {
       item.quantity = quantity;
-      item.subtotal = calculateItemSubtotal(
-        item.toObject() as unknown as ICartItem
-      );
     }
 
-    cart.totalAmount = calculateCartTotal(
-      cart.items.map((item) => item.toObject() as unknown as ICartItem)
-    );
-
     await cart.save();
-    return cart as unknown as ICartDocument;
   }
 
   static async removeItem(
     itemId: string,
     userId?: string,
     sessionId?: string
-  ): Promise<ICartDocument> {
+  ): Promise<void> {
     const cart = await this.getCart(userId, sessionId);
 
     if (!cart) {
@@ -172,18 +141,10 @@ export class CartService {
 
     cart.items.pull(itemId);
 
-    cart.totalAmount = calculateCartTotal(
-      cart.items.map((item) => item.toObject() as unknown as ICartItem)
-    );
-
     await cart.save();
-    return cart as unknown as ICartDocument;
   }
 
-  static async clearCart(
-    userId?: string,
-    sessionId?: string
-  ): Promise<ICartDocument> {
+  static async clearCart(userId?: string, sessionId?: string): Promise<void> {
     const cart = await this.getCart(userId, sessionId);
 
     if (!cart) {
@@ -191,9 +152,7 @@ export class CartService {
     }
 
     cart.items = [] as any;
-    cart.totalAmount = 0;
 
     await cart.save();
-    return cart as unknown as ICartDocument;
   }
 }

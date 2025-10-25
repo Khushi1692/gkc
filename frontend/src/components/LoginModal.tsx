@@ -36,8 +36,8 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
       .then((res) => {
         if (res.status === 'success') {
           toast.success(res.message);
-          onOpenChange(false);
           form.reset();
+          handleClose();
         }
       })
       .catch((err) => {
@@ -54,8 +54,8 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
       .then((res) => {
         if ((res.status = 'success')) {
           toast.success(res.message);
-          onOpenChange(false);
           form.reset();
+          handleClose();
         }
       })
       .catch((err) => {

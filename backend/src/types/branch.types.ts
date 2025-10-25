@@ -85,7 +85,8 @@ export interface IBranchMenu {
  */
 export interface IBranchMenuProduct {
   productId: string;
-  price?: number;
+  price: number;
+  discountPercentage: number;
   isAvailable: boolean;
 }
 

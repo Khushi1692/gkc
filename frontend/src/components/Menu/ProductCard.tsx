@@ -18,7 +18,7 @@ export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
               <img
                 src={item.image}
                 alt={item.name}
-                className="border-background absolute inset-0 h-full w-full rounded-2xl border-8 object-fill"
+                className="border-background absolute inset-0 h-full w-full rounded-2xl border-8 object-cover"
               />
             </div>
           )}
@@ -29,7 +29,21 @@ export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
               <p className="text-muted-foreground mb-6 line-clamp-2">{item.description}</p>
             )}
 
-            <p className="mb-4 font-semibold">Price: ${item.basePrice.toFixed(2)}</p>
+            <div className="mb-4 font-semibold">
+              {item.discountPercentage > 0 ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-muted-foreground line-through">
+                    ${item.price.toFixed(2)}
+                  </span>
+                  <span className="font-bold text-red-600">${item.discountedPrice.toFixed(2)}</span>
+                  <span className="rounded bg-red-100 px-2 py-1 text-xs font-semibold text-red-800">
+                    -{item.discountPercentage}%
+                  </span>
+                </div>
+              ) : (
+                <span>${item.price.toFixed(2)}</span>
+              )}
+            </div>
 
             <Button className="w-full md:w-fit" onClick={() => onAddToCart(item)}>
               Add to Cart

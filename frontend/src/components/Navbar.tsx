@@ -154,8 +154,10 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
     }, [location.search]);
 
     useEffect(() => {
-      dispatch(fetchCart());
-    }, [dispatch]);
+      if (selectedBranch?._id) {
+        dispatch(fetchCart());
+      }
+    }, [dispatch, selectedBranch?._id]);
 
     return (
       <>
@@ -259,7 +261,7 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                       <Button
                         variant="ghost"
                         className="justify-start text-sm"
-                        onClick={() => navigate('/my-orders')}
+                        onClick={() => navigate('/orders')}
                       >
                         My Orders
                       </Button>

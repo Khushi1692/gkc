@@ -27,12 +27,15 @@ export const authMiddleware = (
   try {
     const token = req.cookies.token;
 
-    if (token) {
-      const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
-      req.userId = decoded.userId;
+    if (!token) {
+      return res
+        .status(401)
+        .json({ status: "error", message: "Unauthenticated User" });
     }
 
-    // Get sessionId from header or cookie for guest users
+    const decoded = jwt.verify(token, config.jwt.secret) as JwtPayload;
+    req.userId = decoded.userId;
+
     req.sessionId = req.cookies.sessionId;
 
     next();

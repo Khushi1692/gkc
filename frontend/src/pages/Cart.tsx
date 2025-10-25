@@ -3,19 +3,40 @@ import PaymentSuccessModal from '@/components/PaymentSuccessModal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { clearCart, removeCartItem, updateCartItemQuantity } from '@/store/slices/cartSlice';
+import {
+  clearCart,
+  fetchCart,
+  removeCartItem,
+  updateCartItemQuantity,
+} from '@/store/slices/cartSlice';
 import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const Cart = () => {
   const { cart } = useAppSelector((s) => s.cart);
+  const { user } = useAppSelector((s) => s.auth);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [successOrderId, setSuccessOrderId] = useState<string | null>(null);
 
-  const handleClearCart = () => dispatch(clearCart());
-  const handleRemoveItem = (id: string) => dispatch(removeCartItem(id));
+  const { subtotalBeforeDiscount, totalDiscount, totalAfterDiscount } = useMemo(() => {
+    let subtotal = 0;
+    let discount = 0;
+    cart?.items?.forEach((item) => {
+      const itemSubtotal = item.price * item.quantity;
+      subtotal += itemSubtotal;
+      discount += (item.price - item.discountedPrice) * item.quantity;
+    });
+    return {
+      subtotalBeforeDiscount: subtotal,
+      totalDiscount: discount,
+      totalAfterDiscount: subtotal - discount,
+    };
+  }, [cart]);
+
   return (
     <>
       {!cart?.items || cart.items.length === 0 ? (
@@ -36,7 +57,23 @@ const Cart = () => {
             <div className="flex-1 space-y-4">
               <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
                 <h1 className="text-3xl font-bold md:text-4xl">Your Cart</h1>
-                <Button variant="outline" className="translate-y-1" onClick={handleClearCart}>
+                <Button
+                  variant="outline"
+                  className="translate-y-1"
+                  onClick={() => {
+                    dispatch(clearCart())
+                      .unwrap()
+                      .then((res) => {
+                        if (res.status === 'success') {
+                          dispatch(fetchCart());
+                          toast.success(res.message);
+                        }
+                      })
+                      .catch((err) => {
+                        toast.error(err);
+                      });
+                  }}
+                >
                   Clear Cart
                 </Button>
               </div>
@@ -85,11 +122,28 @@ const Cart = () => {
                             </div>
                           )}
                           <div className="mt-2 flex items-center gap-2">
-                            <p className="text-primary text-lg font-bold">
-                              ${item.subtotal.toFixed(2)}
-                            </p>
-                            <p className="text-foreground text-sm">
-                              ${item.price.toFixed(2)} x {item.quantity}
+                            {item.discountPercentage > 0 ? (
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
+                                <div className="flex items-center gap-2">
+                                  <p className="text-primary text-lg font-bold">
+                                    ${item.discountedPrice.toFixed(2)}
+                                  </p>
+                                  <p className="text-muted-foreground text-sm line-through">
+                                    ${item.price.toFixed(2)}
+                                  </p>
+                                  <span className="text-sm font-medium text-green-600">
+                                    -{item.discountPercentage}%
+                                  </span>
+                                </div>
+                                <p className="text-foreground text-sm">x {item.quantity}</p>
+                              </div>
+                            ) : (
+                              <p className="text-primary text-lg font-bold">
+                                ${item.price.toFixed(2)} x {item.quantity}
+                              </p>
+                            )}
+                            <p className="text-muted-foreground text-sm">
+                              Subtotal: ${item.subtotal.toFixed(2)}
                             </p>
                           </div>
                         </div>
@@ -103,14 +157,34 @@ const Cart = () => {
                           className="h-8 w-8 sm:h-9 sm:w-9"
                           onClick={() => {
                             if (item.quantity === 1) {
-                              dispatch(removeCartItem(item._id));
+                              dispatch(removeCartItem(item._id))
+                                .unwrap()
+                                .then((res) => {
+                                  if (res.status === 'success') {
+                                    dispatch(fetchCart());
+                                    toast.success(res.message);
+                                  }
+                                })
+                                .catch((err) => {
+                                  toast.error(err);
+                                });
                             } else {
                               dispatch(
                                 updateCartItemQuantity({
                                   itemId: item._id,
                                   quantity: item.quantity - 1,
                                 })
-                              );
+                              )
+                                .unwrap()
+                                .then((res) => {
+                                  if (res.status === 'success') {
+                                    dispatch(fetchCart());
+                                    toast.success(res.message);
+                                  }
+                                })
+                                .catch((err) => {
+                                  toast.error(err);
+                                });
                             }
                           }}
                         >
@@ -127,7 +201,17 @@ const Cart = () => {
                                 itemId: item._id,
                                 quantity: item.quantity + 1,
                               })
-                            );
+                            )
+                              .unwrap()
+                              .then((res) => {
+                                if (res.status === 'success') {
+                                  dispatch(fetchCart());
+                                  toast.success(res.message);
+                                }
+                              })
+                              .catch((err) => {
+                                toast.error(err);
+                              });
                           }}
                         >
                           <Plus className="h-4 w-4" />
@@ -136,7 +220,19 @@ const Cart = () => {
                           variant="ghost"
                           size="icon"
                           className="text-destructive h-8 w-8 sm:h-9 sm:w-9"
-                          onClick={() => handleRemoveItem(item._id)}
+                          onClick={() => {
+                            dispatch(removeCartItem(item._id))
+                              .unwrap()
+                              .then((res) => {
+                                if (res.status === 'success') {
+                                  dispatch(fetchCart());
+                                  toast.success(res.message);
+                                }
+                              })
+                              .catch((err) => {
+                                toast.error(err);
+                              });
+                          }}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -153,22 +249,51 @@ const Cart = () => {
                 <CardContent className="space-y-4 p-6">
                   <h2 className="text-2xl font-bold">Order Summary</h2>
                   <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Subtotal</span>
-                      <span className="font-medium">${cart.totalAmount.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Delivery Fee</span>
-                      <span className="font-medium">$2.99</span>
-                    </div>
+                    {totalDiscount > 0 ? (
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Subtotal (Before Discount)</span>
+                          <span className="font-medium">${subtotalBeforeDiscount.toFixed(2)}</span>
+                        </div>
+
+                        {/* 🟢 Discount total */}
+                        {totalDiscount > 0 && (
+                          <div className="flex justify-between font-medium text-green-600">
+                            <span>Total Discounts</span>
+                            <span>- ${totalDiscount.toFixed(2)}</span>
+                          </div>
+                        )}
+
+                        {/* 🟢 After discount subtotal */}
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Subtotal (After Discount)</span>
+                          <span className="font-medium">${totalAfterDiscount.toFixed(2)}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Subtotal</span>
+                        <span className="font-medium">${cart.totalAmount.toFixed(2)}</span>
+                      </div>
+                    )}
                     <div className="mt-2 border-t pt-2">
                       <div className="flex justify-between text-lg font-bold">
                         <span>Total</span>
-                        <span>${(cart.totalAmount + 2.99).toFixed(2)}</span>
+                        <span>${cart.totalAmount.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
-                  <Button className="w-full" size="lg" onClick={() => setIsCheckoutOpen(true)}>
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    onClick={() => {
+                      if (!user) {
+                        navigate('/cart?login=true');
+                      } else {
+                        setIsCheckoutOpen(true);
+                      }
+                    }}
+                  >
                     Proceed to Checkout
                   </Button>
                 </CardContent>

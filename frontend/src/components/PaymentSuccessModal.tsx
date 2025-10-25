@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { CheckCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface PaymentSuccessModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface PaymentSuccessModalProps {
 }
 
 const PaymentSuccessModal = ({ isOpen, onClose, orderId }: PaymentSuccessModalProps) => {
+  const navigate = useNavigate();
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-xl p-6 shadow-xl sm:max-w-md">
@@ -33,13 +35,13 @@ const PaymentSuccessModal = ({ isOpen, onClose, orderId }: PaymentSuccessModalPr
         </div>
 
         <DialogFooter className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button onClick={onClose} className="w-full sm:w-auto">
+          <Button onClick={() => navigate('/menu')} className="w-full sm:w-auto">
             Back to Menu
           </Button>
           {/* Optional secondary button */}
-          {/* <Button variant="outline" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto" onClick={()=>navigate("/orders")}>
             View Orders
-          </Button> */}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

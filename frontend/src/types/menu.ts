@@ -27,10 +27,12 @@ export interface Product {
   description?: string;
   categoryId: string;
   image?: string;
-  basePrice: number;
   isVegetarian: boolean;
   isActive: boolean;
   customizations?: IProductCustomization[];
   createdAt: Date;
   updatedAt: Date;
+  price: number;
+  discountPercentage: number;
+  discountedPrice: number;
 }

@@ -1,14 +1,9 @@
 import { apiClient } from '@/api/axiosClient';
 import type { ApiResponse } from '@/types/api';
-import type {
-  AddItemToCartInput,
-  Cart,
-  CartItem,
-  CheckoutPayload,
-  GetCartResponse,
-} from '@/types/cart';
+import type { AddItemToCartInput, Cart, CartItem, GetCartResponse } from '@/types/cart';
 import { getErrorMessage } from '@/utils/errorHandler';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import type { RootState } from '../store';
 
 interface CartState {
   cart: Cart | null;
@@ -54,17 +49,18 @@ const initialState: CartState = {
   lastOrderId: undefined,
 };
 
-const branchId = localStorage.getItem('selectedBranchId');
-
 // -------------------- ASYNC THUNKS --------------------
 
 // Fetch cart
 export const fetchCart = createAsyncThunk<
   ApiResponse<GetCartResponse>,
   void,
-  { rejectValue: string }
->('cart/fetchCart', async (_, { rejectWithValue }) => {
+  { rejectValue: string; state: RootState }
+>('cart/fetchCart', async (_, { getState, rejectWithValue }) => {
   try {
+    const state = getState();
+    const branchId = state.branch.selectedBranch?._id;
+    if (!branchId) throw new Error('No branch selected');
     const response = await apiClient.get<ApiResponse<GetCartResponse>>(`/cart/${branchId}`);
     return response.data;
   } catch (err: any) {
@@ -74,12 +70,15 @@ export const fetchCart = createAsyncThunk<
 
 // Add item
 export const addItemToCart = createAsyncThunk<
-  ApiResponse<Cart>,
+  ApiResponse,
   { payload: AddItemToCartInput },
-  { rejectValue: string }
->('cart/addItemToCart', async ({ payload }, { rejectWithValue }) => {
+  { rejectValue: string; state: RootState }
+>('cart/addItemToCart', async ({ payload }, { getState, rejectWithValue }) => {
   try {
-    const response = await apiClient.post<ApiResponse<Cart>>(`/cart/${branchId}/add`, payload);
+    const state = getState();
+    const branchId = state.branch.selectedBranch?._id;
+    if (!branchId) throw new Error('No branch selected');
+    const response = await apiClient.post<ApiResponse>(`/cart/${branchId}/add`, payload);
     return response.data;
   } catch (err: any) {
     return rejectWithValue(getErrorMessage(err));
@@ -88,12 +87,15 @@ export const addItemToCart = createAsyncThunk<
 
 // Update quantity
 export const updateCartItemQuantity = createAsyncThunk<
-  ApiResponse<Cart>,
+  ApiResponse,
   { itemId: string; quantity: number },
-  { rejectValue: string }
->('cart/updateCartItemQuantity', async ({ itemId, quantity }, { rejectWithValue }) => {
+  { rejectValue: string; state: RootState }
+>('cart/updateCartItemQuantity', async ({ itemId, quantity }, { getState, rejectWithValue }) => {
   try {
-    const response = await apiClient.patch<ApiResponse<Cart>>(`/cart/item/${itemId}`, {
+    const state = getState();
+    const branchId = state.branch.selectedBranch?._id;
+    if (!branchId) throw new Error('No branch selected');
+    const response = await apiClient.patch<ApiResponse>(`/cart/item/${itemId}`, {
       quantity,
     });
     return response.data;
@@ -103,30 +105,38 @@ export const updateCartItemQuantity = createAsyncThunk<
 });
 
 // Remove item
-export const removeCartItem = createAsyncThunk<ApiResponse<Cart>, string, { rejectValue: string }>(
-  'cart/removeCartItem',
-  async (itemId, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.delete<ApiResponse<Cart>>(`/cart/item/${itemId}`);
-      return response.data;
-    } catch (err: any) {
-      return rejectWithValue(getErrorMessage(err));
-    }
+export const removeCartItem = createAsyncThunk<
+  ApiResponse,
+  string,
+  { rejectValue: string; state: RootState }
+>('cart/removeCartItem', async (itemId, { getState, rejectWithValue }) => {
+  try {
+    const state = getState();
+    const branchId = state.branch.selectedBranch?._id;
+    if (!branchId) throw new Error('No branch selected');
+    const response = await apiClient.delete<ApiResponse>(`/cart/item/${itemId}`);
+    return response.data;
+  } catch (err: any) {
+    return rejectWithValue(getErrorMessage(err));
   }
-);
+});
 
 // Clear cart
-export const clearCart = createAsyncThunk<ApiResponse<Cart>, void, { rejectValue: string }>(
-  'cart/clearCart',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await apiClient.delete<ApiResponse<Cart>>(`/cart/clear`);
-      return response.data;
-    } catch (err: any) {
-      return rejectWithValue(getErrorMessage(err));
-    }
+export const clearCart = createAsyncThunk<
+  ApiResponse,
+  void,
+  { rejectValue: string; state: RootState }
+>('cart/clearCart', async (_, { getState, rejectWithValue }) => {
+  try {
+    const state = getState();
+    const branchId = state.branch.selectedBranch?._id;
+    if (!branchId) throw new Error('No branch selected');
+    const response = await apiClient.delete<ApiResponse>(`/cart/clear`);
+    return response.data;
+  } catch (err: any) {
+    return rejectWithValue(getErrorMessage(err));
   }
-);
+});
 
 export const createPaymentIntent = createAsyncThunk(
   'checkout/createPaymentIntent',
@@ -183,9 +193,8 @@ const cartSlice = createSlice({
         state.loading.add = true;
         state.error.add = null;
       })
-      .addCase(addItemToCart.fulfilled, (state, action) => {
+      .addCase(addItemToCart.fulfilled, (state) => {
         state.loading.add = false;
-        state.cart = action.payload.data;
       })
       .addCase(addItemToCart.rejected, (state, action) => {
         state.loading.add = false;
@@ -197,9 +206,8 @@ const cartSlice = createSlice({
         state.loading.update = true;
         state.error.update = null;
       })
-      .addCase(updateCartItemQuantity.fulfilled, (state, action) => {
+      .addCase(updateCartItemQuantity.fulfilled, (state) => {
         state.loading.update = false;
-        state.cart = action.payload.data;
       })
       .addCase(updateCartItemQuantity.rejected, (state, action) => {
         state.loading.update = false;
@@ -211,9 +219,8 @@ const cartSlice = createSlice({
         state.loading.remove = true;
         state.error.remove = null;
       })
-      .addCase(removeCartItem.fulfilled, (state, action) => {
+      .addCase(removeCartItem.fulfilled, (state) => {
         state.loading.remove = false;
-        state.cart = action.payload.data;
       })
       .addCase(removeCartItem.rejected, (state, action) => {
         state.loading.remove = false;
@@ -225,10 +232,8 @@ const cartSlice = createSlice({
         state.loading.clear = true;
         state.error.clear = null;
       })
-      .addCase(clearCart.fulfilled, (state, action) => {
+      .addCase(clearCart.fulfilled, (state) => {
         state.loading.clear = false;
-        state.cart = action.payload.data;
-        state.skippedItems = [];
       })
       .addCase(clearCart.rejected, (state, action) => {
         state.loading.clear = false;

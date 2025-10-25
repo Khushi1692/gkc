@@ -20,6 +20,7 @@ import SelectBranchModal from './components/SelectBranchModal';
 import MyOrders from './pages/MyOrders';
 import ContactUs from './pages/ContactUs';
 import { APIProvider } from '@vis.gl/react-google-maps';
+import AboutUs from './pages/AboutUs';
 function App() {
   const dispatch = useAppDispatch();
   const { nearestBranch, selectedBranch } = useAppSelector((s) => s.branch);
@@ -128,8 +129,9 @@ function App() {
             <Route path="/menu" element={<Menu />} />
             <Route path="/verify-email/:token" element={<VerifyEmail />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/my-orders" element={<MyOrders />} />
+            <Route path="/orders" element={<MyOrders />} />
             <Route path="/contact" element={<ContactUs />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />

@@ -12,8 +12,6 @@ const cartSchema = new Schema(
           required: true,
         },
         quantity: { type: Number, required: true, min: 1 },
-        price: { type: Number, required: true, min: 0 },
-        subtotal: { type: Number, required: true, min: 0 },
         customizations: [
           {
             groupName: { type: String, required: true },
@@ -27,8 +25,6 @@ const cartSchema = new Schema(
         ],
       },
     ],
-    specialInstructions: { type: String },
-    totalAmount: { type: Number, required: true, min: 0 },
   },
   { timestamps: true }
 );

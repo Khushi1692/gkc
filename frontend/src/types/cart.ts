@@ -1,8 +1,6 @@
 export type AddItemToCartInput = {
   productId: string;
   quantity: number;
-  price: number;
-  subtotal: number;
   customizations?: {
     _id: string;
     groupName: string;
@@ -24,6 +22,8 @@ export interface CartItem {
   };
   quantity: number;
   price: number;
+  discountPercentage:number;
+  discountedPrice:number;
   subtotal: number;
   customizations?: {
     _id: string;

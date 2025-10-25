@@ -28,6 +28,11 @@ const menuSchema = z.object({
       z.object({
         productId: z.string().min(1, "Product ID is required"),
         price: z.number().positive("Price must be positive").optional(),
+        discountPercentage: z
+          .number()
+          .min(0, "Discount cannot be negative")
+          .max(100, "Discount cannot exceed 100%")
+          .optional(),
         isAvailable: z.boolean().default(true),
       })
     )

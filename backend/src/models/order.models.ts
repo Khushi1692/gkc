@@ -13,7 +13,9 @@ const OrderSchema = new Schema(
           required: true,
         },
         quantity: { type: Number, required: true, min: 1 },
-        price: { type: Number, required: true, min: 0 },
+        price: { type: Number, required: true, min: 0 }, // base price
+        discountPercentage: { type: Number, default: 0 },
+        discountedPrice: { type: Number, required: true, min: 0 },
         subtotal: { type: Number, required: true, min: 0 },
         customizations: [
           {

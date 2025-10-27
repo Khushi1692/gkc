@@ -13,6 +13,18 @@ const branchSchema = new Schema<IBranch>(
     phone: { type: String, trim: true },
     address: { type: String, trim: true },
 
+    printerIp: {
+      type: String,
+      // IPv4 basic validation
+      match: [/^(?:\d{1,3}\.){3}\d{1,3}$/, "Invalid printer IP address format"],
+    },
+    printerPort: {
+      type: Number,
+      default: 9100,
+      min: 1,
+      max: 65535,
+    },
+
     location: {
       type: {
         type: String,

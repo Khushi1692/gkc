@@ -15,8 +15,6 @@ export class EmailService {
       user: config.email.user,
       pass: config.email.pass,
     },
-    debug: true,
-    logger: true,
   });
 
   // Read and return the email template content from the specified file
@@ -37,7 +35,7 @@ export class EmailService {
     return Object.entries(variables).reduce(
       (acc, [key, value]) => acc.replace(new RegExp(`{{${key}}}`, "g"), value),
       template
-    );
+  );
   }
 
   // Verify the SMTP connection
@@ -144,6 +142,64 @@ export class EmailService {
     } catch (error) {
       console.error("Error sending password reset email:", error);
       throw new Error("Failed to send password reset email");
+    }
+  }
+
+  static async sendOrderConfirmationEmail(
+    to: string,
+    customerName: string,
+    order: any,
+    branchName: string,
+    isOwner: boolean = false
+  ): Promise<void> {
+    try {
+      const template = await this.getTemplate("orderConfirmation");
+
+      // Generate table rows for order items
+      const orderItemsHtml = order.items
+        .map(
+          (item: any) => `
+        <tr>
+          <td>${item.productId?.name || "Item"}</td>
+          <td align="center">${item.quantity}</td>
+          <td align="right">$${item.subtotal.toFixed(2)}</td>
+        </tr>`
+        )
+        .join("");
+
+      // Adjust text if it's for the owner
+      const greeting = isOwner
+        ? `Hi ${branchName} Team,`
+        : `Thank you for your order, ${customerName}! 🎉`;
+      const subject = isOwner
+        ? `New Order Received - #${order.orderId}`
+        : `Order Confirmation - #${order.orderId}`;
+
+      const html = this.replaceTemplateVariables(template, {
+        greeting,
+        orderId: order.orderId,
+        branchName,
+        orderDate: new Date(order.createdAt).toLocaleString(),
+        totalAmount: order.totalAmount.toFixed(2),
+        orderItems: orderItemsHtml,
+        specialInstructions: order.specialInstructions || "-",
+      });
+
+      const mailOptions = {
+        from: `"POP101" <${config.email.user}>`,
+        to,
+        subject,
+        html,
+      };
+
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log(
+        `✅ ${isOwner ? "Owner" : "Customer"} order email sent:`,
+        info.messageId
+      );
+    } catch (error) {
+      console.error("❌ Error sending order confirmation email:", error);
+      throw new Error("Failed to send order confirmation email");
     }
   }
 }

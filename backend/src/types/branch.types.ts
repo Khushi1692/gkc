@@ -20,6 +20,8 @@ export interface IBranch {
   email?: string;
   phone?: string;
   address?: string;
+  printerIp?: string;
+  printerPort?: number;
   location: ILocation;
   operatingHours: IOperatingHour[];
   menu: IBranchMenu[];

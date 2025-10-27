@@ -1,135 +1,129 @@
-import { Button } from '@/components/ui/button';
-import { Award, ChefHat, Clock, Heart, Leaf, Target, Users } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-
-const values = [
-  {
-    icon: Heart,
-    title: 'Quality Ingredients',
-    description:
-      'We source only the freshest, highest-quality ingredients for every dish we serve.',
-  },
-  {
-    icon: ChefHat,
-    title: 'Expert Craftsmanship',
-    description:
-      'Our skilled chefs bring years of experience and passion to every burger they create.',
-  },
-  {
-    icon: Clock,
-    title: 'Fast Service',
-    description: 'Quick preparation without ever compromising on quality or taste.',
-  },
-  {
-    icon: Award,
-    title: 'Award Winning',
-    description: 'Recognized for our exceptional food quality and outstanding customer experience.',
-  },
-];
-
-const features = [
-  {
-    icon: Leaf,
-    title: 'Fresh Daily',
-    description: 'All ingredients are sourced fresh daily from trusted local suppliers.',
-  },
-  {
-    icon: Users,
-    title: 'Customer First',
-    description: 'Your satisfaction drives everything we do, from menu creation to service.',
-  },
-  {
-    icon: Target,
-    title: 'Consistency',
-    description: 'Every meal is prepared to the same high standard, every single time.',
-  },
-];
+import { Leaf, Smile, Users } from 'lucide-react';
 
 const AboutUs = () => {
-  const navigate = useNavigate();
+  const values = [
+    {
+      icon: Leaf,
+      title: 'Quality First',
+      description: 'Fresh, local, and high-quality ingredients are the foundation of our menu.',
+    },
+    {
+      icon: Users,
+      title: 'Community Focused',
+      description: 'We believe in building a strong community, one burger at a time.',
+    },
+    {
+      icon: Smile,
+      title: 'Pure Happiness',
+      description: 'Our goal is simple: to bring a smile to your face with every bite.',
+    },
+  ];
   return (
     <>
       <div className="bg-background min-h-screen px-4 py-6 sm:px-8 md:px-12 md:py-10 lg:px-20 xl:px-32 2xl:px-40">
         <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-xl">
           <div className="relative aspect-[16/12] w-full sm:aspect-[16/8]">
             <img
-              src="/hero-about.png"
+              src="/about-hero.jpg"
               alt="Delicious food"
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 px-4 text-center">
               <div className="flex -translate-y-1 flex-col items-center sm:translate-y-4 md:translate-y-4 lg:translate-y-4 xl:translate-y-10">
                 <h1 className="mb-2 text-3xl font-bold text-white sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl">
-                  Comfort Food, Made with Love and Speed
+                  Our Story
                 </h1>
                 <p className="mb-6 w-[90%] text-sm text-white sm:mb-8 sm:text-lg">
-                  We're dedicated to bringing you delicious, comforting meals, prepared quickly and
-                  with the freshest ingredients. Our team works tirelessly to ensure every bite is a
-                  delightful experience.
+                  Crafted with passion, served with a smile.
                 </p>
-
-                <Button
-                  className="rounded-md px-6 py-3 font-semibold sm:px-6 sm:py-4 md:px-8 md:py-5 md:text-lg lg:py-6 lg:text-xl"
-                  onClick={() => navigate('/menu')}
-                >
-                  Order Now
-                </Button>
               </div>
             </div>
           </div>
         </section>
 
         <section className="relative mx-auto mt-10 w-full max-w-6xl overflow-hidden rounded-xl">
-          <div className="mx-auto max-w-4xl text-center">
-            <p className="text-muted-foreground px-4 text-base leading-relaxed md:text-lg lg:text-xl">
-              Indulge in a Symphony of flavors with our tantalizing menu featuring sizzling burgers,
-              golden fries, sumptuous pasta and ice-cold sodas! From classic favorites to
-              mouthwatering twists, each bite is a journey of pure satisfaction. Whether you're
-              craving comfort food or a gourmet treat, we've got your taste buds covered. Dive into
-              deliciousness and elevate your experience with our irresistible offerings.
-            </p>
-          </div>
-        </section>
-
-        <section className="relative mx-auto mt-10 w-full max-w-6xl overflow-hidden rounded-xl">
           <div className="container mx-auto px-4">
-            <h2 className="mb-8 text-center text-3xl font-bold md:mb-12 md:text-4xl">
-              What Makes Us Special
-            </h2>
-            <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-4">
-              {values.map((value) => (
-                <div
-                  key={value.title}
-                  className="bg-card flex flex-col items-center rounded-xl border p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-                >
-                  <div className="bg-primary/10 mb-4 flex h-14 w-14 items-center justify-center rounded-full md:h-16 md:w-16">
-                    <value.icon className="text-primary h-7 w-7 md:h-8 md:w-8" />
-                  </div>
-                  <h3 className="mb-2 text-lg font-semibold md:text-xl">{value.title}</h3>
-                  <p className="text-muted-foreground text-sm md:text-base">{value.description}</p>
+            <div className="mx-auto max-w-7xl">
+              <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
+                <div className="order-2 lg:order-1">
+                  <h2 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
+                    From a Dream to Your Favorite Burger
+                  </h2>
+                  <p className="text-muted-foreground text-base leading-relaxed md:text-lg">
+                    Our journey began in 2015 with a simple idea: create the perfect burger. It
+                    started with a family recipe and a lot of passion, serving from a small food
+                    truck. The overwhelming support from our community led us to open our first
+                    restaurant in 2017. Today, we continue to serve the same delicious burgers that
+                    brought us together, always focusing on quality and a welcoming atmosphere.
+                  </p>
                 </div>
-              ))}
+                <div className="order-1 lg:order-2">
+                  <div className="overflow-hidden rounded-lg relative aspect-video">
+                    <img
+                      src={'/about-interior.jpg'}
+                      alt="Pop101 restaurant interior"
+                      className="h-auto w-full object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         <section className="relative mx-auto mt-10 w-full max-w-6xl overflow-hidden rounded-xl">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-5xl">
-              <h2 className="mb-8 text-center text-3xl font-bold md:mb-12 md:text-4xl">
-                Our Promise to You
-              </h2>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-                {features.map((feature) => (
+            <div className="mx-auto max-w-7xl">
+              <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
+                <div className="order-1">
+                  <div className="overflow-hidden rounded-lg aspect-video">
+                    <img
+                      src={'/about-mission.jpg'}
+                      alt="Gourmet burger from Pop101"
+                      className="h-auto w-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="order-2">
+                  <h2 className="mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">Our Mission</h2>
+                  <p className="text-muted-foreground text-base leading-relaxed md:text-lg">
+                    To serve incredible burgers that make people happy. We are committed to using
+                    the freshest, locally-sourced ingredients to craft food that not only tastes
+                    great but also supports our community. Every meal is a promise of quality and a
+                    moment of pure bliss.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="relative mx-auto mt-10 w-full max-w-6xl overflow-hidden rounded-xl">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-6xl">
+              <div className="mb-12 text-center md:mb-16">
+                <h2 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl">Our Values</h2>
+                <p className="text-muted-foreground text-base md:text-lg">
+                  The principles that guide every decision we make.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
+                {values.map((value) => (
                   <div
-                    key={feature.title}
-                    className="bg-primary/5 border-primary/10 flex flex-col items-start rounded-xl border p-6"
+                    key={value.title}
+                    className="bg-card border-border flex flex-col items-center rounded-2xl border p-8 text-center transition-all duration-300 hover:shadow-xl"
                   >
-                    <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
-                      <feature.icon className="text-primary h-6 w-6" />
+                    <div className="bg-primary/10 mb-6 flex h-16 w-16 items-center justify-center rounded-full md:h-20 md:w-20">
+                      <value.icon
+                        className="text-primary h-8 w-8 md:h-10 md:w-10"
+                        strokeWidth={2}
+                      />
                     </div>
-                    <h3 className="mb-2 text-xl font-semibold">{feature.title}</h3>
-                    <p className="text-muted-foreground">{feature.description}</p>
+                    <h3 className="mb-3 text-xl font-bold md:text-2xl">{value.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
+                      {value.description}
+                    </p>
                   </div>
                 ))}
               </div>

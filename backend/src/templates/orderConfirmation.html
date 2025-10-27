@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Order Confirmation</title>
+  </head>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #fafafa;
+      padding: 20px;
+    "
+  >
+    <div
+      style="
+        max-width: 600px;
+        margin: auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 8px;
+      "
+    >
+      <h2 style="color: #333">{{greeting}}</h2>
+      <p>
+        Your order <strong>#{{orderId}}</strong> has been successfully placed at
+        <strong>{{branchName}}</strong>.
+      </p>
+
+      <h3 style="color: #555">Order Details</h3>
+      <p><strong>Date:</strong> {{orderDate}}</p>
+      <p><strong>Total:</strong> ${{totalAmount}}</p>
+
+      <table
+        width="100%"
+        border="0"
+        cellspacing="0"
+        cellpadding="5"
+        style="margin-top: 15px; border-collapse: collapse"
+      >
+        <tr style="background: #f5f5f5">
+          <th align="left">Item</th>
+          <th align="center">Qty</th>
+          <th align="right">Subtotal</th>
+        </tr>
+        {{orderItems}}
+      </table>
+
+      <p style="margin-top: 15px">
+        <strong>Special Instructions:</strong> {{specialInstructions}}
+      </p>
+
+      <p style="margin-top: 25px">We'll notify you once your order is ready.</p>
+
+      <p style="color: #999; font-size: 12px">
+        This is an automated message. Please do not reply.
+      </p>
+    </div>
+  </body>
+</html>

@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { config } from "../config/config";
 import { Order } from "../models/order.models";
+import { PrinterService } from "../services/printer.service";
+import { EmailService } from "../services/email.service";
 
 dotenv.config();
 
@@ -21,15 +23,13 @@ router.post(
 
     let event: Stripe.Event;
 
-    
     try {
       event = stripe.webhooks.constructEvent(req.body, sig!, endpointSecret);
     } catch (err: any) {
       console.error(`Webhook signature failed.`, err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-    
-    console.log(event,"-------------------------")
+
     switch (event.type) {
       case "payment_intent.succeeded":
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
@@ -38,8 +38,54 @@ router.post(
             { paymentIntentId: paymentIntent.id },
             { paymentStatus: "paid" },
             { new: true }
-          );
-          if (order) console.log(`✅ Order ${order.orderId} paid successfully`);
+          )
+            .populate("userId", "name email")
+            .populate("branchId", "name email printerIp printerPort address")
+            .populate("items.productId", "name")
+            .lean();
+
+          if (!order) {
+            console.warn(
+              `⚠️ No order found for paymentIntent: ${paymentIntent.id}`
+            );
+            break;
+          }
+          console.log(`✅ Order ${order.orderId} paid successfully`);
+
+          try {
+            await PrinterService.printOrderReceipt(order._id.toString());
+            console.log(`🖨️ Receipt printed for order ${order.orderId}`);
+          } catch (printErr) {
+            console.error(`⚠️ Failed to print receipt:`, printErr);
+          }
+
+          try {
+            const branch = order.branchId as any;
+            const user = order.userId as any;
+
+            if (user.email) {
+              await EmailService.sendOrderConfirmationEmail(
+                user.email,
+                user.name,
+                order,
+                branch.name,
+              );
+            }
+
+            if (branch?.email) {
+              await EmailService.sendOrderConfirmationEmail(
+                "krishavaghasiya1211@gmail.com",
+                "Owner",
+                order,
+                branch.name,
+                true
+              );
+            }
+
+            console.log(`📧 Order confirmation emails sent successfully`);
+          } catch (emailErr) {
+            console.error(`⚠️ Failed to send confirmation emails:`, emailErr);
+          }
         } catch (err) {
           console.error("Failed to update order payment status:", err);
         }

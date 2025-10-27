@@ -53,7 +53,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="bg-background min-h-[calc(100vh-270px)] px-4 py-6 sm:px-8 md:px-12 md:py-10 lg:px-20 xl:px-32 2xl:px-40">
+    <div className="bg-background min-h-[calc(100vh-150px)] px-4 py-6 sm:px-8 md:px-12 md:py-10 lg:px-20 xl:px-32 2xl:px-40">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 p-6 md:grid-cols-2">
         {/* Form */}
         <div>

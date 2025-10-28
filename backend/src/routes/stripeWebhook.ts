@@ -68,13 +68,13 @@ router.post(
                 user.email,
                 user.name,
                 order,
-                branch.name,
+                branch.name
               );
             }
 
             if (branch?.email) {
               await EmailService.sendOrderConfirmationEmail(
-                "krishavaghasiya1211@gmail.com",
+                config.adminEmail,
                 "Owner",
                 order,
                 branch.name,

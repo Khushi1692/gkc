@@ -6,7 +6,7 @@ dotenv.config();
 
 export const config = {
   port: process.env.PORT || 3000,
-  adminEmail: process.env.ADMIN_EMAIL,
+  adminEmail: process.env.ADMIN_EMAIL || "",
   mongodb: {
     uri: process.env.MONGODB_URI || "mongodb://localhost:27017/pop101",
   },

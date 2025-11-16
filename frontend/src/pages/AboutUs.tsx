@@ -34,7 +34,7 @@ const AboutUs = () => {
                   Our Story
                 </h1>
                 <p className="mb-6 w-[90%] text-sm text-white sm:mb-8 sm:text-lg">
-                  Crafted with passion, served with a smile.
+                 Indulge in a Symphony of flavors with our tantalizing menu featuring sizzling burgers, golden fries, sumptuous, pasta and ice - cold sodas ! From classic favorites to mouthwatering twists, each bite is a journey of pure satisfaction. Whether  you're craving comfort food or a gourmet treat. We've got your taste buds covered . Dive into deliciousness and elevate your irresistible offerings.
                 </p>
               </div>
             </div>

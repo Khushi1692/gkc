@@ -125,16 +125,31 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
             </DialogFooter>
           </form>
         </Form>
+        <div className="text-center text-sm text-gray-600">
+          New to <span className="text-primary font-semibold">Pop101</span>?{' '}
+          <button
+            onClick={() => {
+              handleClose();
+              navigate('?register=true');
+            }}
+            className="text-primary font-medium hover:underline"
+          >
+            Register
+          </button>
+        </div>
         <div className="flex items-center gap-2">
           <hr className="flex-1 border-t border-gray-300" />
           <span className="text-sm text-gray-500">or</span>
           <hr className="flex-1 border-t border-gray-300" />
         </div>
 
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => toast.error('Google login failed')}
-        />
+        {open && (
+          <GoogleLogin
+            key="login-google"
+            onSuccess={handleGoogleSuccess}
+            onError={() => toast.error('Google login failed')}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

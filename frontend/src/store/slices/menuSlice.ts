@@ -7,7 +7,6 @@ import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/tool
 interface MenuState {
   categories: Category[];
   products: Product[];
-  selectedCategoryId: string | null;
   loading: {
     categories: boolean;
     products: boolean;
@@ -21,7 +20,6 @@ interface MenuState {
 const initialState: MenuState = {
   categories: [],
   products: [],
-  selectedCategoryId: null,
   loading: {
     categories: false,
     products: false,
@@ -31,8 +29,6 @@ const initialState: MenuState = {
     products: null,
   },
 };
-
-const branchId = localStorage.getItem('selectedBranchId');
 
 export const fetchCategories = createAsyncThunk<
   ApiResponse<Category[]>,
@@ -66,9 +62,6 @@ const menuSlice = createSlice({
   name: 'menu',
   initialState,
   reducers: {
-    setSelectedCategory: (state, action: PayloadAction<string>) => {
-      state.selectedCategoryId = action.payload;
-    },
     clearProducts: (state) => {
       state.products = [];
     },
@@ -83,9 +76,6 @@ const menuSlice = createSlice({
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.loading.categories = false;
         state.categories = action.payload.data || [];
-        if (action.payload.data && action.payload.data.length > 0) {
-          state.selectedCategoryId = action.payload.data[0]._id;
-        }
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.loading.categories = false;
@@ -108,5 +98,5 @@ const menuSlice = createSlice({
   },
 });
 
-export const { setSelectedCategory, clearProducts } = menuSlice.actions;
+export const { clearProducts } = menuSlice.actions;
 export default menuSlice.reducer;

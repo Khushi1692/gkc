@@ -31,6 +31,12 @@ router.get("/", BranchController.getAllBranchesNearest);
  */
 router.get("/:branchId/status", BranchController.checkBranchStatus);
 
-router.post("/", validateRequest(addBranchSchema), BranchController.createBranch);
+router.post(
+  "/",
+  validateRequest(addBranchSchema),
+  BranchController.createBranch
+);
+
+router.get("/:branchId", BranchController.getBranchById);
 
 export default router;

@@ -9,18 +9,21 @@ const menuItems = [
     title: 'Classic Burger',
     description: 'Juicy beef patty with fresh toppings',
     image: classicBurger,
+    slug: 'burger',
   },
   {
     id: 2,
     title: 'Creamy Pasta',
     description: 'Rich and creamy pasta with your choice of sauce',
     image: creamyPasta,
+    slug: 'pasta',
   },
   {
     id: 3,
     title: 'Crispy Fries',
     description: 'Perfectly seasoned and crispy fries',
     image: crispyFries,
+    slug: 'fries',
   },
 ];
 
@@ -39,7 +42,7 @@ const FeaturedMenu = () => {
             key={item.id}
             className="group cursor-pointer"
             onClick={() => {
-              navigate('/menu');
+              navigate(`/menu?category=${item.slug}`);
             }}
           >
             <div className="mb-4 aspect-[16/10] overflow-hidden rounded-2xl sm:aspect-[16/12] lg:aspect-square">

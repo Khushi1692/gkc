@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const Hero = () => {
     const navigate = useNavigate()
     return (
-        <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-xl">
+        <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-xl bg-pink-300">
             <div className="relative aspect-[16/12] w-full sm:aspect-[16/8]">
                 <img
                     src="/hero-image.png"

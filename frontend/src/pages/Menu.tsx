@@ -3,39 +3,108 @@ import { ProductCard } from '@/components/Menu/ProductCard';
 import { ProductDetailsModal } from '@/components/Menu/ProductDetailsModal';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-  fetchCategories,
-  fetchProductsByCategory,
-  setSelectedCategory,
-} from '@/store/slices/menuSlice';
+import { clearProducts, fetchCategories, fetchProductsByCategory } from '@/store/slices/menuSlice';
 import type { Product } from '@/types/menu';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Menu = () => {
   const dispatch = useAppDispatch();
-  const { categories, products, selectedCategoryId, loading } = useAppSelector(
-    (state) => state.menu
-  );
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { categories, products, loading } = useAppSelector((state) => state.menu);
   const { selectedBranch } = useAppSelector((s) => s.branch);
 
   const [selectedItem, setSelectedItem] = useState<Product | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
+  // Memoize query params parsing
+  const categoryFromURL = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get('category');
+  }, [location.search]);
+
+  // Memoize category lookup
+  const categoryMap = useMemo(() => {
+    return new Map(categories.map((cat) => [cat.name.toLowerCase(), cat._id]));
+  }, [categories]);
+
+  // Load categories once
   useEffect(() => {
     if (selectedBranch) {
-      dispatch(fetchCategories({ branchId: selectedBranch?._id }));
+      dispatch(fetchCategories({ branchId: selectedBranch._id }));
     }
   }, [dispatch, selectedBranch]);
 
+  // Consolidated category selection logic
+  useEffect(() => {
+    if (categories.length === 0) return;
+
+    let targetCategoryId: string | null = null;
+
+    if (categoryFromURL) {
+      // Try to match URL category
+      targetCategoryId = categoryMap.get(categoryFromURL.toLowerCase()) ?? categories[0]._id;
+    } else {
+      // Default to first category
+      targetCategoryId = categories[0]._id;
+
+      // Update URL with first category
+      const params = new URLSearchParams(location.search);
+      params.set('category', categories[0].name.toLowerCase());
+      navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+    }
+
+    setSelectedCategoryId(targetCategoryId);
+  }, [categories, categoryFromURL, categoryMap, location.pathname, location.search, navigate]);
+
+  // Fetch products when category changes
   useEffect(() => {
     if (selectedCategoryId && selectedBranch) {
       dispatch(
-        fetchProductsByCategory({ branchId: selectedBranch._id, categoryId: selectedCategoryId })
+        fetchProductsByCategory({
+          branchId: selectedBranch._id,
+          categoryId: selectedCategoryId,
+        })
       );
     }
   }, [dispatch, selectedCategoryId, selectedBranch]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      dispatch(clearProducts());
+    };
+  }, [dispatch]);
+
+  // Memoized tab change handler
+  const handleTabChange = useCallback(
+    (categoryId: string) => {
+      const selectedCat = categories.find((c) => c._id === categoryId);
+
+      if (selectedCat) {
+        const params = new URLSearchParams(location.search);
+        params.set('category', selectedCat.name.toLowerCase());
+        navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+      }
+
+      setSelectedCategoryId(categoryId);
+    },
+    [categories, location.pathname, location.search, navigate]
+  );
+
+  // Memoized close handler
+  const handleCloseModal = useCallback(() => {
+    setSelectedItem(null);
+  }, []);
+
+  // Show loader
+  const isLoading = loading.categories || loading.products;
+
   return (
     <>
-      {loading.categories || loading.products ? <Loader loading message="Loading menu..." /> : null}
+      {isLoading && <Loader loading message="Loading menu..." />}
 
       <div className="bg-background min-h-screen px-4 py-6 sm:px-8 md:px-12 md:py-10 lg:px-20 xl:px-32 2xl:px-40">
         {/* Hero Section */}
@@ -55,10 +124,6 @@ const Menu = () => {
                   Craving something delicious? Pop 101 brings your favorite meals right to your
                   door. Order now and enjoy a feast without leaving your couch.
                 </p>
-
-                {/* <Button className="rounded-md px-6 py-3 font-semibold sm:px-6 sm:py-4 md:px-8 md:py-5 md:text-lg lg:py-6 lg:text-xl">
-                  Order Now
-                </Button> */}
               </div>
             </div>
           </div>
@@ -71,8 +136,8 @@ const Menu = () => {
           ) : (
             <Tabs
               value={selectedCategoryId ?? ''}
+              onValueChange={handleTabChange}
               className="w-full"
-              onValueChange={(val) => dispatch(setSelectedCategory(val))}
             >
               <div className="w-full overflow-x-auto">
                 <TabsList className="scrollbar-hide flex h-auto w-full min-w-max flex-nowrap items-center justify-start gap-2 rounded-none border-b bg-transparent px-2">
@@ -110,7 +175,7 @@ const Menu = () => {
         <ProductDetailsModal
           open={!!selectedItem}
           product={selectedItem}
-          onClose={() => setSelectedItem(null)}
+          onClose={handleCloseModal}
         />
       )}
     </>

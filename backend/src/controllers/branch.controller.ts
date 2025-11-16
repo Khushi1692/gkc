@@ -264,6 +264,36 @@ export class BranchController {
       });
     }
   }
+
+  static async getBranchById(req: Request, res: Response): Promise<void> {
+    try {
+      const { branchId } = req.params;
+
+      const branch = await Branch.findOne({
+        _id: branchId,
+        isActive: true,
+      }).select("name address phone email location operatingHours");
+
+      if (!branch) {
+        res.status(404).json({
+          status: "error",
+          message: "Branch not found",
+        });
+        return;
+      }
+
+      res.json({
+        status: "success",
+        data: branch,
+      });
+    } catch (error) {
+      console.error("CGet branch error:", error);
+      res.status(500).json({
+        status: "error",
+        message: "Internal server error",
+      });
+    }
+  }
 }
 
 /**

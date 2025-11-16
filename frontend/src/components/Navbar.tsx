@@ -17,39 +17,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoginModal } from './LoginModal';
 
-// ================= LOGO =================
-const Logo = (props: React.SVGAttributes<SVGElement>) => {
-  return (
-    <svg
-      width="1em"
-      height="1em"
-      viewBox="0 0 324 323"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <rect
-        x="88.1023"
-        y="144.792"
-        width="151.802"
-        height="36.5788"
-        rx="18.2894"
-        transform="rotate(-38.5799 88.1023 144.792)"
-        fill="currentColor"
-      />
-      <rect
-        x="85.3459"
-        y="244.537"
-        width="151.802"
-        height="36.5788"
-        rx="18.2894"
-        transform="rotate(-38.5799 85.3459 244.537)"
-        fill="currentColor"
-      />
-    </svg>
-  );
-};
-
 // ================= HAMBURGER ICON =================
 const HamburgerIcon = ({ className, ...props }: React.SVGAttributes<SVGElement>) => (
   <svg
@@ -151,6 +118,9 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
       if (searchParams.get('login') === 'true') {
         setLoginOpen(true);
       }
+      if (searchParams.get('register') === 'true') {
+        setSignUpOpen(true);
+      }
     }, [location.search]);
 
     useEffect(() => {
@@ -175,9 +145,7 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                   onClick={() => navigate('/')}
                   className="text-primary hover:text-primary/90 mr-4 flex items-center space-x-2 transition-colors"
                 >
-                  <div className="text-2xl">
-                    <Logo />
-                  </div>
+                  <img src="/pop101-logo.png" alt="logo" height={60} width={60} />
                   <span className="hidden text-xl font-bold sm:inline-block">Pop101</span>
                 </button>
 
@@ -265,13 +233,6 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                       >
                         My Orders
                       </Button>
-                      {/* <Button
-                        variant="ghost"
-                        className="justify-start text-sm"
-                        onClick={() => navigate('/profile')}
-                      >
-                        Profile
-                      </Button> */}
                       <Button
                         variant="ghost"
                         className="justify-start text-sm text-red-600"
@@ -285,20 +246,22 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
               ) : (
                 <>
                   <Button
-                    variant="ghost"
                     size="sm"
                     className="hover:bg-accent hover:text-accent-foreground text-sm font-medium"
                     onClick={() => setLoginOpen(true)}
                   >
                     Log In
                   </Button>
-                  <Button
-                    size="sm"
-                    className="h-9 rounded-md px-4 text-sm font-medium shadow-sm"
-                    onClick={() => setSignUpOpen(true)}
-                  >
-                    Register
-                  </Button>
+                  {!isMobile && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-9 rounded-md px-4 text-sm font-medium shadow-sm"
+                      onClick={() => setSignUpOpen(true)}
+                    >
+                      Register
+                    </Button>
+                  )}
                 </>
               )}
 

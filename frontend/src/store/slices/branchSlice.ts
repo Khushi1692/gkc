@@ -1,6 +1,6 @@
 import { apiClient } from '@/api/axiosClient';
 import type { ApiResponse } from '@/types/api';
-import type { Branch } from '@/types/branch';
+import type { Branch, BranchWithOpeningHours } from '@/types/branch';
 import { getErrorMessage } from '@/utils/errorHandler';
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
@@ -65,7 +65,37 @@ export const fetchAllBranches = createAsyncThunk<
 
     return response.data;
   } catch (err: any) {
-    return rejectWithValue(err.response?.data?.message || 'Failed to fetch branches');
+    return rejectWithValue(getErrorMessage(err));
+  }
+});
+
+export const fetchBranchStatus = createAsyncThunk<
+  ApiResponse<{ isOpen: boolean; operatingHours: string[] }>,
+  { branchId: string },
+  { rejectValue: string }
+>('branch/fetchBranchStatus', async ({ branchId }, { rejectWithValue }) => {
+  try {
+    const response = await apiClient.get<
+      ApiResponse<{ isOpen: boolean; operatingHours: string[] }>
+    >(`/branches/${branchId}/status`);
+    return response.data;
+  } catch (err) {
+    return rejectWithValue(getErrorMessage(err));
+  }
+});
+
+export const getBranchById = createAsyncThunk<
+  ApiResponse<BranchWithOpeningHours>,
+  { branchId: string },
+  { rejectValue: string }
+>('branch/getBranchById', async ({ branchId }, { rejectWithValue }) => {
+  try {
+    const response = await apiClient.get<ApiResponse<BranchWithOpeningHours>>(
+      `/branches/${branchId}`
+    );
+    return response.data;
+  } catch (err) {
+    return rejectWithValue(getErrorMessage(err));
   }
 });
 

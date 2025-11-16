@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { GoogleLogin } from './GoogleLogin';
+import { useNavigate } from 'react-router-dom';
 
 interface SignUpProps {
   open: boolean;
@@ -28,6 +29,7 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
+  const navigate = useNavigate();
 
   function onSubmit(values: SignupFormData) {
     dispatch(signupUser(values))
@@ -64,8 +66,17 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
       });
   };
 
+  const handleClose = () => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.has('register')) {
+      searchParams.delete('register');
+      navigate({ pathname: location.pathname, search: searchParams.toString() }, { replace: true });
+    }
+    onOpenChange(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Register to Pop101</DialogTitle>
@@ -135,16 +146,31 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
             </DialogFooter>
           </form>
         </Form>
+        <div className="text-center text-sm text-gray-600">
+          Already have an account?{' '}
+          <button
+            onClick={() => {
+              handleClose();
+              navigate('?login=true');
+            }}
+            className="text-primary font-medium hover:underline"
+          >
+            Login
+          </button>
+        </div>
         <div className="flex items-center gap-2">
           <hr className="flex-1 border-t border-gray-300" />
           <span className="text-sm text-gray-500">or</span>
           <hr className="flex-1 border-t border-gray-300" />
         </div>
 
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => toast.error('Google login failed')}
-        />
+        {open && (
+          <GoogleLogin
+            key="signup-google"
+            onSuccess={handleGoogleSuccess}
+            onError={() => toast.error('Google login failed')}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

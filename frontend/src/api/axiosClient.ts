@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-    baseURL: 'http://localhost:3000/api', // or your backend URL
+    baseURL: 'http://localhost:4000/api', // or your backend URL
     withCredentials: true, // send cookies by default
 });
 

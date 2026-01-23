@@ -1,5 +1,4 @@
-import escpos from "escpos";
-import Network from "escpos-network";
+import mqtt from "mqtt";
 import { Types } from "mongoose";
 import { Branch } from "../models/branch.models";
 import { Order } from "../models/order.models";
@@ -9,19 +8,20 @@ interface PrinterConfig {
   port: number;
 }
 
+interface MqttPrinterConfig {
+  brokerUrl: string;
+  username: string;
+  password?: string;
+  topic: string;
+}
+
 export class PrinterService {
   // Get printer config dynamically from Branch
-  private static async getPrinterConfig(
-    branchId: Types.ObjectId
-  ): Promise<PrinterConfig> {
-    const branch = await Branch.findById(branchId).lean();
-    if (!branch || !branch.printerIp) {
-      throw new Error(`No printer configured for branch ${branchId}`);
-    }
-
+  private static getPrinterConfig(): MqttPrinterConfig {
     return {
-      ip: branch.printerIp,
-      port: branch.printerPort || 9100,
+      brokerUrl: "mqtt://mqtt1.foodship.com.au:1883",
+      username: "rajat",
+      topic: "Prn3F1C1A3916353310000013091A1FC0BF",
     };
   }
 
@@ -29,179 +29,87 @@ export class PrinterService {
   static async printOrderReceipt(orderId: string): Promise<void> {
     const order = await Order.findById(orderId)
       .populate("branchId")
-      .populate({
-        path: "items.productId",
-        select: "_id name",
-      })
-      .populate({
-        path: "userId",
-        select: "_id name email",
-      })
+      .populate("items.productId", "name")
+      .populate("userId", "name email")
       .lean();
 
     if (!order) throw new Error(`Order ${orderId} not found`);
 
     const branch = order.branchId as any;
-    const printerConfig = {
-      ip: branch.printerIp,
-      port: branch.printerPort || 9100,
-    };
+    const user = order.userId as any;
+
+    const receipt = this.buildReceipt(order, branch, user);
+
+    const config = this.getPrinterConfig();
 
     return new Promise((resolve, reject) => {
-      const device = new Network(printerConfig.ip, printerConfig.port);
+      const client = mqtt.connect(config.brokerUrl, {
+        clientId: `backend-${Date.now()}`, // MUST match printer ClientID
+        username: config.username, // "rajat"
+        keepalive: 30,
+        clean: true,
+        reconnectPeriod: 0,
+      });
 
-      // Timeout safeguard (5s)
-      const timeout = setTimeout(() => {
-        device.close();
-        reject(new Error("Printer connection timeout"));
-      }, 5000);
+      client.on("connect", () => {
+        console.log("✅ MQTT connected to printer broker");
 
-      device.open((err?: Error) => {
-        clearTimeout(timeout);
-        if (err) {
-          console.error("Printer connection error:", err);
-          reject(err);
-          return;
-        }
-
-        try {
-          const printer = new escpos.Printer(device as any, {
-            encoding: "UTF-8",
-          });
-
-          printer
-            .font("A")
-            .align("CT")
-            .style("BU")
-            .size(2, 2)
-            .text(branch.name || "Restaurant")
-            .size(1, 1)
-            .style("NORMAL")
-            .text(branch.address || "")
-            .text("--------------------------------")
-            .text(`Order #${order.orderId}`)
-            .text(new Date(order.createdAt).toLocaleString())
-            .text("--------------------------------")
-            .feed(1);
-
-          if (order.userId) {
-            const user = order.userId as any;
-            printer
-              .align("LT")
-              .style("B")
-              .text("CUSTOMER DETAILS:")
-              .style("NORMAL");
-
-            if (user?.name) printer.text(`Name: ${user.name}`);
-
-            if (user?.email) printer.text(`Email: ${user.email}`);
-
-            printer.text("--------------------------------").feed(1);
+        client.publish(config.topic, receipt, { qos: 1 }, (err) => {
+          if (err) {
+            client.end();
+            return reject(err);
           }
 
-          printer.align("LT").style("B").text("ITEMS:").style("NORMAL");
+          console.log("🖨️ Receipt sent to cloud printer");
+          client.end();
+          resolve();
+        });
+      });
 
-          order.items.forEach((item: any) => {
-            printer.tableCustom([
-              {
-                text: `${item.quantity}x ${item.productId?.name || "Item"}`,
-                align: "LEFT",
-                width: 0.6,
-              },
-              {
-                text: `$${item.subtotal.toFixed(2)}`,
-                align: "RIGHT",
-                width: 0.4,
-              },
-            ] as any);
-
-            if (item.price !== item.discountedPrice) {
-              printer.text(
-                `   Original: $${item.price.toFixed(
-                  2
-                )} | Discounted: $${item.discountedPrice.toFixed(2)}`
-              );
-            }
-
-            if (item.customizations?.length) {
-              item.customizations.forEach((custom: any) => {
-                printer.text(`   ${custom.groupName}:`);
-                custom.selectedOptions.forEach((option: any) => {
-                  const mod =
-                    option.priceModifier > 0
-                      ? ` (+$${option.priceModifier.toFixed(2)})`
-                      : "";
-                  printer.text(`     - ${option.name}${mod}`);
-                });
-              });
-            }
-
-            printer.feed(1);
-          });
-
-          if (order.specialInstructions) {
-            printer
-              .text("--------------------------------")
-              .style("B")
-              .text("SPECIAL INSTRUCTIONS:")
-              .style("NORMAL")
-              .text(order.specialInstructions)
-              .feed(1);
-          }
-
-          printer
-            .text("--------------------------------")
-            .align("RT")
-            .style("BU")
-            .size(2, 2)
-            .text(`TOTAL: $${order.totalAmount.toFixed(2)}`)
-            .size(1, 1)
-            .style("NORMAL")
-            .feed(1);
-
-          printer
-            .align("CT")
-            .text("--------------------------------")
-            .text("Thank you for your order!")
-            .text("================================")
-            .feed(2)
-            .cut()
-            .close(() => {
-              console.log(`✅ Receipt printed for order ${order.orderId}`);
-              resolve();
-            });
-        } catch (printErr) {
-          console.error("Print error:", printErr);
-          try {
-            device.close();
-          } catch {}
-          reject(printErr);
-        }
+      client.on("error", (err) => {
+        console.error("❌ MQTT error:", err);
+        client.end();
+        reject(err);
       });
     });
   }
 
-  // Test printer connection for a branch
-  static async testPrinter(branchId: Types.ObjectId): Promise<boolean> {
-    const printerConfig = await this.getPrinterConfig(branchId);
-    return new Promise((resolve) => {
-      const device = new Network(printerConfig.ip, printerConfig.port);
-      device.open((err?: Error) => {
-        if (err) {
-          console.error("Printer test failed:", err);
-          resolve(false);
-          return;
-        }
-        const printer = new escpos.Printer(device as any);
-        printer
-          .text("Printer connection test successful!")
-          .feed(2)
-          .cut()
-          .close(() => {
-            console.log(`✅ Printer test successful for branch ${branchId}`);
-            resolve(true);
-          });
-      });
+  private static buildReceipt(order: any, branch: any, user: any): string {
+    let text = "";
+
+    text += `${branch.name || "Restaurant"}\n`;
+    text += `${branch.address || ""}\n`;
+    text += "--------------------------------\n";
+    text += `Order #${order.orderId}\n`;
+    text += `${new Date(order.createdAt).toLocaleString()}\n`;
+    text += "--------------------------------\n";
+
+    if (user) {
+      text += "CUSTOMER DETAILS:\n";
+      if (user.name) text += `Name: ${user.name}\n`;
+      if (user.email) text += `Email: ${user.email}\n`;
+      text += "--------------------------------\n";
+    }
+
+    text += "ITEMS:\n";
+
+    order.items.forEach((item: any) => {
+      text += `${item.quantity}x ${
+        item.productId?.name || "Item"
+      }  $${item.subtotal.toFixed(2)}\n`;
     });
+
+    if (order.specialInstructions) {
+      text += "--------------------------------\n";
+      text += "SPECIAL INSTRUCTIONS:\n";
+      text += `${order.specialInstructions}\n`;
+    }
+
+    text += "--------------------------------\n";
+    text += `TOTAL: $${order.totalAmount.toFixed(2)}\n`;
+    text += "================================\n";
+    text += "Thank you for your order!\n\n\n";
+
+    return text;
   }
 }

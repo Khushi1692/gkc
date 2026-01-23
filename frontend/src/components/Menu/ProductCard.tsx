@@ -45,7 +45,7 @@ export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
               )}
             </div>
 
-            <Button className="w-full md:w-fit" onClick={() => onAddToCart(item)}>
+            <Button className="w-full md:w-fit" onClick={() => onAddToCart(item)} >
               Add to Cart
             </Button>
           </div>

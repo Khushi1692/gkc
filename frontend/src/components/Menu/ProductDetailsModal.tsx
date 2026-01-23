@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addItemToCart, fetchCart } from '@/store/slices/cartSlice';
 import type { AddItemToCartInput } from '@/types/cart';
 import type { Product } from '@/types/menu';
@@ -35,6 +35,7 @@ export const ProductDetailsModal = ({
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string[]>>({});
 
   const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((s) => s.cart);
 
   const handleOptionChange = (
     groupId: string,
@@ -286,7 +287,7 @@ export const ProductDetailsModal = ({
         </div>
 
         <DialogFooter className="mt-4">
-          <Button className="w-full" onClick={handleConfirm}>
+          <Button className="w-full" onClick={handleConfirm} disabled={loading.add}>
             Add to Cart
           </Button>
         </DialogFooter>

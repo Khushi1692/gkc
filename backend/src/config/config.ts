@@ -1,5 +1,6 @@
 // src/config/config.ts
 import dotenv from "dotenv";
+import mqtt from "mqtt/*";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -32,5 +33,10 @@ export const config = {
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY || "",
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
+  },
+  mqtt: {
+    url: process.env.MQTT_URL || "localhost",
+    username: process.env.MQTT_USERNAME || "",
+    password: process.env.MQTT_PASSWORD || "",
   },
 } as const;

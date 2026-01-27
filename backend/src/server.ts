@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { config } from "./config/config";
 import app from "./app";
+import { initMqttSubscriber } from "./bootstrap/mqtt.subscriber";
+import { initHeartbeatListener } from "./bootstrap/mqtt.heartbeat";
 
 /**
  * Starts the server by connecting to MongoDB and then listening on the specified port.
@@ -15,6 +17,9 @@ const startServer = async () => {
   try {
     await mongoose.connect(config.mongodb.uri);
     console.log("Connected to MongoDB");
+
+    initMqttSubscriber();
+    initHeartbeatListener();
 
     app.listen(config.port, () => {
       console.log(`Server running on port ${config.port}`);

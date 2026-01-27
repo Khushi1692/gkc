@@ -38,6 +38,14 @@ const OrderSchema = new Schema(
       enum: ["pending", "paid", "failed"],
       default: "pending",
     },
+
+    printStatus: {
+      type: String,
+      enum: ["pending", "printed", "failed"],
+      default: "pending",
+    },
+    printedAt: { type: Date },
+    printAttempts: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

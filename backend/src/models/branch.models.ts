@@ -1,7 +1,6 @@
-import { Schema, model, Types } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import { IBranch } from "../types/branch.types";
 import { Product } from "./product.models";
-import { number } from "zod";
 
 /**
  * Branch Schema
@@ -13,16 +12,13 @@ const branchSchema = new Schema<IBranch>(
     phone: { type: String, trim: true },
     address: { type: String, trim: true },
 
-    printerIp: {
+    code: {
       type: String,
-      // IPv4 basic validation
-      match: [/^(?:\d{1,3}\.){3}\d{1,3}$/, "Invalid printer IP address format"],
-    },
-    printerPort: {
-      type: Number,
-      default: 9100,
-      min: 1,
-      max: 65535,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: /^[a-z0-9-]+$/,
     },
 
     location: {
@@ -94,6 +90,17 @@ const branchSchema = new Schema<IBranch>(
         ],
       },
     ],
+
+    printer: {
+      enabled: { type: Boolean, default: false },
+      mqtt: {
+        cmdTopic: { type: String, required: true },
+        statusTopic: { type: String, required: true },
+        heartbeatTopic: { type: String, required: true },
+      },
+      lastSeenAt: { type: Date },
+      isOnline: { type: Boolean, default: false },
+    },
 
     isActive: { type: Boolean, default: true },
   },

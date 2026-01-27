@@ -1,115 +1,143 @@
-import mqtt from "mqtt";
-import { Types } from "mongoose";
-import { Branch } from "../models/branch.models";
 import { Order } from "../models/order.models";
+import { getMqttClient } from "./mqtt.client";
+import { printJobs } from "./print.jobs";
+import { PrintableOrder } from "../types/order.types";
+import { EscPosBuilder } from "../utils/escpos";
 
-interface PrinterConfig {
-  ip: string;
-  port: number;
-}
-
-interface MqttPrinterConfig {
-  brokerUrl: string;
-  username: string;
-  password?: string;
-  topic: string;
-}
+const MAX_RETRIES = 3;
+const ACK_TIMEOUT = 50000;
 
 export class PrinterService {
-  // Get printer config dynamically from Branch
-  private static getPrinterConfig(): MqttPrinterConfig {
-    return {
-      brokerUrl: "mqtt://mqtt1.foodship.com.au:1883",
-      username: "rajat",
-      topic: "Prn3F1C1A3916353310000013091A1FC0BF",
-    };
-  }
-
-  // Print order receipt
   static async printOrderReceipt(orderId: string): Promise<void> {
-    const order = await Order.findById(orderId)
+    const order = (await Order.findById(orderId)
       .populate("branchId")
       .populate("items.productId", "name")
-      .populate("userId", "name email")
-      .lean();
+      .lean()) as PrintableOrder | null;
 
-    if (!order) throw new Error(`Order ${orderId} not found`);
+    if (!order) throw new Error("Order not found");
 
-    const branch = order.branchId as any;
-    const user = order.userId as any;
+    if (order.printedAt) {
+      console.log("⚠️ Order already printed");
+      return;
+    }
 
-    const receipt = this.buildReceipt(order, branch, user);
+    const printer = order.branchId.printer;
 
-    const config = this.getPrinterConfig();
+    if (!printer?.enabled) {
+      console.log("⚠️ Printer disabled");
+      return;
+    }
+
+    if (!printer.isOnline) {
+      console.log("⚠️ Printer offline, skipping print");
+
+      await Order.findByIdAndUpdate(order._id, {
+        printStatus: "failed",
+      });
+
+      return;
+    }
+
+    const jobId = `order_${order.orderId}`;
+    const client = getMqttClient();
+
+    // 🔥 ESC/POS binary receipt
+    const receiptBuffer = this.buildReceipt(order);
+
+    // 🔐 Binary-safe MQTT payload
+    const payload = JSON.stringify({
+      jobId,
+      type: "print",
+      encoding: "base64",
+      data: receiptBuffer.toString("base64"),
+    });
 
     return new Promise((resolve, reject) => {
-      const client = mqtt.connect(config.brokerUrl, {
-        clientId: `backend-${Date.now()}`, // MUST match printer ClientID
-        username: config.username, // "rajat"
-        keepalive: 30,
-        clean: true,
-        reconnectPeriod: 0,
-      });
+      const send = () => {
+        const existingJob = printJobs.get(jobId);
+        const retries = existingJob ? existingJob.retries : 0;
 
-      client.on("connect", () => {
-        console.log("✅ MQTT connected to printer broker");
+        client.publish(printer.mqtt.cmdTopic, payload, { qos: 1 });
 
-        client.publish(config.topic, receipt, { qos: 1 }, (err) => {
-          if (err) {
-            client.end();
-            return reject(err);
+        const timeout = setTimeout(async () => {
+          const job = printJobs.get(jobId);
+          if (!job) return;
+
+          if (job.retries >= MAX_RETRIES) {
+            printJobs.delete(jobId);
+
+            await Order.findByIdAndUpdate(order._id, {
+              printStatus: "failed",
+              $inc: { printAttempts: 1 },
+            });
+
+            reject(new Error("Print ACK timeout"));
+            return;
           }
 
-          console.log("🖨️ Receipt sent to cloud printer");
-          client.end();
-          resolve();
-        });
-      });
+          job.retries++;
 
-      client.on("error", (err) => {
-        console.error("❌ MQTT error:", err);
-        client.end();
-        reject(err);
-      });
+          await Order.findByIdAndUpdate(order._id, {
+            $inc: { printAttempts: 1 },
+          });
+
+          send();
+        }, ACK_TIMEOUT);
+
+        printJobs.set(jobId, {
+          retries,
+          timeout,
+          resolve: async () => {
+            clearTimeout(timeout);
+            printJobs.delete(jobId);
+
+            await Order.findByIdAndUpdate(order._id, {
+              printedAt: new Date(),
+              printStatus: "printed",
+            });
+
+            resolve();
+          },
+          reject,
+        });
+      };
+
+      send();
     });
   }
 
-  private static buildReceipt(order: any, branch: any, user: any): string {
-    let text = "";
+  // 🖨️ ESC/POS RECEIPT (BINARY)
+  private static buildReceipt(order: PrintableOrder): Buffer {
+    const b = new EscPosBuilder();
 
-    text += `${branch.name || "Restaurant"}\n`;
-    text += `${branch.address || ""}\n`;
-    text += "--------------------------------\n";
-    text += `Order #${order.orderId}\n`;
-    text += `${new Date(order.createdAt).toLocaleString()}\n`;
-    text += "--------------------------------\n";
+    b.init()
+      .alignCenter()
+      .bold(true)
+      .text(order.branchId.name)
+      .bold(false)
+      .newLine(2)
+      .text(`Order #${order.orderId}`)
+      .newLine()
+      .text(new Date(order.createdAt).toLocaleString())
+      .newLine(2)
+      .alignLeft()
+      .text("--------------------------------")
+      .newLine();
 
-    if (user) {
-      text += "CUSTOMER DETAILS:\n";
-      if (user.name) text += `Name: ${user.name}\n`;
-      if (user.email) text += `Email: ${user.email}\n`;
-      text += "--------------------------------\n";
-    }
-
-    text += "ITEMS:\n";
-
-    order.items.forEach((item: any) => {
-      text += `${item.quantity}x ${
-        item.productId?.name || "Item"
-      }  $${item.subtotal.toFixed(2)}\n`;
+    order.items.forEach((item) => {
+      b.text(
+        `${item.quantity}x ${item.productId?.name ?? "Item"}  $${item.subtotal}`
+      ).newLine();
     });
 
-    if (order.specialInstructions) {
-      text += "--------------------------------\n";
-      text += "SPECIAL INSTRUCTIONS:\n";
-      text += `${order.specialInstructions}\n`;
-    }
+    b.text("--------------------------------")
+      .newLine()
+      .bold(true)
+      .text(`TOTAL: $${order.totalAmount}`)
+      .bold(false)
+      .newLine(3)
+      .cut();
 
-    text += "--------------------------------\n";
-    text += `TOTAL: $${order.totalAmount.toFixed(2)}\n`;
-    text += "================================\n";
-    text += "Thank you for your order!\n\n\n";
-
-    return text;
+    return b.build();
   }
 }

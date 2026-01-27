@@ -47,6 +47,19 @@ const MyOrders = () => {
     }
   };
 
+  const getPrintBadgeVariant = (status?: string) => {
+    switch (status) {
+      case 'printed':
+        return 'success';
+      case 'failed':
+        return 'destructive';
+      case 'pending':
+        return 'warning';
+      default:
+        return 'secondary';
+    }
+  };
+
   return (
     <div className="px-4 py-6 sm:px-8 md:px-12 lg:px-20 xl:px-32 2xl:px-40">
       <h1 className="mb-6 text-3xl font-bold">My Orders</h1>
@@ -59,6 +72,7 @@ const MyOrders = () => {
                 <TableHead>Date</TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead>Payment Status</TableHead>
+                <TableHead>Print</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -71,6 +85,11 @@ const MyOrders = () => {
                   <TableCell>
                     <Badge variant={getBadgeVariant(order.paymentStatus)}>
                       {order.paymentStatus.toUpperCase()}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={getPrintBadgeVariant(order.printStatus)}>
+                      {(order.printStatus ?? 'N/A').toUpperCase()}
                     </Badge>
                   </TableCell>
                   <TableCell>

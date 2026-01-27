@@ -20,8 +20,8 @@ export interface IBranch {
   email?: string;
   phone?: string;
   address?: string;
-  printerIp?: string;
-  printerPort?: number;
+  code: string;
+  printer?: BranchPrinterConfig;
   location: ILocation;
   operatingHours: IOperatingHour[];
   menu: IBranchMenu[];
@@ -110,4 +110,18 @@ export interface IBranchInput {
   address?: string;
   location: ILocation;
   operatingHours: IOperatingHour[];
+  printer?: BranchPrinterConfig;
+}
+
+export interface PrinterMqttConfig {
+  cmdTopic: string;
+  statusTopic: string;
+  heartbeatTopic: string;
+}
+
+export interface BranchPrinterConfig {
+  enabled: boolean;
+  mqtt: PrinterMqttConfig;
+  lastSeenAt?: string;
+  isOnline?: boolean;
 }

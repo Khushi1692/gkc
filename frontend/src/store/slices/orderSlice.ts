@@ -9,6 +9,9 @@ export interface Order {
   items: CartItem[];
   totalAmount: number;
   paymentStatus: 'pending' | 'paid' | 'failed';
+  printStatus?: 'pending' | 'printed' | 'failed';
+  printedAt?: string;
+  printAttempts?: number;
   createdAt: string;
   specialInstructions?: string;
 }

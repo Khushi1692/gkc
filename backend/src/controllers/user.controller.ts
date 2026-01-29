@@ -1,15 +1,13 @@
-import { Request, Response } from "express";
-import { User } from "../models/user.models";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { config } from "../config/config";
-import { IUserInput } from "../types/user.types";
-import { createCustomError } from "../utils/error";
-import { EmailService } from "../services/email.service";
-import crypto from "crypto";
-import { GoogleAuthService } from "../services/google-auth.service";
-import { AuthRequest } from "../middleware/auth";
+import { User } from "../models/user.models";
 import { CartService } from "../services/cart.service";
+import { EmailService } from "../services/email.service";
+import { GoogleAuthService } from "../services/google-auth.service";
+import { IUserInput } from "../types/user.types";
 
 export class UserController {
   // User signup method
@@ -94,7 +92,7 @@ export class UserController {
   }
 
   // User login method
-  static async login(req: AuthRequest, res: Response): Promise<void> {
+  static async login(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
       const sessionId = req.sessionId;
@@ -120,7 +118,7 @@ export class UserController {
       }
 
       // Check if user is verified
-      if (user.isVerified != true) {
+      if (!user.isVerified) {
         res.status(401).json({
           status: "error",
           message: "Verify Email",
@@ -168,7 +166,7 @@ export class UserController {
           },
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({
         status: "error",
         message: "Internal server error",
@@ -207,7 +205,7 @@ export class UserController {
         status: "success",
         message: "Email verified successfully",
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({
         status: "error",
         message: "Internal server error",
@@ -311,7 +309,7 @@ export class UserController {
         status: "success",
         message: "Password reset successfully",
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({
         status: "error",
         message: "Internal server error",
@@ -323,7 +321,7 @@ export class UserController {
    * Google OAuth login/signup
    * Receives Google ID token from frontend, verifies it, and creates/logs in user
    */
-  static async googleAuth(req: AuthRequest, res: Response): Promise<void> {
+  static async googleAuth(req: Request, res: Response): Promise<void> {
     try {
       const { credential } = req.body; // Google ID token from frontend
       const sessionId = req.sessionId;
@@ -472,7 +470,7 @@ export class UserController {
     }
   }
 
-  static async getCurrentUser(req: AuthRequest, res: Response): Promise<void> {
+  static async getCurrentUser(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.userId;
       if (!userId) {
@@ -496,7 +494,7 @@ export class UserController {
           avatar: user.avatar,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(401).json({
         status: "error",
         message: "Invalid or expired token",

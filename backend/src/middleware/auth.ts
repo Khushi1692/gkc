@@ -2,10 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { config } from "../config/config";
 
-export interface AuthRequest extends Request {
-  userId?: string;
-  sessionId?: string;
-}
 /**
  * Middleware to authenticate a JWT token from the request headers.
  *
@@ -20,7 +16,7 @@ export interface AuthRequest extends Request {
  * If the token is valid, the `userId` from the token payload is attached to the request object.
  */
 export const authMiddleware = (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -39,13 +35,13 @@ export const authMiddleware = (
     req.sessionId = req.cookies.sessionId;
 
     next();
-  } catch (error) {
+  } catch {
     return res.status(401).json({ error: "Invalid token" });
   }
 };
 
 export const optionalAuth = (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -60,7 +56,7 @@ export const optionalAuth = (
     req.sessionId = req.cookies.sessionId;
 
     next();
-  } catch (error) {
+  } catch {
     req.sessionId = req.cookies.sessionId;
     next();
   }

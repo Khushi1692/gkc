@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { AuthRequest } from "../middleware/auth";
 import { Order } from "../models/order.models";
 
 export class OrderController {
-  static async getOrders(req: AuthRequest, res: Response) {
+  static async getOrders(req: Request, res: Response) {
     try {
       const { userId } = req;
       const orders = await Order.find({ userId })

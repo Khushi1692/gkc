@@ -1,7 +1,6 @@
 import Stripe from "stripe";
 import { config } from "../config/config";
 import { Request, Response } from "express";
-import { AuthRequest } from "../middleware/auth";
 import { CartService } from "../services/cart.service";
 import { Order } from "../models/order.models";
 import { generateOrderId } from "../utils/orderUtils";
@@ -12,7 +11,7 @@ const stripe = new Stripe(config.stripe.secretKey, {
 });
 
 export class PaymentController {
-  static async createPaymentIntent(req: AuthRequest, res: Response) {
+  static async createPaymentIntent(req: Request, res: Response) {
     try {
       const { userId, sessionId } = req;
       const { branchId, specialInstructions } = req.body;
@@ -57,7 +56,7 @@ export class PaymentController {
       for (const item of cart.items) {
         const branchProduct = branchProductMap.get(item.productId.toString());
 
-        if (!branchProduct || !branchProduct.isAvailable) {
+        if (!branchProduct?.isAvailable) {
           continue; // skip unavailable items
         }
 

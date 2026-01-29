@@ -1,6 +1,5 @@
 import crypto from "crypto";
-import { Response } from "express";
-import { AuthRequest } from "../middleware/auth";
+import { Request, Response } from "express";
 import { Branch } from "../models/branch.models";
 import { CartService } from "../services/cart.service";
 import { CartItemResponse, ICartItemSubDocument } from "../types/cart.types";
@@ -8,7 +7,7 @@ import { isProductAvailableInBranch } from "../utils/branchUtils";
 import { AddItemToCartInput } from "../validators/cart.validators";
 
 export class CartController {
-  static async getCart(req: AuthRequest, res: Response) {
+  static async getCart(req: Request, res: Response) {
     try {
       const { userId, sessionId } = req;
       const { branchId } = req.params;
@@ -62,7 +61,7 @@ export class CartController {
           item.productId._id.toString()
         );
 
-        if (!branchProduct || !branchProduct.isAvailable) {
+        if (!branchProduct?.isAvailable) {
           skippedItems.push(item);
           return;
         }
@@ -117,7 +116,7 @@ export class CartController {
     }
   }
 
-  static async addToCart(req: AuthRequest, res: Response): Promise<void> {
+  static async addToCart(req: Request, res: Response): Promise<void> {
     try {
       const productData: AddItemToCartInput = req.body;
       const { branchId } = req.params;
@@ -169,7 +168,7 @@ export class CartController {
     }
   }
 
-  static async updateQuantity(req: AuthRequest, res: Response): Promise<void> {
+  static async updateQuantity(req: Request, res: Response): Promise<void> {
     try {
       const { itemId } = req.params;
       const { quantity }: { quantity: number } = req.body;
@@ -197,7 +196,7 @@ export class CartController {
     }
   }
 
-  static async removeItem(req: AuthRequest, res: Response): Promise<void> {
+  static async removeItem(req: Request, res: Response): Promise<void> {
     try {
       const { itemId } = req.params;
 
@@ -214,7 +213,7 @@ export class CartController {
     }
   }
 
-  static async clearCart(req: AuthRequest, res: Response): Promise<void> {
+  static async clearCart(req: Request, res: Response): Promise<void> {
     try {
       await CartService.clearCart(req.userId, req.sessionId);
 

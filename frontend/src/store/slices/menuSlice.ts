@@ -2,7 +2,7 @@ import { apiClient } from '@/api/axiosClient';
 import type { ApiResponse } from '@/types/api';
 import type { Category, Product } from '@/types/menu';
 import { getErrorMessage } from '@/utils/errorHandler';
-import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 interface MenuState {
   categories: Category[];

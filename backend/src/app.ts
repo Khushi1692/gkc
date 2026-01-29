@@ -16,6 +16,7 @@ import orderRoutes from "./routes/order.routes";
 import contactRoutes from "./routes/contact.routes";
 
 import stripeWebhook from "./routes/stripeWebhook";
+import { config } from "./config/config";
 
 const app = express();
 
@@ -29,7 +30,7 @@ app.use(
 app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:5173", // your frontend URL
+    origin: config.frontend.url, // your frontend URL
     credentials: true, // allow sending cookies/auth headers
   })
 );

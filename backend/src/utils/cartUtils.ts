@@ -1,5 +1,6 @@
 import { CartItemCustomization, ICartItem } from "../types/cart.types";
 export const calculateItemSubtotal = (item: ICartItem): number => {
+  if (!item?.price) return 0;
   let subtotal = item.price * item.quantity;
 
   // Add customization price modifiers
@@ -45,7 +46,7 @@ export const itemsAreEqual = (item1: ICartItem, item2: ICartItem): boolean => {
       .map((c) => ({
         groupName: c.groupName,
         selectedOptions: [...c.selectedOptions]
-          .sort((a, b) => a._id.localeCompare(b._id))
+          .sort((a, b) => String(a._id).localeCompare(String(b._id)))
           .map((o) => ({
             _id: o._id,
             name: o.name,

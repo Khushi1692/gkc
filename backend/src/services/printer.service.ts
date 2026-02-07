@@ -25,28 +25,21 @@ export class PrinterService {
       return;
     }
 
-    const jobId = `order_${order.orderId}_${Date.now()}`;
+    // Use a simplified unique ID for the print job
+    const jobId = `job_${order._id}`;
     const client = getMqttClient();
 
-    // 1️⃣ Generate ESC/POS Binary Data (Receipt Design)
+    // 1️⃣ Generate Professional ESC/POS Receipt
     const receiptBuffer = this.buildReceipt(order);
 
-    // 2️⃣ Build HS-830 Specific Binary Packet
-    // Protocol Source: Manual Page 17, Section 8.1.4
-
-    // [Flag]: 0x03 -> (0x01 "Need Reply" | 0x02 "Has Ticket ID")
-    const flag = Buffer.from([0x03]);
-
-    // [ReplyTopic]: 0x00 -> Use default "TicketReplay" topic from Printer Tool
-    const replyTopic = Buffer.from([0x00]);
-
-    // [TicketID]: Unique ID ending with NULL byte (0x00)
+    // 2️⃣ Build HS-830 Binary Packet
+    const flag = Buffer.from([0x03]); // Need Reply
+    const replyTopic = Buffer.from([0x00]); // Default reply topic
     const ticketId = Buffer.concat([
       Buffer.from(jobId, "utf-8"),
-      Buffer.from([0x00]),
+      Buffer.from([0x00]), // Null terminator
     ]);
 
-    // Combine into final Payload
     const payload = Buffer.concat([flag, replyTopic, ticketId, receiptBuffer]);
 
     return new Promise((resolve, reject) => {
@@ -54,7 +47,7 @@ export class PrinterService {
         const existingJob = printJobs.get(jobId);
         const retries = existingJob ? existingJob.retries : 0;
 
-        // PUBLISH BINARY PAYLOAD (Not JSON)
+        // Use the cmdTopic from DB (e.g. Prn3F1C...)
         client.publish(printer.mqtt.cmdTopic, payload, { qos: 1 });
 
         const timeout = setTimeout(async () => {
@@ -98,37 +91,85 @@ export class PrinterService {
     });
   }
 
-  // 🖨️ ESC/POS RECEIPT (BINARY)
+  // 🖨️ PROFESSIONAL RECEIPT DESIGN
   private static buildReceipt(order: PrintableOrder): Buffer {
     const b = new EscPosBuilder();
 
+    // 1. Header Section
     b.init()
       .alignCenter()
+      .setSize(2, 2) // Double Width & Height
       .bold(true)
-      .text(order.branchId.name)
+      .text(order.branchId.name) // Restaurant Name
       .bold(false)
-      .newLine(2)
-      .text(`Order #${order.orderId}`)
-      .newLine()
-      .text(new Date(order.createdAt).toLocaleString())
-      .newLine(2)
-      .alignLeft()
-      .text("--------------------------------")
+      .setSize(1, 1) // Reset size
       .newLine();
 
-    order.items.forEach((item) => {
-      b.text(
-        `${item.quantity}x ${item.productId?.name ?? "Item"}  $${item.subtotal}`,
-      ).newLine();
+    b.newLine()
+      .text("------------------------------------------------")
+      .newLine();
+
+    // 2. Order Meta Data
+    // Clean up Order ID (Take last 6 chars if it's too long)
+    const shortOrderId =
+      order.orderId.length > 10
+        ? "..." + order.orderId.slice(-6)
+        : order.orderId;
+
+    const dateStr = new Date(order.createdAt).toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
     });
 
-    b.text("--------------------------------")
+    b.alignLeft()
+      .text(`Order #: ${shortOrderId}`)
+      .alignRight()
+      .text(dateStr) // Print Date on right (requires calc, simplified here)
       .newLine()
-      .bold(true)
-      .text(`TOTAL: $${order.totalAmount}`)
+      .alignLeft()
+      .text("------------------------------------------------")
+      .newLine();
+
+    // 3. Items Header
+    b.bold(true)
+      .row("Qty Item", "Price") // Custom row helper
       .bold(false)
-      .newLine(3)
-      .cut();
+      .newLine();
+
+    // 4. Items List
+    let calculatedTotal = 0;
+    order.items.forEach((item) => {
+      const productName = item.productId?.name ?? "Unknown Item";
+      const qty = `${item.quantity}x`;
+
+      // Fix Price Decimals (e.g. 11.691 -> 11.69)
+      const price = parseFloat(item.subtotal?.toString() || "0").toFixed(2);
+      calculatedTotal += parseFloat(price);
+
+      // Print: "1x  Burger                $10.00"
+      b.row(`${qty} ${productName}`, `$${price}`);
+    });
+
+    // 5. Totals Section
+    b.newLine()
+      .text("------------------------------------------------")
+      .newLine();
+
+    // Total (Large & Bold)
+    const total = (order.totalAmount || calculatedTotal).toFixed(2);
+
+    b.alignRight()
+      .setSize(2, 2)
+      .bold(true)
+      .text(`TOTAL: $${total}`)
+      .setSize(1, 1)
+      .bold(false)
+      .newLine(2);
+
+    // 6. Footer
+    b.alignCenter().text("Thank you for dining with us!").newLine(4).cut();
 
     return b.build();
   }

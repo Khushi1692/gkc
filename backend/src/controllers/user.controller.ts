@@ -39,7 +39,7 @@ export class UserController {
       const verificationToken = crypto.randomBytes(32).toString("hex");
       const hashedPassword = await bcrypt.hash(
         password,
-        config.bcrypt.saltRounds
+        config.bcrypt.saltRounds,
       );
 
       // Create new user
@@ -56,7 +56,7 @@ export class UserController {
         await EmailService.sendVerificationEmail(
           email,
           name,
-          verificationToken
+          verificationToken,
         );
 
         res.status(201).json({
@@ -141,17 +141,18 @@ export class UserController {
         expiresIn: config.jwt.expiresIn as any,
       });
 
+      const isProd = process.env.NODE_ENV === "production";
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none",
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
       if (sessionId) {
         await CartService.mergeGuestCartWithUserCart(
           user._id.toString(),
-          sessionId
+          sessionId,
         );
       }
 
@@ -298,7 +299,7 @@ export class UserController {
       // Hash new password and save
       const hashedPassword = await bcrypt.hash(
         password,
-        config.bcrypt.saltRounds
+        config.bcrypt.saltRounds,
       );
       user.password = hashedPassword;
       user.resetPasswordToken = undefined;
@@ -345,18 +346,19 @@ export class UserController {
         const token = jwt.sign({ userId: user._id }, config.jwt.secret, {
           expiresIn: config.jwt.expiresIn as any,
         });
+        const isProd = process.env.NODE_ENV === "production";
 
         res.cookie("token", token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "none",
+          secure: isProd,
+          sameSite: isProd ? "none" : "lax",
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
         if (sessionId) {
           await CartService.mergeGuestCartWithUserCart(
             user._id.toString(),
-            sessionId
+            sessionId,
           );
         }
 
@@ -387,17 +389,19 @@ export class UserController {
           expiresIn: config.jwt.expiresIn as any,
         });
 
+        const isProd = process.env.NODE_ENV === "production";
+
         res.cookie("token", token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "none",
+          secure: isProd,
+          sameSite: isProd ? "none" : "lax",
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
         if (sessionId) {
           await CartService.mergeGuestCartWithUserCart(
             user._id.toString(),
-            sessionId
+            sessionId,
           );
         }
 
@@ -428,17 +432,19 @@ export class UserController {
         expiresIn: config.jwt.expiresIn as any,
       });
 
+      const isProd = process.env.NODE_ENV === "production";
+
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none",
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
       if (sessionId) {
         await CartService.mergeGuestCartWithUserCart(
           user._id.toString(),
-          sessionId
+          sessionId,
         );
       }
 
@@ -507,7 +513,7 @@ export class UserController {
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
 
     res.status(200).json({

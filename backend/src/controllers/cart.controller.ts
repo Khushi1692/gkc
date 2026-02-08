@@ -58,7 +58,7 @@ export class CartController {
 
       cart.items.forEach((item) => {
         const branchProduct = branchProductMap.get(
-          item.productId._id.toString()
+          item.productId._id.toString(),
         );
 
         if (!branchProduct?.isAvailable) {
@@ -75,7 +75,7 @@ export class CartController {
             (sum, c) =>
               sum +
               c.selectedOptions.reduce((s, o) => s + (o.priceModifier || 0), 0),
-            0
+            0,
           ) ?? 0;
 
         const subtotal =
@@ -130,7 +130,7 @@ export class CartController {
 
       const isAvailable = await isProductAvailableInBranch(
         branchId,
-        productData.productId.toString()
+        productData.productId.toString(),
       );
 
       if (!isAvailable) {
@@ -145,12 +145,13 @@ export class CartController {
 
       if (!req.sessionId) {
         sessionId = crypto.randomBytes(32).toString("hex");
+        const isProd = process.env.NODE_ENV === "production";
 
         res.cookie("sessionId", sessionId, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "none",
-          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+          secure: isProd,
+          sameSite: isProd ? "none" : "lax",
+          maxAge: 7 * 24 * 60 * 60 * 1000,
         });
       } else {
         sessionId = req.sessionId;
@@ -182,7 +183,7 @@ export class CartController {
         itemId,
         quantity,
         req.userId,
-        req.sessionId
+        req.sessionId,
       );
 
       res.status(200).json({

@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=VT323&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -47,7 +48,7 @@
 
 :root {
   --radius: 0.65rem;
-  --background: oklch(1 0 0);
+  --background: #F6C1D1;
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
@@ -116,18 +117,12 @@
 
 @layer base {
   * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-@layer base {
-  * {
     @apply border-border outline-ring/50;
   }
   body {
+    font-family: 'Bungee', sans-serif;
+    font-weight: 100;
+    font-style: normal;
     @apply bg-background text-foreground;
   }
 }

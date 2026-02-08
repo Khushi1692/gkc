@@ -1,8 +1,8 @@
 import { Order } from "../models/order.models";
+import { PrintableOrder } from "../types/order.types";
+import { generateReceiptBase64 } from "../utils/escpos";
 import { getMqttClient } from "./mqtt.client";
 import { printJobs } from "./print.jobs";
-import { PrintableOrder } from "../types/order.types";
-import { EscPosBuilder } from "../utils/escpos";
 
 const MAX_RETRIES = 3;
 const ACK_TIMEOUT = 50000;
@@ -11,7 +11,10 @@ export class PrinterService {
   static async printOrderReceipt(orderId: string): Promise<void> {
     const order = (await Order.findById(orderId)
       .populate("branchId")
-      .lean()) as PrintableOrder | null;
+      .populate("items.productId")
+      .populate("userId", "name")) as PrintableOrder | null;
+
+    console.log(order);
 
     if (!order) throw new Error("Order not found");
     if (order.printedAt) {
@@ -30,7 +33,19 @@ export class PrinterService {
     const client = getMqttClient();
 
     // 1️⃣ Generate Professional ESC/POS Receipt
-    const receiptBuffer = this.buildReceipt(order);
+
+    const base64 = await generateReceiptBase64(order);
+
+    // 2. Build payload
+    const payload = {
+      ticket_id: order.orderId,
+      data_type: "pdf",
+      data_base64: base64,
+      paper_type: 1,
+      paper_width_mm: 72,
+      paper_height_mm: 0,
+      cut_paper: 1,
+    };
 
     // 2️⃣ Build HS-830 Binary Packet
     const flag = Buffer.from([0x03]); // Need Reply
@@ -40,7 +55,7 @@ export class PrinterService {
       Buffer.from([0x00]), // Null terminator
     ]);
 
-    const payload = Buffer.concat([flag, replyTopic, ticketId, receiptBuffer]);
+    // const payload = Buffer.concat([flag, replyTopic, ticketId, receiptBuffer]);
 
     return new Promise((resolve, reject) => {
       const send = () => {
@@ -48,7 +63,9 @@ export class PrinterService {
         const retries = existingJob ? existingJob.retries : 0;
 
         // Use the cmdTopic from DB (e.g. Prn3F1C...)
-        client.publish(printer.mqtt.cmdTopic, payload, { qos: 1 });
+        client.publish(printer.mqtt.cmdTopic, JSON.stringify(payload), {
+          qos: 1,
+        });
 
         const timeout = setTimeout(async () => {
           const job = printJobs.get(jobId);
@@ -89,88 +106,5 @@ export class PrinterService {
       };
       send();
     });
-  }
-
-  // 🖨️ PROFESSIONAL RECEIPT DESIGN
-  private static buildReceipt(order: PrintableOrder): Buffer {
-    const b = new EscPosBuilder();
-
-    // 1. Header Section
-    b.init()
-      .alignCenter()
-      .setSize(2, 2) // Double Width & Height
-      .bold(true)
-      .text(order.branchId.name) // Restaurant Name
-      .bold(false)
-      .setSize(1, 1) // Reset size
-      .newLine();
-
-    b.newLine()
-      .text("------------------------------------------------")
-      .newLine();
-
-    // 2. Order Meta Data
-    // Clean up Order ID (Take last 6 chars if it's too long)
-    const shortOrderId =
-      order.orderId.length > 10
-        ? "..." + order.orderId.slice(-6)
-        : order.orderId;
-
-    const dateStr = new Date(order.createdAt).toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    });
-
-    b.alignLeft()
-      .text(`Order #: ${shortOrderId}`)
-      .alignRight()
-      .text(dateStr) // Print Date on right (requires calc, simplified here)
-      .newLine()
-      .alignLeft()
-      .text("------------------------------------------------")
-      .newLine();
-
-    // 3. Items Header
-    b.bold(true)
-      .row("Qty Item", "Price") // Custom row helper
-      .bold(false)
-      .newLine();
-
-    // 4. Items List
-    let calculatedTotal = 0;
-    order.items.forEach((item) => {
-      const productName = item.productId?.name ?? "Unknown Item";
-      const qty = `${item.quantity}x`;
-
-      // Fix Price Decimals (e.g. 11.691 -> 11.69)
-      const price = parseFloat(item.subtotal?.toString() || "0").toFixed(2);
-      calculatedTotal += parseFloat(price);
-
-      // Print: "1x  Burger                $10.00"
-      b.row(`${qty} ${productName}`, `$${price}`);
-    });
-
-    // 5. Totals Section
-    b.newLine()
-      .text("------------------------------------------------")
-      .newLine();
-
-    // Total (Large & Bold)
-    const total = (order.totalAmount || calculatedTotal).toFixed(2);
-
-    b.alignRight()
-      .setSize(2, 2)
-      .bold(true)
-      .text(`TOTAL: $${total}`)
-      .setSize(1, 1)
-      .bold(false)
-      .newLine(2);
-
-    // 6. Footer
-    b.alignCenter().text("Thank you for dining with us!").newLine(4).cut();
-
-    return b.build();
   }
 }

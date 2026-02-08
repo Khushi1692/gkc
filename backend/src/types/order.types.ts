@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { BranchPrinterConfig } from "./branch.types";
 
 export interface OrderItem {
@@ -9,15 +10,49 @@ export interface OrderItem {
 }
 
 export interface PrintableOrder {
-  _id: string;
+  _id: Types.ObjectId;
   orderId: string;
-  totalAmount: number;
-  createdAt: Date;
-  printedAt?: Date;
-  items: OrderItem[];
-  branchId: {
-    _id: string;
-    name: string;
-    printer: BranchPrinterConfig;
+  userId?: {
+    _id: Types.ObjectId;
+    name?: string;
   };
+  branchId: {
+    _id: Types.ObjectId;
+    name: string;
+    address?: string;
+    phone?: string;
+    printer: {
+      enabled: boolean;
+      mqtt: {
+        cmdTopic: string; // e.g., "Prn3F1C..."
+      };
+    };
+  };
+  items: Array<{
+    productId?: {
+      _id: Types.ObjectId;
+      name: string;
+    };
+    quantity: number;
+    price: number;
+    discountPercentage?: number;
+    discountedPrice: number;
+    subtotal: number;
+    customizations?: Array<{
+      groupName: string;
+      selectedOptions: Array<{
+        name: string;
+        priceModifier: number;
+      }>;
+    }>;
+  }>;
+  totalAmount: number;
+  specialInstructions?: string;
+  paymentIntentId?: string;
+  paymentStatus: "pending" | "paid" | "failed";
+  printStatus: "pending" | "printed" | "failed";
+  printedAt?: Date;
+  printAttempts: number;
+  createdAt: Date;
+  updatedAt: Date;
 }

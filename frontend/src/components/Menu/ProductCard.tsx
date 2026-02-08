@@ -14,7 +14,7 @@ export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
         <div className="grid h-full grid-cols-1 md:grid-cols-3">
           {/* Left: Product details */}
           {item.image && (
-            <div className="relative col-span-1 h-full min-h-[250px]">
+            <div className="bg-background relative col-span-1 h-full min-h-[250px]">
               <img
                 src={item.image}
                 alt={item.name}
@@ -45,7 +45,7 @@ export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
               )}
             </div>
 
-            <Button className="w-full md:w-fit" onClick={() => onAddToCart(item)} >
+            <Button className="w-full md:w-fit" onClick={() => onAddToCart(item)}>
               Add to Cart
             </Button>
           </div>

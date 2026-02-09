@@ -119,11 +119,16 @@ function App() {
     setShowSelectModal(false);
   };
 
+
   return (
     <>
       <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
         <BrowserRouter>
-          <Navbar onSelectBranchClick={() => setShowSelectModal(true)} />
+          <Navbar onSelectBranchClick={() => {
+            setShowSelectModal(true)
+            console.log(showSelectModal);
+
+          }} />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Menu />} />

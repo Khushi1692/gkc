@@ -16,6 +16,7 @@ import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoginModal } from './LoginModal';
+import { fetchBranchStatus } from '@/store/slices/branchSlice';
 
 // ================= HAMBURGER ICON =================
 const HamburgerIcon = ({ className, ...props }: React.SVGAttributes<SVGElement>) => (
@@ -129,6 +130,11 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
       }
     }, [dispatch, selectedBranch?._id]);
 
+    useEffect(() => {
+      if (selectedBranch?._id)
+        dispatch(fetchBranchStatus({ branchId: selectedBranch?._id }))
+    }, [dispatch, selectedBranch?._id]);
+
     return (
       <>
         <header
@@ -137,14 +143,15 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
             'bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b px-4 backdrop-blur md:px-6 [&_*]:no-underline'
           }
         >
-          <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-4">
+          <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between gap-2 md:gap-4">
             {/* LEFT SIDE */}
-            <div className="flex flex-1 items-center justify-between gap-4 md:gap-6">
-              <div className="flex flex-1 gap-4 lg:gap-8">
+            <div className="flex flex-1 items-center justify-between gap-2 md:gap-4">
+              <div className="flex flex-1 gap-2 lg:gap-8">
                 <button
                   onClick={() => navigate('/')}
-                  className="text-primary hover:text-primary/90 mr-4 flex items-center space-x-2 transition-colors"
+                  className="flex-shrink-0 text-primary hover:text-primary/90 mr-2 flex items-center space-x-2 transition-colors"
                 >
+
                   <img src="/pop101-logo.png" alt="logo" height={60} width={60} />
                   <span className="hidden text-xl font-bold sm:inline-block">Pop101</span>
                 </button>
@@ -175,12 +182,13 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
               {selectedBranch && (
                 <button
                   onClick={onSelectBranchClick}
-                  className="hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md border px-3 py-1 text-sm font-medium"
+                  className="hover:bg-accent hover:text-accent-foreground flex items-center gap-1 rounded-md border px-2 py-1 text-xs md:text-sm font-medium max-w-[120px] md:max-w-none"
                 >
-                  <MapPin className="text-primary h-4 w-4" />
-                  <span>{selectedBranch.name}</span>
+                  <MapPin className="text-primary h-4 w-4 flex-shrink-0" />
+                  <span className="truncate">{selectedBranch.name}</span>
                 </button>
               )}
+
             </div>
 
             {/* RIGHT SIDE */}
@@ -250,7 +258,8 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                     className="hover:bg-accent hover:text-accent-foreground text-sm font-medium"
                     onClick={() => setLoginOpen(true)}
                   >
-                    Log In
+                    {isMobile ? <User className="h-5 w-5" /> : 'Log In'}
+                    {/* Log In */}
                   </Button>
                   {!isMobile && (
                     <Button

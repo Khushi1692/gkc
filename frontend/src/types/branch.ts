@@ -21,3 +21,18 @@ export interface BranchWithOpeningHours extends Branch {
     isClosed: boolean;
   }[];
 }
+export interface BranchTodayHours {
+  _id: string;
+  day: string;
+  open: string;
+  close: string;
+  isClosed: boolean;
+}
+
+export interface BranchStatus {
+  branchId: string;
+  branchName: string;
+  isOpen: boolean;
+  currentTime: string;
+  todayHours: BranchTodayHours | null;
+}

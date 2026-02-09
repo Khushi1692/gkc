@@ -1,6 +1,6 @@
 import { apiClient } from '@/api/axiosClient';
 import type { ApiResponse } from '@/types/api';
-import type { Branch, BranchWithOpeningHours } from '@/types/branch';
+import type { Branch, BranchStatus, BranchWithOpeningHours } from '@/types/branch';
 import { getErrorMessage } from '@/utils/errorHandler';
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
@@ -8,13 +8,20 @@ interface BranchState {
   selectedBranch: Branch | null;
   nearestBranch: Branch | null;
   allBranches: Branch[];
+  branchStatus: {
+    isOpen: boolean;
+    branchName?: string;
+    todayHours?: any;
+  } | null;
   loading: {
     list: boolean;
     select: boolean;
+    status: boolean;
   };
   error: {
     list: string | null;
     select: string | null;
+    status: string | null;
   };
 }
 
@@ -22,13 +29,16 @@ const initialState: BranchState = {
   selectedBranch: null,
   nearestBranch: null,
   allBranches: [],
+  branchStatus: null,
   loading: {
     list: false,
     select: false,
+    status: false,
   },
   error: {
     list: null,
     select: null,
+    status: null,
   },
 };
 
@@ -68,16 +78,13 @@ export const fetchAllBranches = createAsyncThunk<
     return rejectWithValue(getErrorMessage(err));
   }
 });
-
 export const fetchBranchStatus = createAsyncThunk<
-  ApiResponse<{ isOpen: boolean; operatingHours: string[] }>,
+  ApiResponse<BranchStatus>,
   { branchId: string },
   { rejectValue: string }
 >('branch/fetchBranchStatus', async ({ branchId }, { rejectWithValue }) => {
   try {
-    const response = await apiClient.get<
-      ApiResponse<{ isOpen: boolean; operatingHours: string[] }>
-    >(`/branches/${branchId}/status`);
+    const response = await apiClient.get<ApiResponse<BranchStatus>>(`/branches/${branchId}/status`);
     return response.data;
   } catch (err) {
     return rejectWithValue(getErrorMessage(err));
@@ -143,6 +150,20 @@ const branchSlice = createSlice({
       .addCase(fetchAllBranches.rejected, (state, action) => {
         state.loading.list = false;
         state.error.list = action.payload || 'Could not fetch branch list';
+      })
+
+      // ========== fetchBranchStatus ==========
+      .addCase(fetchBranchStatus.pending, (state) => {
+        state.loading.status = true;
+        state.error.status = null;
+      })
+      .addCase(fetchBranchStatus.fulfilled, (state, action) => {
+        state.loading.status = false;
+        state.branchStatus = action.payload.data;
+      })
+      .addCase(fetchBranchStatus.rejected, (state, action) => {
+        state.loading.status = false;
+        state.error.status = action.payload || 'Could not fetch branch status';
       });
   },
 });

@@ -9,9 +9,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchBranchStatus } from '@/store/slices/branchSlice';
 import { clearCart, createPaymentIntent, fetchCart } from '@/store/slices/cartSlice';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 interface CheckoutModalProps {
@@ -128,7 +129,7 @@ const CheckoutModal = ({ isOpen, onClose, setSuccessOrderId }: CheckoutModalProp
           >
             {isProcessing || loading.checkout
               ? 'Processing Payment...'
-              : `Pay $${(cart.totalAmount + 2.99).toFixed(2)}`}
+              : `Pay $${(cart.totalAmount).toFixed(2)}`}
           </Button>
         </DialogFooter>
       </DialogContent>

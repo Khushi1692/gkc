@@ -21,6 +21,11 @@ const Cart = () => {
   const dispatch = useAppDispatch();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [successOrderId, setSuccessOrderId] = useState<string | null>(null);
+  const { branchStatus } = useAppSelector((s) => s.branch);
+
+  const isBranchOpen = branchStatus?.isOpen ?? true;
+  const openTime = branchStatus?.todayHours?.open;
+
 
   const { subtotalBeforeDiscount, totalDiscount, totalAfterDiscount } = useMemo(() => {
     let subtotal = 0;
@@ -283,10 +288,22 @@ const Cart = () => {
                       </div>
                     </div>
                   </div>
+                  {branchStatus && !branchStatus.isOpen && (
+                    <div className="rounded-md bg-yellow-50 p-3 text-sm text-yellow-700">
+                      This branch is currently closed. Opens at{" "}
+                      <strong>{branchStatus.todayHours?.open}</strong>
+                    </div>
+                  )}
                   <Button
                     className="w-full"
                     size="lg"
+                    disabled={!isBranchOpen}
                     onClick={() => {
+                      if (!isBranchOpen) {
+                        toast.error(`Branch is closed. Opens at ${openTime}`);
+                        return;
+                      }
+
                       if (!user) {
                         navigate('/cart?login=true');
                       } else {
@@ -294,8 +311,9 @@ const Cart = () => {
                       }
                     }}
                   >
-                    Proceed to Checkout
+                    {isBranchOpen ? "Proceed to Checkout" : "Branch Closed"}
                   </Button>
+
                 </CardContent>
               </Card>
             </div>

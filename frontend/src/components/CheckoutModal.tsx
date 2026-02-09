@@ -9,10 +9,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchBranchStatus } from '@/store/slices/branchSlice';
 import { clearCart, createPaymentIntent, fetchCart } from '@/store/slices/cartSlice';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 interface CheckoutModalProps {

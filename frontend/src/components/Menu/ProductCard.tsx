@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Product } from '@/types/menu';
+import placeholder from '@/assets/logo.jpeg';
 
 interface MenuCardProps {
   item: Product;
@@ -13,7 +14,7 @@ export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
       <CardContent className="h-full p-0">
         <div className="grid h-full grid-cols-1 md:grid-cols-3">
           {/* Left: Product details */}
-          {item.image && (
+          {item.image ? (
             <div className="bg-background relative col-span-1 h-full min-h-[250px]">
               <img
                 src={item.image}
@@ -21,7 +22,13 @@ export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
                 className="border-background absolute inset-0 h-full w-full rounded-2xl border-8 object-cover"
               />
             </div>
-          )}
+          ) : <div className="bg-background relative col-span-1 h-full min-h-[250px]">
+            <img
+              src={placeholder}
+              alt={item.name}
+              className="border-background absolute inset-0 h-full w-full rounded-2xl border-8 object-cover"
+            />
+          </div>}
           <div className="bg-background col-span-2 flex flex-col justify-center p-6 md:p-8">
             <h3 className="mb-3 text-2xl font-bold">{item.name}</h3>
 

@@ -85,7 +85,7 @@ export class BranchController {
    */
   static async getAllBranchesNearest(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
     try {
       const { lat, lng } = req.query;
@@ -93,7 +93,7 @@ export class BranchController {
       const coords = validateCoordinates(lat as string, lng as string);
       if (!coords) {
         const branches = await Branch.find({ isActive: true }).select(
-          "name address phone email location"
+          "name address phone email location",
         );
 
         res.json({
@@ -170,7 +170,7 @@ export class BranchController {
         .toLocaleString("en-US", { weekday: "long" })
         .toLowerCase();
       const todayHours = branch.operatingHours.find(
-        (h: any) => h.day === currentDay
+        (h: any) => h.day === currentDay,
       );
 
       res.json({
@@ -207,6 +207,8 @@ export class BranchController {
         location,
         operatingHours,
         menu,
+        printer,
+        code,
         isActive,
       } = req.body;
 
@@ -246,6 +248,8 @@ export class BranchController {
         location,
         operatingHours,
         menu,
+        printer,
+        code,
         isActive,
       });
 

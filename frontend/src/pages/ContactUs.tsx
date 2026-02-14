@@ -10,10 +10,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { getBranchById } from '@/store/slices/branchSlice';
 import { resetContactState, sendContactMessage } from '@/store/slices/contactSlice';
-import { contactUsSchema, type ContactUsInput } from '@/validators/contact';
 import type { BranchWithOpeningHours } from '@/types/branch';
+import { contactUsSchema, type ContactUsInput } from '@/validators/contact';
 
-import { Phone, Mail, Clock, MapPin, MessageCircle } from 'lucide-react';
+import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 
 interface OperatingHour {
   day: string;

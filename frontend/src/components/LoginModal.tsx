@@ -1,9 +1,7 @@
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -29,6 +27,17 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleClose = () => {
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.has('login')) {
+      searchParams.delete('login');
+      navigate({ pathname: location.pathname, search: searchParams.toString() }, { replace: true });
+    }
+    onOpenChange(false);
+  };
 
   const handleGoogleSuccess = async (credential: string) => {
     dispatch(googleAuthUser({ credential }))
@@ -45,9 +54,6 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
       });
   };
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
   function onSubmit(values: LoginFormData) {
     dispatch(loginUser(values))
       .unwrap()
@@ -63,20 +69,15 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
       });
   }
 
-  const handleClose = () => {
-    const searchParams = new URLSearchParams(location.search);
-    if (searchParams.has('login')) {
-      searchParams.delete('login');
-      navigate({ pathname: location.pathname, search: searchParams.toString() }, { replace: true });
-    }
-    onOpenChange(false);
-  };
-
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Login to Pop101</DialogTitle>
+      <DialogContent className="bg-card">
+
+        <DialogHeader className="mb-4 text-center">
+          <DialogTitle className="text-foreground font-bungee text-3xl uppercase tracking-wide">
+            Welcome Back!
+          </DialogTitle>
+          <p className="text-muted-foreground font-medium">Log in to your account</p>
         </DialogHeader>
 
         <Form {...form}>
@@ -86,11 +87,15 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="font-bold uppercase text-xs tracking-wider text-foreground">Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email" {...field} />
+                    <Input
+                      placeholder="Enter your email"
+                      {...field}
+                      className="border-border focus-visible:ring-primary h-11 border-2 bg-input font-medium text-foreground placeholder:text-muted-foreground/50"
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="font-bold text-destructive" />
                 </FormItem>
               )}
             />
@@ -100,55 +105,60 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="font-bold uppercase text-xs tracking-wider text-foreground">Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your password" type="password" {...field} />
+                    <Input
+                      placeholder="Enter your password"
+                      type="password"
+                      {...field}
+                      className="border-border focus-visible:ring-primary h-11 border-2 bg-input font-medium text-foreground placeholder:text-muted-foreground/50"
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="font-bold text-destructive" />
                 </FormItem>
               )}
             />
 
-            <DialogFooter className="w-full sm:justify-between">
-              <DialogClose asChild>
-                <Button variant="outline" type="button" className="flex-1" disabled={loading.login}>
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                className="flex-1"
-                disabled={loading.login || form.formState.isSubmitting}
-              >
-                {loading.login ? 'Logging in...' : 'Login'}
-              </Button>
-            </DialogFooter>
+            <Button
+              type="submit"
+              className="h-12 w-full mt-2 text-lg font-black uppercase shadow-[4px_4px_0px_0px_var(--border)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_var(--border)] transition-all"
+              disabled={loading.login || form.formState.isSubmitting}
+            >
+              {loading.login ? 'Logging in...' : 'Login'}
+            </Button>
           </form>
         </Form>
-        <div className="text-center text-sm text-gray-600">
-          New to <span className="text-primary font-semibold">Pop101</span>?{' '}
+
+        <div className="mt-6 text-center text-sm font-medium text-muted-foreground">
+          New here?{' '}
           <button
             onClick={() => {
               handleClose();
               navigate('?register=true');
             }}
-            className="text-primary font-medium hover:underline"
+            className="text-primary font-bold hover:underline decoration-2 underline-offset-2"
           >
-            Register
+            Create an account
           </button>
         </div>
-        <div className="flex items-center gap-2">
-          <hr className="flex-1 border-t border-gray-300" />
-          <span className="text-sm text-gray-500">or</span>
-          <hr className="flex-1 border-t border-gray-300" />
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t-2 border-border" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 font-bold text-muted-foreground">Or continue with</span>
+          </div>
         </div>
 
         {open && (
-          <GoogleLogin
-            key="login-google"
-            onSuccess={handleGoogleSuccess}
-            onError={() => toast.error('Google login failed')}
-          />
+          <div className="flex justify-center">
+            <GoogleLogin
+              key="login-google"
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error('Google login failed')}
+            />
+          </div>
         )}
       </DialogContent>
     </Dialog>

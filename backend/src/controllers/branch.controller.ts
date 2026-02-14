@@ -166,9 +166,18 @@ export class BranchController {
 
       const isOpen = (branch as any).isOpenNow();
       const now = new Date();
-      const currentDay = now
-        .toLocaleString("en-US", { weekday: "long" })
-        .toLowerCase();
+
+      const currentTime = new Intl.DateTimeFormat("en-AU", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "Australia/Sydney",
+      }).format(now);
+
+      const currentDay = new Intl.DateTimeFormat("en-US", {
+        weekday: "long",
+        timeZone: "Australia/Sydney",
+      }).format(now).toLowerCase();
       const todayHours = branch.operatingHours.find(
         (h: any) => h.day === currentDay,
       );
@@ -179,7 +188,7 @@ export class BranchController {
           branchId: branch._id,
           branchName: branch.name,
           isOpen,
-          currentTime: now.toTimeString().slice(0, 5),
+          currentTime,
           todayHours: todayHours || null,
         },
       });

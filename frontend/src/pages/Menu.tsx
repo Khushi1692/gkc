@@ -8,6 +8,7 @@ import type { Product } from '@/types/menu';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+
 const Menu = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -44,13 +45,9 @@ const Menu = () => {
     let targetCategoryId: string | null = null;
 
     if (categoryFromURL) {
-      // Try to match URL category
       targetCategoryId = categoryMap.get(categoryFromURL.toLowerCase()) ?? categories[0]._id;
     } else {
-      // Default to first category
       targetCategoryId = categories[0]._id;
-
-      // Update URL with first category
       const params = new URLSearchParams(location.search);
       params.set('category', categories[0].name.toLowerCase());
       navigate(`${location.pathname}?${params.toString()}`, { replace: true });
@@ -71,81 +68,90 @@ const Menu = () => {
     }
   }, [dispatch, selectedCategoryId, selectedBranch]);
 
-  // Cleanup on unmount
+  // Cleanup
   useEffect(() => {
     return () => {
       dispatch(clearProducts());
     };
   }, [dispatch]);
 
-  // Memoized tab change handler
   const handleTabChange = useCallback(
     (categoryId: string) => {
       const selectedCat = categories.find((c) => c._id === categoryId);
-
       if (selectedCat) {
         const params = new URLSearchParams(location.search);
         params.set('category', selectedCat.name.toLowerCase());
         navigate(`${location.pathname}?${params.toString()}`, { replace: true });
       }
-
       setSelectedCategoryId(categoryId);
     },
     [categories, location.pathname, location.search, navigate]
   );
 
-  // Memoized close handler
   const handleCloseModal = useCallback(() => {
     setSelectedItem(null);
   }, []);
 
-  // Show loader
   const isLoading = loading.categories || loading.products;
 
   return (
     <>
       {isLoading && <Loader loading message="Loading menu..." />}
 
-      <div className="bg-background min-h-screen px-4 py-6 sm:px-8 md:px-12 md:py-10 lg:px-20 xl:px-32 2xl:px-40">
+      <div className="bg-background min-h-screen px-4 py-8 sm:px-8 md:px-12 lg:px-20 xl:px-32">
         {/* Hero Section */}
-        <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-xl">
-          <div className="relative aspect-[16/12] w-full sm:aspect-[16/8]">
-            <img
-              src="/hero-menu.png"
-              alt="Delicious food"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 px-4 text-center">
-              <div className="flex -translate-y-1 flex-col items-center sm:translate-y-4 md:translate-y-4 lg:translate-y-4 xl:translate-y-10">
-                <h1 className="mb-2 text-3xl font-bold text-white sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl">
-                  Your Favorite Food, Delivered Fast
-                </h1>
-                <p className="mb-6 w-[90%] text-sm text-white sm:mb-8 sm:text-lg">
-                  Craving something delicious? Pop 101 brings your favorite meals right to your
-                  door. Order now and enjoy a feast without leaving your couch.
-                </p>
+        {/* Hero Section - Split Layout */}
+        <section className="mx-auto mb-12 w-full overflow-hidden rounded-3xl border-4 border-black bg-white shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            {/* Left: Text Content */}
+
+
+            <div className="flex flex-col justify-center px-6 py-12 md:px-12 lg:px-16">
+              <div className="mb-4 inline-block self-start rounded-full border-2 border-black bg-[#FBCD06] px-4 py-1 text-xs font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_#000]">
+                Skip the Line!
               </div>
+              <h1 className="font-bungee mb-6 text-5xl uppercase leading-none text-black sm:text-6xl lg:text-7xl">
+                CLICK & <span className="text-[#FBCD06] drop-shadow-[2px_2px_0px_#000] text-shadow-black" style={{ textShadow: '3px 3px 0 #000' }}>COLLECT</span>
+              </h1>
+              <p className="text-lg font-bold leading-relaxed text-black/80 md:text-xl">
+                Pre-order your favorites and grab them hot & ready. No waiting, just eating!
+              </p>
+            </div>
+
+
+
+            <div className="relative min-h-[300px] border-t-4 border-black bg-black md:border-l-4 md:border-t-0 md:min-h-full">
+              <img
+                src="/hero-menu.png"
+                alt="Delicious food"
+                className="absolute inset-0 h-full w-full object-cover opacity-90"
+              />
+              {/* Pattern Overlay */}
+              <div className="absolute inset-0 bg-[radial-gradient(#ffffff_2px,transparent_2px)] bg-[length:20px_20px] opacity-20"></div>
             </div>
           </div>
         </section>
 
         {/* Menu Section */}
-        <section className="relative mx-auto mt-10 w-full max-w-6xl overflow-hidden rounded-xl">
+        <section className="mx-auto w-full">
           {categories.length === 0 ? (
-            <div className="text-muted-foreground py-12 text-center">No categories available.</div>
+            <div className="py-12 text-center font-bold text-xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
+              No categories available.
+            </div>
           ) : (
             <Tabs
               value={selectedCategoryId ?? ''}
               onValueChange={handleTabChange}
               className="w-full"
             >
-              <div className="w-full overflow-x-auto">
-                <TabsList className="scrollbar-hide flex h-auto w-full min-w-max flex-nowrap items-center justify-start gap-2 rounded-none border-b bg-transparent px-2">
+              {/* Categories Scrollable List */}
+              <div className="mb-8 w-full overflow-x-auto pb-4">
+                <TabsList className="bg-transparent h-auto w-max min-w-full justify-start gap-4 p-0">
                   {categories.map((category) => (
                     <TabsTrigger
                       key={category._id}
                       value={category._id}
-                      className="data-[state=active]:border-primary rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                      className="data-[state=active]:bg-primary data-[state=active]:text-foreground border-2 border-black bg-white px-6 py-3 font-bold uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] data-[state=active]:translate-y-0 text-foreground"
                     >
                       {category.name}
                     </TabsTrigger>
@@ -153,13 +159,14 @@ const Menu = () => {
                 </TabsList>
               </div>
 
-              <TabsContent value={selectedCategoryId ?? ''} className="mt-8">
+              <TabsContent value={selectedCategoryId ?? ''} className="mt-4">
                 {products.length === 0 ? (
-                  <div className="text-muted-foreground py-12 text-center">
+                  <div className="py-12 text-center font-bold text-xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
                     No items available in this category.
                   </div>
                 ) : (
-                  <div className="space-y-6">
+                  // THE GRID LAYOUT
+                  <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     {products.map((item) => (
                       <ProductCard key={item._id} item={item} onAddToCart={setSelectedItem} />
                     ))}

@@ -13,6 +13,7 @@ import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import placeholder from '@/assets/logo.jpeg';
 
 const Cart = () => {
   const { cart } = useAppSelector((s) => s.cart);
@@ -46,7 +47,7 @@ const Cart = () => {
     <>
       {!cart?.items || cart.items.length === 0 ? (
         <div className="bg-background min-h-[calc(100vh-270px)] px-4 py-6 sm:px-8 md:px-12 lg:px-20 xl:px-32 2xl:px-40">
-          <div className="mx-auto mt-10 w-full max-w-6xl rounded-xl text-center">
+          <div className="mx-auto mt-10 w-full rounded-xl text-center">
             <ShoppingBag className="text-muted-foreground mx-auto mb-6 h-24 w-24" />
             <h1 className="mb-4 text-3xl font-bold">Your cart is empty</h1>
             <p className="text-muted-foreground mb-8">Add some delicious items to get started!</p>
@@ -57,13 +58,13 @@ const Cart = () => {
         </div>
       ) : (
         <div className="bg-background min-h-[calc(100vh-270px)] px-4 py-6 sm:px-8 md:px-12 lg:px-20 xl:px-32 2xl:px-40">
-          <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-8 lg:flex-row">
+          <div className="mx-auto flex h-full w-full flex-col gap-8 lg:flex-row">
             {/* LEFT — CART ITEMS */}
             <div className="flex-1 space-y-4">
               <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
                 <h1 className="text-3xl font-bold md:text-4xl">Your Cart</h1>
                 <Button
-                  variant="outline"
+                  variant="destructive"
                   className="translate-y-1"
                   onClick={() => {
                     dispatch(clearCart())
@@ -92,7 +93,7 @@ const Cart = () => {
                         {/* Product Image */}
                         <div className="flex flex-shrink-0 justify-center sm:block">
                           <img
-                            src={item.productId.image}
+                            src={item.productId.image || placeholder}
                             alt={item.productId.name}
                             className="h-28 w-28 rounded-lg object-cover sm:h-24 sm:w-24"
                           />

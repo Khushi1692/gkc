@@ -5,55 +5,38 @@ import customer2 from '@/assets/customer-2.png';
 import customer3 from '@/assets/customer-3.png';
 
 const reviews = [
-  {
-    name: 'Dr. Ramakant Rana',
-    review:
-      'I had the pink sauce pasta at Pop101 and it was amazing! The pasta was cooked just right and the sauce was really tasty and creamy. The place has a cool, raw look with Indian vibes – very relaxed and different. The person working there was friendly too. I really enjoyed my meal and will definitely come back again!',
-    image: customer1,
-  },
-  {
-    name: 'Palak Varma',
-    review:
-      'Had a wonderful time at this place! The atmosphere was cozy and perfect for spending time with friends or family. The food was amazing, especially the pasta and burger—both were flavorful and cooked to perfection. Highly recommend if you’re looking for great food and a nice place to relax!',
-    image: customer2,
-  },
-  {
-    name: 'Pankaj Passi',
-    review:
-      'Ordered takeaway from Mumbai Pop 101 Delights and the experience was excellent! The food was packed neatly, still hot on arrival, and tasted absolutely delicious. Portion sizes were generous and flavors were spot on. Great value for money — will definitely be ordering again!',
-    image: customer3,
-  },
+  { name: 'Dr. Ramakant Rana', image: customer1, review: 'I had the pink sauce pasta at Pop101 and it was amazing! The pasta was cooked just right and the sauce was really tasty and creamy. The place has a cool, raw look with Indian vibes – very relaxed and different.' },
+  { name: 'Palak Varma', image: customer2, review: 'Had a wonderful time at this place! The atmosphere was cozy and perfect for spending time with friends or family. The food was amazing, especially the pasta and burger—both were flavorful.' },
+  { name: 'Pankaj Passi', image: customer3, review: 'Ordered takeaway from Mumbai Pop 101 Delights and the experience was excellent! The food was packed neatly, still hot on arrival, and tasted absolutely delicious. Portion sizes were generous.' },
 ];
 
 const CustomerReviews = () => {
   return (
-    <section className="mx-auto mt-16 w-full max-w-6xl px-4">
-      <h2 className="mb-10 text-center text-3xl font-bold md:text-4xl">Customer Reviews</h2>
+    <section className="w-full pb-20">
+      <h2 className="font-bungee mb-12 text-center text-4xl uppercase md:text-6xl">
+        STREET <span className="text-primary">TALK</span>
+      </h2>
 
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
         {reviews.map((review, index) => (
-          <div
-            key={index}
-            className="border-border bg-card rounded-xl border p-5 shadow-sm transition-all"
-          >
-            <div className="flex items-center gap-4">
-              {/* Small Image */}
-              <div className="bg-secondary h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
-                <img src={review.image} alt={review.name} className="h-full w-full object-cover" />
-              </div>
-
-              {/* Name */}
-              <div>
-                <h3 className="text-base font-semibold">{review.name}</h3>
-              </div>
+          <div key={index} className="relative flex flex-col items-center">
+            {/* Speech Bubble */}
+            <div className="relative mb-8 rounded-2xl border-4 border-border bg-card p-6 shadow-sm">
+              <p className="relative z-10 font-bold leading-tight italic">
+                <span className="text-primary font-serif text-3xl">“</span>
+                {review.review}
+              </p>
+              {/* Bubble Tip */}
+              <div className="absolute -bottom-4 left-10 h-8 w-8 rotate-45 border-b-4 border-r-4 border-border bg-card" />
             </div>
 
-            {/* Long Review Text */}
-            <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-              <span className="text-primary mr-1 font-serif text-lg">“</span>
-              {review.review}
-              <span className="text-primary ml-1 font-serif text-lg">”</span>
-            </p>
+            {/* Author */}
+            <div className="flex flex-col items-center gap-3">
+              <div className="h-16 w-16 overflow-hidden rounded-full border-4 border-border shadow-sm">
+                <img src={review.image} alt={review.name} className="h-full w-full object-cover" />
+              </div>
+              <h3 className="font-bungee text-lg uppercase tracking-tight">{review.name}</h3>
+            </div>
           </div>
         ))}
       </div>

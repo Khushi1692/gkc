@@ -14,7 +14,6 @@ import { contactUsSchema, type ContactUsInput } from '@/validators/contact';
 import type { BranchWithOpeningHours } from '@/types/branch';
 
 import { Phone, Mail, Clock, MapPin, MessageCircle } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 
 interface OperatingHour {
   day: string;
@@ -41,52 +40,18 @@ function convertTo12Hour(time: string) {
   return `${hour}:${m} ${suffix}`;
 }
 
+// Helper to group operating hours (e.g., "Mon - Fri: 9AM - 5PM")
 function groupOperatingHours(hours: OperatingHour[]) {
+  if (!hours) return [];
+
   const formatted = hours.map((h) => ({
-    day: dayLabels[h.day],
-    key: h.isClosed ? 'Closed' : `${convertTo12Hour(h.open)} – ${convertTo12Hour(h.close)}`,
+    day: dayLabels[h.day.toLowerCase()] || h.day,
+    time: h.isClosed ? 'Closed' : `${convertTo12Hour(h.open)} – ${convertTo12Hour(h.close)}`,
   }));
 
-  // Group by identical time range
-  const groups: Record<string, string[]> = {};
-
-  formatted.forEach(({ day, key }) => {
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(day);
-  });
-
-  // Format results
-  return Object.entries(groups).map(([time, days]) => {
-    // Combine consecutive days like Mon–Tue–Wed => Mon – Wed
-    const orderedDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-    const sorted = days.sort((a, b) => orderedDays.indexOf(a) - orderedDays.indexOf(b));
-
-    let ranges: string[] = [];
-    let start = sorted[0];
-    let prev = sorted[0];
-
-    for (let i = 1; i < sorted.length; i++) {
-      const curr = sorted[i];
-      const prevIndex = orderedDays.indexOf(prev);
-      const currIndex = orderedDays.indexOf(curr);
-
-      if (currIndex === prevIndex + 1) {
-        prev = curr;
-      } else {
-        ranges.push(start === prev ? start : `${start} – ${prev}`);
-        start = curr;
-        prev = curr;
-      }
-    }
-
-    ranges.push(start === prev ? start : `${start} – ${prev}`);
-
-    return {
-      days: ranges.join(', '),
-      time,
-    };
-  });
+  // Simple grouping logic can be expanded here if needed
+  // For now, returning strictly mapped for display
+  return formatted;
 }
 
 const ContactUs = () => {
@@ -135,109 +100,175 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="bg-background min-h-screen px-4 py-6 sm:px-8 md:px-12 lg:px-20 xl:px-32 2xl:px-40">
-      {/* FORM + CONTACT CARD SIDE BY SIDE */}
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-stretch gap-8 p-6 md:grid-cols-2">
-        <Card className="flex h-full flex-col justify-center">
-          <CardContent>
-            <h1 className="mb-4 text-3xl font-bold">Contact Us</h1>
+    <div className="bg-background min-h-screen px-4 py-8 sm:px-8 md:px-12 lg:px-20 xl:px-32">
 
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col gap-4">
-              <Input placeholder="Your Name" {...register('name')} />
-              {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
+      {/* HEADER SECTION */}
+      <div className="mx-auto mb-12 max-w-4xl text-center">
+        <h1 className="font-bungee mb-4 text-5xl text-foreground drop-shadow-[4px_4px_0px_var(--border)] sm:text-6xl md:text-7xl">
+          LET'S <span className="text-primary text-shadow-black" style={{ textShadow: '4px 4px 0 var(--border)' }}>CHAT</span>
+        </h1>
+        <p className="text-lg font-bold text-foreground/80">
+          Got a question? Want to book a table? Or just say hi? Drop us a line!
+        </p>
+      </div>
 
-              <Input type="email" placeholder="Your Email" {...register('email')} />
-              {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+      {/* MAIN CONTENT GRID */}
+      <div className="mx-auto grid w-full grid-cols-1 gap-8 lg:grid-cols-2">
 
-              <Input placeholder="Subject" {...register('subject')} />
-              {errors.subject && <p className="text-sm text-red-600">{errors.subject.message}</p>}
+        {/* LEFT: CONTACT FORM (White Card) */}
+        <div className="border-border bg-card flex flex-col rounded-3xl border-4 p-6 shadow-[8px_8px_0px_0px_var(--border)] md:p-10">
+          <h2 className="font-bungee mb-6 text-3xl uppercase text-foreground">Send a Message</h2>
 
-              <Textarea placeholder="Message" rows={5} {...register('message')} />
-              {errors.message && <p className="text-sm text-red-600">{errors.message.message}</p>}
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+            <div className="space-y-1">
+              <label className="text-sm font-bold uppercase text-foreground">Your Name</label>
+              <Input
+                placeholder="John Doe"
+                {...register('name')}
+                className="border-border focus-visible:ring-primary h-12 border-2 bg-input font-bold text-foreground shadow-[4px_4px_0px_0px_var(--border)] placeholder:text-muted-foreground/50"
+              />
+              {errors.name && <p className="text-sm font-bold text-destructive">{errors.name.message}</p>}
+            </div>
 
-              {success && <p className="text-green-600">{success}</p>}
-              {error && <p className="text-red-600">{error}</p>}
+            <div className="space-y-1">
+              <label className="text-sm font-bold uppercase text-foreground">Email Address</label>
+              <Input
+                type="email"
+                placeholder="john@example.com"
+                {...register('email')}
+                className="border-border focus-visible:ring-primary h-12 border-2 bg-input font-bold text-foreground shadow-[4px_4px_0px_0px_var(--border)] placeholder:text-muted-foreground/50"
+              />
+              {errors.email && <p className="text-sm font-bold text-destructive">{errors.email.message}</p>}
+            </div>
 
-              <Button type="submit" disabled={loading}>
-                {loading ? 'Sending...' : 'Send Message'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+            <div className="space-y-1">
+              <label className="text-sm font-bold uppercase text-foreground">Subject</label>
+              <Input
+                placeholder="Feedback / Inquiry"
+                {...register('subject')}
+                className="border-border focus-visible:ring-primary h-12 border-2 bg-input font-bold text-foreground shadow-[4px_4px_0px_0px_var(--border)] placeholder:text-muted-foreground/50"
+              />
+              {errors.subject && <p className="text-sm font-bold text-destructive">{errors.subject.message}</p>}
+            </div>
 
-        {/* CONTACT INFO CARD */}
-        {branchInfo && (
-          <div className="bg-primary/10 flex h-full flex-col rounded-xl p-6 shadow-sm">
-            <h2 className="mb-4 text-2xl font-bold">Get in Touch</h2>
+            <div className="space-y-1">
+              <label className="text-sm font-bold uppercase text-foreground">Message</label>
+              <Textarea
+                placeholder="Tell us what's on your mind..."
+                rows={5}
+                {...register('message')}
+                className="border-border focus-visible:ring-primary border-2 bg-input font-bold text-foreground shadow-[4px_4px_0px_0px_var(--border)] placeholder:text-muted-foreground/50 resize-none h-46"
+              />
+              {errors.message && <p className="text-sm font-bold text-destructive">{errors.message.message}</p>}
+            </div>
 
-            <div className="flex-1">
-              {/* Phone */}
-              <div className="mb-4 flex items-start gap-3">
-                <Phone className="text-primary mt-1 h-5 w-5" />
-                <div>
-                  <p className="font-semibold">Phone</p>
-                  <p>{branchInfo.phone}</p>
-                </div>
+            {success && (
+              <div className="border-border bg-chart-4 rounded-xl border-2 p-3 text-center font-bold text-foreground shadow-[4px_4px_0px_0px_var(--border)]">
+                ✅ Message sent successfully!
               </div>
+            )}
+            {error && (
+              <div className="border-border bg-destructive text-destructive-foreground rounded-xl border-2 p-3 text-center font-bold shadow-[4px_4px_0px_0px_var(--border)]">
+                ❌ {error}
+              </div>
+            )}
 
-              {/* WhatsApp */}
-              <div className="mb-4 flex items-start gap-3">
-                <MessageCircle className="text-primary mt-1 h-5 w-5" />
+            <Button
+              type="submit"
+              disabled={loading}
+              className="mt-2 h-14 w-full text-lg font-black uppercase shadow-[4px_4px_0px_0px_var(--border)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_var(--border)]"
+            >
+              {loading ? 'Sending...' : 'Send Message'}
+            </Button>
+          </form>
+        </div>
+
+        {/* RIGHT: BRANCH INFO (Yellow Card) */}
+        {branchInfo ? (
+          <div className="border-border bg-primary flex flex-col rounded-3xl border-4 p-6 shadow-[8px_8px_0px_0px_var(--border)] md:p-10">
+            <h2 className="font-bungee mb-8 text-3xl uppercase text-foreground">Branch Info</h2>
+
+            <div className="flex flex-col gap-6">
+
+              {/* Phone */}
+              <div className="flex items-start gap-4">
+                <div className="border-border flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 bg-white shadow-[2px_2px_0px_0px_var(--border)]">
+                  <Phone className="h-6 w-6 text-foreground" />
+                </div>
                 <div>
-                  <p className="font-semibold">WhatsApp</p>
-                  <p>{branchInfo.phone}</p>
+                  <h3 className="font-bungee text-xl uppercase text-foreground">Call Us</h3>
+                  <p className="text-lg font-bold text-foreground/80">{branchInfo.phone}</p>
                 </div>
               </div>
 
               {/* Email */}
-              <div className="mb-4 flex items-start gap-3">
-                <Mail className="text-primary mt-1 h-5 w-5" />
-                <div>
-                  <p className="font-semibold">Email</p>
-                  <p>{branchInfo.email}</p>
+              <div className="flex items-start gap-4">
+                <div className="border-border flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 bg-white shadow-[2px_2px_0px_0px_var(--border)]">
+                  <Mail className="h-6 w-6 text-foreground" />
                 </div>
-              </div>
-
-              {/* Hours */}
-              <div className="mb-4 flex items-start gap-3">
-                <Clock className="text-primary mt-1 h-5 w-5" />
                 <div>
-                  <p className="font-semibold">Opening Hours</p>
-                  {groupOperatingHours(branchInfo.operatingHours).map((h, i) => (
-                    <p key={i}>
-                      {h.days}: {h.time}
-                    </p>
-                  ))}
+                  <h3 className="font-bungee text-xl uppercase text-foreground">Email</h3>
+                  <p className="text-lg font-bold text-foreground/80 break-all">{branchInfo.email}</p>
                 </div>
               </div>
 
               {/* Address */}
-              <div className="mb-4 flex items-start gap-3">
-                <MapPin className="text-primary mt-1 h-5 w-5" />
+              <div className="flex items-start gap-4">
+                <div className="border-border flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 bg-white shadow-[2px_2px_0px_0px_var(--border)]">
+                  <MapPin className="h-6 w-6 text-foreground" />
+                </div>
                 <div>
-                  <p className="font-semibold">Visit Us</p>
-                  <p>{branchInfo.address}</p>
+                  <h3 className="font-bungee text-xl uppercase text-foreground">Visit Us</h3>
+                  <p className="text-lg font-bold text-foreground/80">{branchInfo.address}</p>
                 </div>
               </div>
+
+              {/* Hours - Sticker Style */}
+              <div className="border-border bg-card mt-4 rounded-2xl border-2 p-5 shadow-[4px_4px_0px_0px_var(--border)] w-md">
+                <div className="mb-3 flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-foreground" />
+                  <h3 className="font-bungee text-lg uppercase text-foreground">Opening Hours</h3>
+                </div>
+                <div className="space-y-2">
+                  {groupOperatingHours(branchInfo.operatingHours).map((h, i) => (
+                    <div key={i} className="flex justify-between border-b-2 border-dashed border-gray-200 pb-1 last:border-0 last:pb-0">
+                      <span className="font-bold uppercase text-foreground">{h.day}</span>
+                      <span className="font-mono font-medium text-foreground/80">{h.time}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
+        ) : (
+          <div className="border-border bg-muted flex h-full items-center justify-center rounded-3xl border-4 border-dashed p-10">
+            <p className="font-bungee text-xl text-muted-foreground">Loading Branch Info...</p>
+          </div>
         )}
+
       </div>
 
-      {/* MAP FULL WIDTH BELOW */}
-      <div className="mx-auto mt-10 h-[400px] w-full max-w-6xl overflow-hidden rounded-md shadow-md">
-        {markerLocation && (
-          <Map
-            style={{ borderRadius: '20px' }}
-            defaultZoom={13}
-            defaultCenter={markerLocation}
-            gestureHandling={'greedy'}
-            disableDefaultUI
-          >
-            <Marker position={markerLocation} />
-          </Map>
-        )}
+      {/* MAP SECTION - Sticker Style */}
+      <div className="mx-auto mt-12 w-full">
+        <div className="border-border bg-card overflow-hidden rounded-3xl border-4 shadow-[8px_8px_0px_0px_var(--border)]">
+          <div className="h-[400px] w-full bg-gray-200">
+            {markerLocation && (
+              <Map
+                style={{ width: '100%', height: '100%' }}
+                defaultZoom={15}
+                defaultCenter={markerLocation}
+                gestureHandling={'cooperative'}
+                disableDefaultUI={false}
+                mapId="DEMO_MAP_ID" // Required for AdvancedMarker if using newer Google Maps
+              >
+                <Marker position={markerLocation} />
+              </Map>
+            )}
+          </div>
+        </div>
       </div>
+
     </div>
   );
 };

@@ -1,9 +1,7 @@
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -16,7 +14,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { GoogleLogin } from './GoogleLogin';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface SignUpProps {
   open: boolean;
@@ -30,6 +28,7 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
     resolver: zodResolver(signupSchema),
   });
   const navigate = useNavigate();
+  const location = useLocation();
 
   function onSubmit(values: SignupFormData) {
     dispatch(signupUser(values))
@@ -37,12 +36,12 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
       .then((res) => {
         if (res.status === 'success') {
           toast.success(res.message);
-          onOpenChange(false);
+          handleClose();
           form.reset();
         }
         if (res.status === 'warning') {
           toast.warning(res.message);
-          onOpenChange(false);
+          handleClose();
           form.reset();
         }
       })
@@ -57,7 +56,7 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
       .then((res) => {
         if (res.status === 'success') {
           toast.success(res.message);
-          onOpenChange(false);
+          handleClose();
           form.reset();
         }
       })
@@ -77,9 +76,13 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Register to Pop101</DialogTitle>
+      <DialogContent className="bg-card">
+
+        <DialogHeader className="mb-4 text-center">
+          <DialogTitle className="text-foreground font-bungee text-3xl uppercase tracking-wide">
+            Get Started
+          </DialogTitle>
+          <p className="text-muted-foreground font-medium">Create your account</p>
         </DialogHeader>
 
         <Form {...form}>
@@ -89,11 +92,15 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel className="font-bold uppercase text-xs tracking-wider text-foreground">Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your name" {...field} />
+                    <Input
+                      placeholder="Enter your name"
+                      {...field}
+                      className="border-border focus-visible:ring-primary h-11 border-2 bg-input font-medium text-foreground placeholder:text-muted-foreground/50"
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="font-bold text-destructive" />
                 </FormItem>
               )}
             />
@@ -102,11 +109,15 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="font-bold uppercase text-xs tracking-wider text-foreground">Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email" {...field} />
+                    <Input
+                      placeholder="Enter your email"
+                      {...field}
+                      className="border-border focus-visible:ring-primary h-11 border-2 bg-input font-medium text-foreground placeholder:text-muted-foreground/50"
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="font-bold text-destructive" />
                 </FormItem>
               )}
             />
@@ -116,60 +127,60 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="font-bold uppercase text-xs tracking-wider text-foreground">Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your password" type="password" {...field} />
+                    <Input
+                      placeholder="Enter your password"
+                      type="password"
+                      {...field}
+                      className="border-border focus-visible:ring-primary h-11 border-2 bg-input font-medium text-foreground placeholder:text-muted-foreground/50"
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="font-bold text-destructive" />
                 </FormItem>
               )}
             />
 
-            <DialogFooter className="w-full sm:justify-between">
-              <DialogClose asChild>
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="flex-1"
-                  disabled={loading.signup}
-                >
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                className="flex-1"
-                disabled={loading.signup || form.formState.isSubmitting}
-              >
-                {loading.signup ? 'Registering...' : 'Register'}
-              </Button>
-            </DialogFooter>
+            <Button
+              type="submit"
+              className="h-12 w-full mt-2 text-lg font-black uppercase shadow-[4px_4px_0px_0px_var(--border)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_var(--border)] transition-all bg-primary text-foreground hover:bg-primary/90"
+              disabled={loading.signup || form.formState.isSubmitting}
+            >
+              {loading.signup ? 'Registering...' : 'Register'}
+            </Button>
           </form>
         </Form>
-        <div className="text-center text-sm text-gray-600">
+
+        <div className="mt-6 text-center text-sm font-medium text-muted-foreground">
           Already have an account?{' '}
           <button
             onClick={() => {
               handleClose();
               navigate('?login=true');
             }}
-            className="text-primary font-medium hover:underline"
+            className="text-primary font-bold hover:underline decoration-2 underline-offset-2"
           >
             Login
           </button>
         </div>
-        <div className="flex items-center gap-2">
-          <hr className="flex-1 border-t border-gray-300" />
-          <span className="text-sm text-gray-500">or</span>
-          <hr className="flex-1 border-t border-gray-300" />
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t-2 border-border" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 font-bold text-muted-foreground">Or continue with</span>
+          </div>
         </div>
 
         {open && (
-          <GoogleLogin
-            key="signup-google"
-            onSuccess={handleGoogleSuccess}
-            onError={() => toast.error('Google login failed')}
-          />
+          <div className="flex justify-center">
+            <GoogleLogin
+              key="signup-google"
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error('Google login failed')}
+            />
+          </div>
         )}
       </DialogContent>
     </Dialog>

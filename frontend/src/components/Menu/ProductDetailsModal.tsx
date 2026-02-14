@@ -18,6 +18,7 @@ import type { Product } from '@/types/menu';
 import { Minus, Plus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import placeholder from '@/assets/logo.jpeg';
 
 interface ProductDetailsModalProps {
   open: boolean;
@@ -159,20 +160,24 @@ export const ProductDetailsModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] max-w-lg overflow-auto">
+      <DialogContent className="max-h-[90vh] max-w-lg overflow-auto bg-accent">
         <DialogHeader>
           <DialogTitle>{product.name}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="flex gap-4">
-            {product.image && (
+            {product.image ? (
               <img
                 src={product.image}
                 alt={product.name}
                 className="h-52 w-auto flex-1 rounded-md object-fill"
               />
-            )}
+            ) : <img
+              src={placeholder}
+              alt={product.name}
+              className="h-52 w-auto flex-1 rounded-md object-fill"
+            />}
 
             {product.description && (
               <p className="text-muted-foreground flex-1">{product.description}</p>
@@ -201,7 +206,7 @@ export const ProductDetailsModal = ({
                             id={opt._id}
                             className="border-primary text-primary border-2"
                           />
-                          <label htmlFor={opt._id}>{opt.name}</label>
+                          <label htmlFor={opt._id} className='text-muted-foreground'>{opt.name}</label>
                         </div>
                         {opt.priceModifier > 0 && (
                           <span className="text-muted-foreground text-sm">

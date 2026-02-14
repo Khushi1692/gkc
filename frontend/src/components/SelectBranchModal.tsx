@@ -45,7 +45,7 @@ const SelectBranchModal = ({ open, onSelect }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={handleConfirm}>
-      <DialogContent className="max-w-md overflow-hidden rounded-2xl p-0">
+      <DialogContent className="max-w-md overflow-hidden rounded-2xl p-0 bg-accent">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle className="text-center text-xl font-semibold">
             Select Your Branch
@@ -59,8 +59,8 @@ const SelectBranchModal = ({ open, onSelect }: Props) => {
                 key={branch._id}
                 onClick={() => setSelectedId(branch._id)}
                 className={cn(
-                  'hover:border-primary/60 hover:bg-primary/5 flex w-full items-center justify-between rounded-xl border p-4 text-left transition-all',
-                  selectedId === branch._id && 'border-primary bg-primary/10'
+                  'cursor-pointer flex w-full items-center justify-between rounded-xl border p-4 text-left transition-all',
+                  selectedId === branch._id && 'border-primary bg-primary/40'
                 )}
               >
                 <div className="flex items-start gap-3">

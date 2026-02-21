@@ -60,6 +60,7 @@ const navigationLinks: NavbarNavLink[] = [
   { href: '/menu', label: 'Menu' },
   { href: '/about', label: 'About Us' },
   { href: '/contact', label: 'Contact Us' },
+  { href: '/faq', label: 'FAQ' },
 ];
 
 // ================= MAIN COMPONENT =================

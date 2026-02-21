@@ -21,6 +21,7 @@ import MyOrders from './pages/MyOrders';
 import ContactUs from './pages/ContactUs';
 import { APIProvider } from '@vis.gl/react-google-maps';
 import AboutUs from './pages/AboutUs';
+import FAQ from './pages/FAQ';
 function App() {
   const dispatch = useAppDispatch();
   const { nearestBranch, selectedBranch } = useAppSelector((s) => s.branch);
@@ -121,47 +122,47 @@ function App() {
 
 
   return (
-    <>
-      <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-        <BrowserRouter>
-          <Navbar onSelectBranchClick={() => {
-            setShowSelectModal(true)
-            console.log(showSelectModal);
 
-          }} />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/menu" element={<Menu />} />
-            <Route path="/verify-email/:token" element={<VerifyEmail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/orders" element={<MyOrders />} />
-            <Route path="/contact" element={<ContactUs />} />
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Footer />
-        </BrowserRouter>
+    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+      <BrowserRouter>
+        <Navbar onSelectBranchClick={() => {
+          setShowSelectModal(true)
+          console.log(showSelectModal);
 
-        {showConfirmModal && (
-          <BranchConfirmationModal
-            open={showConfirmModal}
-            nearestBranchName={nearestBranch?.name || ''}
-            selectedBranchName={selectedBranch?.name || ''}
-            onConfirm={handleConfirm}
-            onChangeBranch={handleChangeBranch}
-            onClose={() => setShowConfirmModal(false)}
-          />
-        )}
+        }} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/orders" element={<MyOrders />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Footer />
+      </BrowserRouter>
 
-        {showSelectModal && (
-          <SelectBranchModal
-            open={showSelectModal}
-            onSelect={handleSelectBranch}
-            onClose={() => setShowSelectModal(false)}
-          />
-        )}
-      </APIProvider>
-    </>
+      {showConfirmModal && (
+        <BranchConfirmationModal
+          open={showConfirmModal}
+          nearestBranchName={nearestBranch?.name || ''}
+          selectedBranchName={selectedBranch?.name || ''}
+          onConfirm={handleConfirm}
+          onChangeBranch={handleChangeBranch}
+          onClose={() => setShowConfirmModal(false)}
+        />
+      )}
+
+      {showSelectModal && (
+        <SelectBranchModal
+          open={showSelectModal}
+          onSelect={handleSelectBranch}
+          onClose={() => setShowSelectModal(false)}
+        />
+      )}
+    </APIProvider>
   );
 }
 

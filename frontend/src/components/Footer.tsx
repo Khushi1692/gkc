@@ -10,9 +10,9 @@ const Footer = () => {
           {/* Logo / Copyright Section */}
           <div className="flex flex-col items-center gap-2 md:items-start">
             <h2 className="font-bungee text-2xl uppercase tracking-tighter text-foreground">
-              POP<span className="text-primary">101</span>
+              POP101
             </h2>
-            <p className="font-bold text-muted-foreground text-xs uppercase tracking-widest">
+            <p className="font-bold text-muted-foreground text-sm uppercase tracking-widest">
               © 2026 POP101. All rights reserved.
             </p>
           </div>

@@ -178,6 +178,10 @@
     font-style: normal;
     @apply bg-background text-foreground;
   }
+
+  p {
+    @apply text-lg;
+  }
 }
 
 .scrollbar-hide::-webkit-scrollbar {

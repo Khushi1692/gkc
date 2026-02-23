@@ -105,7 +105,7 @@ const ContactUs = () => {
       {/* HEADER SECTION */}
       <div className="mx-auto mb-12 max-w-4xl text-center">
         <h1 className="font-bungee mb-4 text-5xl text-foreground drop-shadow-[4px_4px_0px_var(--border)] sm:text-6xl md:text-7xl">
-          LET'S <span className="text-primary text-shadow-black" style={{ textShadow: '4px 4px 0 var(--border)' }}>CHAT</span>
+          <span className="text-primary text-shadow-black" style={{ textShadow: '4px 4px 0 var(--border)' }}>LET'S CHAT</span>
         </h1>
         <p className="text-lg font-bold text-foreground/80">
           Got a question? Want to book a table? Or just say hi? Drop us a line!

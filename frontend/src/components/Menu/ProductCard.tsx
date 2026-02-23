@@ -10,11 +10,11 @@ interface MenuCardProps {
 
 export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
   return (
-    <Card className="flex h-full flex-col overflow-hidden rounded-xl border-2 border-black bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-0">
+    <Card className="flex h-full flex-col overflow-hidden rounded-xl border-2 border-black bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-0 gap-0">
 
       {/* Image Section */}
       <CardHeader className="p-0">
-        <div className="relative aspect-video w-full border-b-2 border-black bg-gray-100">
+        <div className="relative aspect-[5/4] w-full border-b-2 border-black bg-gray-100">
           <img
             src={item.image || placeholder}
             alt={item.name}
@@ -35,11 +35,11 @@ export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
           <h3 className="font-bungee text-xl leading-tight text-black">{item.name}</h3>
         </div>
 
-        <p className="text-muted-foreground line-clamp-2 text-sm font-medium">
+        {/* <p className="text-muted-foreground line-clamp-2 text-sm font-medium">
           {item.description || "No description available."}
-        </p>
+        </p> */}
 
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-2">
           {/* Price Display */}
           <div className="flex items-baseline gap-2">
             {item.discountPercentage > 0 ? (

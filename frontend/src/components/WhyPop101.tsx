@@ -10,7 +10,7 @@ const WhyPop101 = () => {
     return (
         <section className="w-full">
             <h2 className="font-bungee mb-12 text-center text-4xl uppercase md:text-6xl">
-                Why <span className="text-primary">POP101?</span>
+                Why <span className="text-primary">POP101</span>?
             </h2>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">

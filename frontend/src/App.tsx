@@ -31,6 +31,24 @@ function App() {
 
   const skipSelectBranch = localStorage.getItem('skipSelectBranch') === 'true';
 
+  const APP_VERSION = "1.0.0"; // change this on breaking update
+
+  useEffect(() => {
+    const storedVersion = localStorage.getItem("app_version");
+
+    if (storedVersion !== APP_VERSION) {
+      console.log("New version detected. Clearing old storage...");
+
+      localStorage.clear();
+      sessionStorage.clear();
+
+      localStorage.setItem("app_version", APP_VERSION);
+
+      // Optional: force reload so everything starts clean
+      window.location.reload();
+    }
+  }, []);
+
   useEffect(() => {
     dispatch(fetchCurrentUser());
   }, [dispatch]);

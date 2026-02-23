@@ -106,7 +106,7 @@ const Menu = () => {
             {/* Left: Text Content */}
 
 
-            <div className="flex flex-col justify-center px-6 py-12 md:px-12 lg:px-16">
+            <div className="flex flex-col justify-center px-6 py-12 md:px-12 lg:px-16 min-h-[500px]">
               <div className="mb-4 inline-block self-start rounded-full border-2 border-black bg-[#FBCD06] px-4 py-1 text-xs font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_#000]">
                 Skip the Line!
               </div>
@@ -122,7 +122,7 @@ const Menu = () => {
 
             <div className="relative min-h-[300px] border-t-4 border-black bg-black md:border-l-4 md:border-t-0 md:min-h-full">
               <img
-                src="/hero-menu.png"
+                src={`https://pop101.crestedith.com/uploads/menu-hero.webp`}
                 alt="Delicious food"
                 className="absolute inset-0 h-full w-full object-cover opacity-90"
               />
@@ -151,7 +151,7 @@ const Menu = () => {
                     <TabsTrigger
                       key={category._id}
                       value={category._id}
-                      className="data-[state=active]:bg-primary data-[state=active]:text-foreground border-2 border-black bg-white px-6 py-3 font-bold uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] data-[state=active]:translate-y-0 text-foreground"
+                      className="data-[state=active]:bg-primary data-[state=active]:text-foreground border-2 border-black bg-white px-6 py-3 font-bold uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] data-[state=active]:translate-y-0 text-foreground text-lg"
                     >
                       {category.name}
                     </TabsTrigger>

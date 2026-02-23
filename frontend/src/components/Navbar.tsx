@@ -218,7 +218,7 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                         <img
                           src={user.avatar}
                           alt={user.name}
-                          className="h-10 w-9 rounded-full object-cover"
+                          className="h-10 w-10 rounded-full object-cover"
                         />
                       ) : (
                         <div className="bg-primary flex h-10 w-9 items-center justify-center rounded-full">

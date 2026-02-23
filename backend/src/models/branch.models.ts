@@ -104,7 +104,7 @@ const branchSchema = new Schema<IBranch>(
 
     isActive: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 branchSchema.index({ location: "2dsphere" });
@@ -118,7 +118,7 @@ branchSchema.pre("save", async function (next) {
       for (const product of menuItem.products) {
         if (!product.price && product.productId) {
           const base = await Product.findById(product.productId).select(
-            "basePrice"
+            "basePrice",
           );
           if (base && base.basePrice != null) {
             product.price = base.basePrice;
@@ -134,22 +134,44 @@ branchSchema.pre("save", async function (next) {
 
 branchSchema.methods.isOpenNow = function (): boolean {
   const now = new Date();
-  const currentDay = now
-    .toLocaleString("en-US", { weekday: "long" })
-    .toLowerCase();
+
+  const formatter = new Intl.DateTimeFormat("en-AU", {
+    timeZone: "Australia/Sydney",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    weekday: "long",
+  });
+
+  const parts = formatter.formatToParts(now);
+
+  const currentDay = parts
+    .find((p) => p.type === "weekday")
+    ?.value.toLowerCase();
+  const hour = Number.parseInt(
+    parts.find((p) => p.type === "hour")?.value || "0",
+  );
+  const minute = Number.parseInt(
+    parts.find((p) => p.type === "minute")?.value || "0",
+  );
+
   const hours = this.operatingHours.find((h: any) => h.day === currentDay);
   if (!hours || hours.isClosed) return false;
 
   const [openHour, openMinute] = hours.open.split(":").map(Number);
   const [closeHour, closeMinute] = hours.close.split(":").map(Number);
 
-  const openTime = new Date(now);
-  openTime.setHours(openHour, openMinute, 0, 0);
+  const currentTotal = hour * 60 + minute;
+  const openTotal = openHour * 60 + openMinute;
+  const closeTotal = closeHour * 60 + closeMinute;
 
-  const closeTime = new Date(now);
-  closeTime.setHours(closeHour, closeMinute, 0, 0);
-
-  return now >= openTime && now <= closeTime;
+  if (openTotal <= closeTotal) {
+    // Normal same-day closing
+    return currentTotal >= openTotal && currentTotal <= closeTotal;
+  } else {
+    // Overnight case (e.g., 18:00 - 02:00)
+    return currentTotal >= openTotal || currentTotal <= closeTotal;
+  }
 };
 
 export const Branch = model("Branch", branchSchema);

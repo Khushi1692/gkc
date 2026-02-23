@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 
 const menuItems = [
-  { id: 1, title: 'Classic Burger', description: 'Fresh petty burgers with fresh toppings', image: 'https://pop101.crestedith.com/uploads/home-burger.webp', slug: 'burger' },
-  { id: 2, title: 'Creamy Pasta', description: 'Rich and creamy pasta with your choice of sauce', image: 'https://pop101.crestedith.com/uploads/home-pasta.webp', slug: 'pasta' },
-  { id: 3, title: 'Crispy Fries', description: 'Perfectly seasoned and crispy fries', image: 'https://pop101.crestedith.com/uploads/home-fries.webp', slug: 'fries' },
+  { id: 1, title: 'Classic Burger', description: 'Fresh petty burgers with fresh toppings', image: 'https://pop101.com.au/uploads/home-burger.webp', slug: 'burger' },
+  { id: 2, title: 'Creamy Pasta', description: 'Rich and creamy pasta with your choice of sauce', image: 'https://pop101.com.au/uploads/home-pasta.webp', slug: 'pasta' },
+  { id: 3, title: 'Crispy Fries', description: 'Perfectly seasoned and crispy fries', image: 'https://pop101.com.au/uploads/home-fries.webp', slug: 'fries' },
 ];
 
 const FeaturedMenu = () => {

@@ -45,7 +45,7 @@ const Hero = () => {
                 {/* Right: Image Content */}
                 <div className="relative min-h-[350px] border-t-4 border-border bg-foreground md:border-l-4 md:border-t-0 md:min-h-full">
                     <img
-                        src={`https://pop101.crestedith.com/uploads/home.webp`}
+                        src={`https://pop101.com.au/uploads/home.webp`}
                         alt="Delicious food"
                         className="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-700 hover:scale-110"
                     />

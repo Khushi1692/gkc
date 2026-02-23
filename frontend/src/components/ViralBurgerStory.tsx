@@ -20,7 +20,7 @@ const ViralBurgerStory = () => {
                     {/* Image */}
                     <div className="relative h-64 sm:h-72 md:h-full">
                         <img
-                            src="https://pop101.crestedith.com/uploads/ufo-blog.webp"
+                            src="https://pop101.com.au/uploads/ufo-blog.webp"
                             alt="Melbourne Viral UFO Burger"
                             className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                         />

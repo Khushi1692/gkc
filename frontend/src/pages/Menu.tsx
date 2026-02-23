@@ -122,7 +122,7 @@ const Menu = () => {
 
             <div className="relative min-h-[300px] border-t-4 border-black bg-black md:border-l-4 md:border-t-0 md:min-h-full">
               <img
-                src={`https://pop101.crestedith.com/uploads/menu-hero.webp`}
+                src={`https://pop101.com.au/uploads/menu-hero.webp`}
                 alt="Delicious food"
                 className="absolute inset-0 h-full w-full object-cover opacity-90"
               />

@@ -1,6 +1,7 @@
 import CustomerReviews from "@/components/CustomerReviews";
 import FeaturedMenu from "@/components/FeaturedMenu";
 import Hero from "@/components/Hero";
+import ViralBurgerStory from "@/components/ViralBurgerStory";
 import WhyPop101 from "@/components/WhyPop101";
 
 const Home = () => {
@@ -10,6 +11,7 @@ const Home = () => {
         <Hero />
         <FeaturedMenu />
         <WhyPop101 />
+        <ViralBurgerStory />
         <CustomerReviews />
       </div>
     </main>

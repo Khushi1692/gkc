@@ -145,7 +145,6 @@ function App() {
       <BrowserRouter>
         <Navbar onSelectBranchClick={() => {
           setShowSelectModal(true)
-          console.log(showSelectModal);
 
         }} />
         <Routes>

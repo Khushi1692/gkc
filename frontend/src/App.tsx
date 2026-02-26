@@ -22,6 +22,7 @@ import ContactUs from './pages/ContactUs';
 import { APIProvider } from '@vis.gl/react-google-maps';
 import AboutUs from './pages/AboutUs';
 import FAQ from './pages/FAQ';
+import { ResetPasswordPage } from './pages/ResetPassword';
 function App() {
   const dispatch = useAppDispatch();
   const { nearestBranch, selectedBranch } = useAppSelector((s) => s.branch);
@@ -156,6 +157,7 @@ function App() {
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />

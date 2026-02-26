@@ -72,10 +72,18 @@ router.post(
               );
             }
 
+            await EmailService.sendOrderConfirmationEmail(
+              config.adminEmail,
+              "Owner",
+              order,
+              branch.name,
+              true
+            );
+            
             if (branch?.email) {
               await EmailService.sendOrderConfirmationEmail(
-                config.adminEmail,
-                "Owner",
+                branch.email,
+                "Branch Owner",
                 order,
                 branch.name,
                 true

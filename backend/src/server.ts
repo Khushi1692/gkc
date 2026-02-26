@@ -18,7 +18,7 @@ const startServer = async () => {
     await mongoose.connect(config.mongodb.uri);
     console.log("Connected to MongoDB");
 
-    initMqttSubscriber();
+    // initMqttSubscriber();
     initHeartbeatListener();
 
     app.listen(config.port, () => {

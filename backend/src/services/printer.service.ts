@@ -2,10 +2,10 @@ import { Order } from "../models/order.models";
 import { PrintableOrder } from "../types/order.types";
 import { generateReceiptBase64 } from "../utils/escpos";
 import { getMqttClient } from "./mqtt.client";
-import { printJobs } from "./print.jobs";
+// import { printJobs } from "./print.jobs";
 
-const MAX_RETRIES = 3;
-const ACK_TIMEOUT = 50000;
+// const MAX_RETRIES = 3;
+// const ACK_TIMEOUT = 50000;
 
 export class PrinterService {
   static async printOrderReceipt(orderId: string): Promise<void> {
@@ -55,56 +55,69 @@ export class PrinterService {
       Buffer.from([0x00]), // Null terminator
     ]);
 
+    client.publish(printer.mqtt.cmdTopic, JSON.stringify(payload), {
+      qos: 0, // no delivery guarantee
+    });
+
+    console.log("🖨 Print command sent");
+
+    // Immediately mark as printed (optimistic)
+    await Order.findByIdAndUpdate(order._id, {
+      printedAt: new Date(),
+      printStatus: "printed",
+      $inc: { printAttempts: 1 },
+    });
+
     // const payload = Buffer.concat([flag, replyTopic, ticketId, receiptBuffer]);
 
-    return new Promise((resolve, reject) => {
-      const send = () => {
-        const existingJob = printJobs.get(jobId);
-        const retries = existingJob ? existingJob.retries : 0;
+    // return new Promise((resolve, reject) => {
+    //   const send = () => {
+    //     const existingJob = printJobs.get(jobId);
+    //     const retries = existingJob ? existingJob.retries : 0;
 
-        // Use the cmdTopic from DB (e.g. Prn3F1C...)
-        client.publish(printer.mqtt.cmdTopic, JSON.stringify(payload), {
-          qos: 1,
-        });
+    //     // Use the cmdTopic from DB (e.g. Prn3F1C...)
+    //     client.publish(printer.mqtt.cmdTopic, JSON.stringify(payload), {
+    //       qos: 1,
+    //     });
 
-        const timeout = setTimeout(async () => {
-          const job = printJobs.get(jobId);
-          if (!job) return;
+    //     const timeout = setTimeout(async () => {
+    //       const job = printJobs.get(jobId);
+    //       if (!job) return;
 
-          if (job.retries >= MAX_RETRIES) {
-            printJobs.delete(jobId);
-            await Order.findByIdAndUpdate(order._id, {
-              printStatus: "failed",
-              $inc: { printAttempts: 1 },
-            });
-            reject(new Error("Print ACK timeout"));
-            return;
-          }
+    //       if (job.retries >= MAX_RETRIES) {
+    //         printJobs.delete(jobId);
+    //         await Order.findByIdAndUpdate(order._id, {
+    //           printStatus: "failed",
+    //           $inc: { printAttempts: 1 },
+    //         });
+    //         reject(new Error("Print ACK timeout"));
+    //         return;
+    //       }
 
-          job.retries++;
-          await Order.findByIdAndUpdate(order._id, {
-            $inc: { printAttempts: 1 },
-          });
-          send();
-        }, ACK_TIMEOUT);
+    //       job.retries++;
+    //       await Order.findByIdAndUpdate(order._id, {
+    //         $inc: { printAttempts: 1 },
+    //       });
+    //       send();
+    //     }, ACK_TIMEOUT);
 
-        printJobs.set(jobId, {
-          retries,
-          timeout,
-          printerId: printer.mqtt.cmdTopic,
-          resolve: async () => {
-            clearTimeout(timeout);
-            printJobs.delete(jobId);
-            await Order.findByIdAndUpdate(order._id, {
-              printedAt: new Date(),
-              printStatus: "printed",
-            });
-            resolve();
-          },
-          reject,
-        });
-      };
-      send();
-    });
+    //     printJobs.set(jobId, {
+    //       retries,
+    //       timeout,
+    //       printerId: printer.mqtt.cmdTopic,
+    //       resolve: async () => {
+    //         clearTimeout(timeout);
+    //         printJobs.delete(jobId);
+    //         await Order.findByIdAndUpdate(order._id, {
+    //           printedAt: new Date(),
+    //           printStatus: "printed",
+    //         });
+    //         resolve();
+    //       },
+    //       reject,
+    //     });
+    //   };
+    //   send();
+    // });
   }
 }

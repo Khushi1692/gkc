@@ -118,13 +118,13 @@ export class UserController {
       }
 
       // Check if user is verified
-      if (!user.isVerified) {
-        res.status(401).json({
-          status: "error",
-          message: "Verify Email",
-        });
-        return;
-      }
+      // if (!user.isVerified) {
+      //   res.status(401).json({
+      //     status: "error",
+      //     message: "Verify Email",
+      //   });
+      //   return;
+      // }
 
       // Validate password
       const isPasswordValid = await bcrypt.compare(password, user.password);

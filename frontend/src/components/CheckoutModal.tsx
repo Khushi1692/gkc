@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -9,10 +11,18 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { clearCart, createPaymentIntent, fetchCart } from '@/store/slices/cartSlice';
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import {
+  clearCart,
+  createPaymentIntent,
+  fetchCart,
+} from '@/store/slices/cartSlice';
+import {
+  CardElement,
+  useElements,
+  useStripe,
+} from '@stripe/react-stripe-js';
+import type { StripeCardElementChangeEvent } from '@stripe/stripe-js';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -20,21 +30,50 @@ interface CheckoutModalProps {
   setSuccessOrderId: (orderId: string) => void;
 }
 
-const CheckoutModal = ({ isOpen, onClose, setSuccessOrderId }: CheckoutModalProps) => {
-  const { cart, loading, error } = useAppSelector((s) => s.cart);
+const CheckoutModal = ({
+  isOpen,
+  onClose,
+  setSuccessOrderId,
+}: CheckoutModalProps) => {
+  const { cart, loading } = useAppSelector((s) => s.cart);
   const dispatch = useAppDispatch();
   const stripe = useStripe();
   const elements = useElements();
 
   const branchId = localStorage.getItem('selectedBranchId') || '';
+
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
 
   if (!cart || cart.items.length === 0) return null;
 
+  // 🔥 Map Stripe/Backend errors to user-friendly messages
+  const formatErrorMessage = (message?: string) => {
+    if (!message) return 'Something went wrong. Please try again.';
+
+    if (message.includes('payment_intent')) {
+      return 'Payment session expired. Please try again.';
+    }
+
+    if (message.toLowerCase().includes('card_declined')) {
+      return 'Your card was declined. Please try another card.';
+    }
+
+    if (message.toLowerCase().includes('insufficient')) {
+      return 'Insufficient funds. Please check your balance.';
+    }
+
+    if (message.toLowerCase().includes('incorrect_cvc')) {
+      return 'Incorrect CVC code.';
+    }
+
+    return message;
+  };
+
   const handlePayment = async () => {
     if (!stripe || !elements) return;
+
     setIsProcessing(true);
     setPaymentError(null);
 
@@ -46,77 +85,89 @@ const CheckoutModal = ({ isOpen, onClose, setSuccessOrderId }: CheckoutModalProp
 
       const { clientSecret, orderId } = resultAction;
 
-      // 2️⃣ Confirm Card Payment
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) throw new Error('Card element not found');
 
+      // 2️⃣ Confirm Payment
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: { card: cardElement },
       });
 
       if (paymentResult.error) {
-        setPaymentError(paymentResult.error.message || 'Payment failed');
+        setPaymentError(formatErrorMessage(paymentResult.error.message));
         setIsProcessing(false);
         return;
       }
 
       if (paymentResult.paymentIntent?.status === 'succeeded') {
-        dispatch(clearCart())
-          .unwrap()
-          .then((res) => {
-            if (res.status === 'success') {
-              dispatch(fetchCart());
-            }
-          })
-          .catch((err) => {
-            toast.error(err);
-          });
+        await dispatch(clearCart()).unwrap();
+        await dispatch(fetchCart());
+
         setSuccessOrderId(orderId);
+        setIsProcessing(false);
       }
     } catch (err: any) {
-      setPaymentError(err.message || 'Something went wrong');
+      setPaymentError(formatErrorMessage(err?.message));
       setIsProcessing(false);
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg bg-card">
         <DialogHeader>
           <DialogTitle>Checkout</DialogTitle>
           <DialogClose />
         </DialogHeader>
 
         <div className="mt-2 space-y-4">
+          {/* Special Instructions */}
           <textarea
             placeholder="Special instructions (optional)"
             value={specialInstructions}
             onChange={(e) => setSpecialInstructions(e.target.value)}
             rows={3}
-            className="w-full rounded-md border p-2"
+            className="w-full rounded-md border border-border p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
 
-          <Card className="rounded-md border p-4">
+          {/* Card Input */}
+          <Card className="rounded-md border border-border p-4">
             <CardElement
+              onChange={(event: StripeCardElementChangeEvent) => {
+                if (event.error) {
+                  setPaymentError(formatErrorMessage(event.error.message));
+                } else {
+                  setPaymentError(null);
+                }
+              }}
               options={{
+                hidePostalCode: true,
                 style: {
                   base: {
-                    color: '#32325d',
+                    color: '#111827',
                     fontSize: '16px',
-                    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                    '::placeholder': { color: '#a0aec0' },
-                    iconColor: '#635bff',
+                    fontFamily:
+                      '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+                    '::placeholder': {
+                      color: '#9ca3af',
+                    },
                   },
-                  invalid: { color: '#e53e3e', iconColor: '#e53e3e' },
-                  complete: { iconColor: '#48bb78' },
+                  invalid: {
+                    color: '#dc2626',
+                  },
                 },
-                hidePostalCode: true,
               }}
             />
           </Card>
 
-          {paymentError && <p className="text-red-500">{paymentError}</p>}
-          {error.checkout && <p className="text-red-500">{error.checkout}</p>}
+          {/* Error Box */}
+          {paymentError && (
+            <div className="rounded-md border border-red-300 bg-red-50 px-3 py-2">
+              <p className="text-sm text-red-700 font-medium">
+                {paymentError}
+              </p>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="mt-4">
@@ -128,7 +179,7 @@ const CheckoutModal = ({ isOpen, onClose, setSuccessOrderId }: CheckoutModalProp
           >
             {isProcessing || loading.checkout
               ? 'Processing Payment...'
-              : `Pay $${(cart.totalAmount).toFixed(2)}`}
+              : `Pay $${cart.totalAmount.toFixed(2)}`}
           </Button>
         </DialogFooter>
       </DialogContent>

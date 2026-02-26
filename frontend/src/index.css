@@ -182,6 +182,12 @@
   p {
     @apply text-lg;
   }
+
+  input,
+  textarea {
+    font-family: var(--font-mono);
+    font-weight: 700; /* bold */
+  }
 }
 
 .scrollbar-hide::-webkit-scrollbar {

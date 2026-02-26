@@ -17,6 +17,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoginModal } from './LoginModal';
 import { fetchBranchStatus } from '@/store/slices/branchSlice';
+import { PopoverClose } from '@radix-ui/react-popover';
+import { ForgotPasswordModal } from './ForgotPasswordModal';
 
 // ================= HAMBURGER ICON =================
 const HamburgerIcon = ({ className, ...props }: React.SVGAttributes<SVGElement>) => (
@@ -77,6 +79,7 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
 
     const [signUpOpen, setSignUpOpen] = useState(false);
     const [loginOpen, setLoginOpen] = useState(false);
+    const [forgotOpen, setForgotOpen] = useState(false);
 
     useEffect(() => {
       const checkWidth = () => {
@@ -117,11 +120,17 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
 
     useEffect(() => {
       const searchParams = new URLSearchParams(location.search);
+
       if (searchParams.get('login') === 'true') {
         setLoginOpen(true);
       }
+
       if (searchParams.get('register') === 'true') {
         setSignUpOpen(true);
+      }
+
+      if (searchParams.get('forgot') === 'true') {
+        setForgotOpen(true);
       }
     }, [location.search]);
 
@@ -228,26 +237,28 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                     </button>
                   </PopoverTrigger>
                   <PopoverContent align="end" className="w-56 border-4 border-border p-2 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                    <div className="flex flex-col space-y-2">
-                      <div className="border-b-2 border-border/10 px-4 py-3">
-                        <p className="font-bungee text-sm uppercase leading-none">{user.name}</p>
-                        <p className="mt-1 truncate text-xs font-bold text-muted-foreground">{user.email}</p>
+                    <PopoverClose asChild>
+                      <div className="flex flex-col space-y-2">
+                        <div className="border-b-2 border-border/10 px-4 py-3">
+                          <p className="font-bungee text-sm uppercase leading-none">{user.name}</p>
+                          <p className="mt-1 truncate text-xs font-bold text-muted-foreground">{user.email}</p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          className="justify-start font-bold uppercase text-sm hover:bg-accent"
+                          onClick={() => navigate('/orders')}
+                        >
+                          <Package className="mr-2 h-4 w-4" /> My Orders
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="justify-start font-bold uppercase text-sm text-destructive hover:bg-destructive/10"
+                          onClick={handleLogout}
+                        >
+                          <LogOut className="mr-2 h-4 w-4" /> Logout
+                        </Button>
                       </div>
-                      <Button
-                        variant="ghost"
-                        className="justify-start font-bold uppercase text-sm hover:bg-accent"
-                        onClick={() => navigate('/orders')}
-                      >
-                        <Package className="mr-2 h-4 w-4" /> My Orders
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        className="justify-start font-bold uppercase text-sm text-destructive hover:bg-destructive/10"
-                        onClick={handleLogout}
-                      >
-                        <LogOut className="mr-2 h-4 w-4" /> Logout
-                      </Button>
-                    </div>
+                    </PopoverClose>
                   </PopoverContent>
                 </Popover>
               ) : (
@@ -288,17 +299,19 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                       <NavigationMenuList className="flex-col items-stretch gap-1 w-full">
                         {navigationLinks.map((link, index) => (
                           <NavigationMenuItem key={index} className="w-full">
-                            <button
-                              onClick={() => handleNavigation(link.href)}
-                              className={cn(
-                                'flex w-full cursor-pointer items-center rounded-lg px-4 py-3 text-sm font-black uppercase transition-colors',
-                                isActive(link.href)
-                                  ? 'bg-primary text-foreground'
-                                  : 'text-foreground/80 hover:bg-accent'
-                              )}
-                            >
-                              {link.label}
-                            </button>
+                            <PopoverClose asChild>
+                              <button
+                                onClick={() => handleNavigation(link.href)}
+                                className={cn(
+                                  'flex w-full cursor-pointer items-center rounded-lg px-4 py-3 text-sm font-black uppercase transition-colors',
+                                  isActive(link.href)
+                                    ? 'bg-primary text-foreground'
+                                    : 'text-foreground/80 hover:bg-accent'
+                                )}
+                              >
+                                {link.label}
+                              </button>
+                            </PopoverClose>
                           </NavigationMenuItem>
                         ))}
                       </NavigationMenuList>
@@ -311,6 +324,7 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
         </header>
         <SignUpModal open={signUpOpen} onOpenChange={setSignUpOpen} />
         <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
+        <ForgotPasswordModal open={forgotOpen} onOpenChange={setForgotOpen} />
       </>
     );
   }

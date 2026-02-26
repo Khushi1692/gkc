@@ -21,7 +21,7 @@ export class EmailService {
   private static async getTemplate(templateName: string): Promise<string> {
     const templatePath = path.join(
       __dirname,
-      "../templates",
+      "templates",
       `${templateName}.html`
     );
     return await fs.readFile(templatePath, "utf-8");
@@ -35,7 +35,7 @@ export class EmailService {
     return Object.entries(variables).reduce(
       (acc, [key, value]) => acc.replace(new RegExp(`{{${key}}}`, "g"), value),
       template
-  );
+    );
   }
 
   // Verify the SMTP connection

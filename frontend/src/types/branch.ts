@@ -11,6 +11,7 @@ export interface Branch {
   address: string;
   location: BranchLocation;
   distance?: number;
+  googleMapsEmbedUrl?: string;
 }
 
 export interface BranchWithOpeningHours extends Branch {

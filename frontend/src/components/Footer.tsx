@@ -1,57 +1,124 @@
-import { Facebook, Instagram } from 'lucide-react';
+import { Facebook, Instagram, Mail, MapPin, Phone, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="mt-20 border-t-4 border-border bg-card px-6 py-12 sm:px-12">
-      <div className="container mx-auto">
-        <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-
-          {/* Logo / Copyright Section */}
-          <div className="flex flex-col items-center gap-2 md:items-start">
-            <h2 className="font-bungee text-2xl uppercase tracking-tighter text-foreground">
-              POP101
-            </h2>
-            <p className="font-bold text-muted-foreground text-sm uppercase tracking-widest">
-              © 2026 POP101. All rights reserved.
+    <footer className="relative mt-20 border-t border-border bg-card/50 px-6 py-16 sm:px-12 lg:px-20 backdrop-blur-sm overflow-hidden">
+      {/* Decorative background element */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+      
+      <div className="container mx-auto relative z-10">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-4 lg:gap-8">
+          
+          {/* Brand Section */}
+          <div className="flex flex-col gap-6 lg:col-span-1">
+            <Link to="/" className="inline-block group">
+              <img src="/logo.png" alt="Gopi ka Chatka" className="h-16 w-auto transition-transform group-hover:scale-105" />
+            </Link>
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+              Bringing the authentic soul of Kathiyawadi vegetarian cuisine to the heart of Melbourne. Made fresh, every single day.
             </p>
-          </div>
-
-          {/* Navigation Links - Designed as "Tabs" */}
-          <div className="flex flex-wrap justify-center gap-4">
-            {['Menu', 'About', 'Contact'].map((item) => (
+            <div className="flex gap-4">
               <Link
-                key={item}
-                to={`/${item.toLowerCase()}`}
-                className="border-border bg-background hover:bg-primary px-4 py-2 text-sm font-black uppercase transition-all border-2 shadow-[4px_4px_0px_0px_var(--border)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_var(--border)] active:translate-y-[4px] active:shadow-none"
+                to="https://www.instagram.com/pop101delights/"
+                target="_blank"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
-                {item}
+                <Instagram className="h-5 w-5" />
               </Link>
-            ))}
+              <Link
+                to="https://www.facebook.com/profile.php?id=61558491194031"
+                target="_blank"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              >
+                <Facebook className="h-5 w-5" />
+              </Link>
+            </div>
           </div>
 
-          {/* Social Icons - Sticker Style */}
-          <div className="flex gap-4">
-            <Link
-              to="https://www.instagram.com/pop101delights/"
-              target="_blank"
-              className="border-border bg-chart-5 flex h-12 w-12 items-center justify-center rounded-full border-2 text-foreground transition-all shadow-[4px_4px_0px_0px_var(--border)] hover:rotate-6 hover:scale-110 active:scale-95"
-            >
-              <Instagram className="h-6 w-6" strokeWidth={2.5} />
-            </Link>
-            <Link
-              to="https://www.facebook.com/profile.php?id=61558491194031"
-              target="_blank"
-              className="border-border bg-chart-3 flex h-12 w-12 items-center justify-center rounded-full border-2 text-foreground transition-all shadow-[4px_4px_0px_0px_var(--border)] hover:-rotate-6 hover:scale-110 active:scale-95"
-            >
-              <Facebook className="h-6 w-6" strokeWidth={2.5} />
-            </Link>
+          {/* Quick Links */}
+          <div className="flex flex-col gap-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-foreground">Explore</h3>
+            <nav className="flex flex-col gap-3">
+              {['Home', 'Menu', 'About', 'Contact', 'FAQ'].map((item) => (
+                <Link
+                  key={item}
+                  to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                  className="group flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors text-sm font-medium w-fit"
+                >
+                  {item}
+                  <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
+                </Link>
+              ))}
+            </nav>
           </div>
 
+          {/* Contact Details */}
+          <div className="flex flex-col gap-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-foreground">Contact</h3>
+            <div className="flex flex-col gap-4">
+              <a 
+                href="tel:+61000000000" 
+                className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary">
+                  <Phone className="h-4 w-4" />
+                </div>
+                <span>+61 (000) 000-000</span>
+              </a>
+              <a 
+                href="mailto:hello@gopikachatka.com"
+                className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary">
+                  <Mail className="h-4 w-4" />
+                </div>
+                <span>hello@gopikachatka.com</span>
+              </a>
+              <div className="flex items-start gap-3 text-sm text-muted-foreground">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary shrink-0">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <span>Clayton & Truganina,<br />Melbourne VIC</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Opening Hours / newsletter mock */}
+          <div className="flex flex-col gap-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-foreground">Opening Hours</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Mon - Thu</span>
+                <span className="font-medium">12:00 PM - 10:00 PM</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Fri - Sun</span>
+                <span className="font-medium text-primary">12:00 PM - 11:30 PM</span>
+              </div>
+              <p className="pt-2 text-xs text-muted-foreground italic">
+                * Hours may vary by location.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground font-medium">
+            © {currentYear} Gopi ka Chatka. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-xs text-muted-foreground font-medium">
+            <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+          </div>
         </div>
       </div>
     </footer>
   );
 };
 
-export default Footer;
+export default Footer;

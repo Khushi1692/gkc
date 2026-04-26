@@ -20,6 +20,7 @@ export interface IBranch {
   email?: string;
   phone?: string;
   address?: string;
+  googleMapsEmbedUrl?: string;
   code: string;
   printer?: BranchPrinterConfig;
   location: ILocation;

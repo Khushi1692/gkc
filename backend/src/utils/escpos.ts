@@ -173,7 +173,7 @@ export async function generateReceiptBase64(
 
     // FOOTER
     printCentered("Thank you for your order!", 10);
-    printCentered("POP101", 10);
+    printCentered("Gopi ka Chatka", 10);
 
     doc.end();
   });

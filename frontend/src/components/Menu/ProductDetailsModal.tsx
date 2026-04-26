@@ -18,7 +18,7 @@ import type { Product } from '@/types/menu';
 import { Minus, Plus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import placeholder from '@/assets/logo.jpeg';
+const placeholder = '/logo.png';
 
 interface ProductDetailsModalProps {
   open: boolean;
@@ -167,17 +167,31 @@ export const ProductDetailsModal = ({
 
         <div className="space-y-4">
           <div className="flex gap-4">
-            {product.image ? (
-              <img
-                src={product.image}
-                alt={product.name}
-                className="h-52 w-auto flex-1 rounded-md object-fill"
-              />
-            ) : <img
-              src={placeholder}
-              alt={product.name}
-              className="h-52 w-auto flex-1 rounded-md object-fill"
-            />}
+            <div className="h-52 w-auto flex-1 rounded-md bg-black overflow-hidden flex items-center justify-center p-4">
+              {product.image ? (
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="h-full w-full object-fill"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    const container = (e.target as HTMLElement).parentElement;
+                    if (container) {
+                      const placeholderImg = document.createElement('img');
+                      placeholderImg.src = placeholder;
+                      placeholderImg.className = 'max-h-full max-w-full object-contain';
+                      container.appendChild(placeholderImg);
+                    }
+                  }}
+                />
+              ) : (
+                <img
+                  src={placeholder}
+                  alt={product.name}
+                  className="max-h-full max-w-full object-contain"
+                />
+              )}
+            </div>
 
             {product.description && (
               <p className="text-muted-foreground flex-1">{product.description}</p>

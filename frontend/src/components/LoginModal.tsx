@@ -41,7 +41,6 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
 
   const handleClose = () => {
     const searchParams = new URLSearchParams(location.search);
-
     if (searchParams.has('login')) {
       searchParams.delete('login');
       navigate(
@@ -49,7 +48,6 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
         { replace: true }
       );
     }
-
     onOpenChange(false);
   };
 
@@ -81,17 +79,40 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="bg-card">
+      <DialogContent className="bg-card sm:max-w-md">
 
         {/* Header */}
-        <DialogHeader className="mb-4 text-center">
-          <DialogTitle className="font-bungee text-3xl uppercase tracking-wide">
-            Welcome Back!
+        <DialogHeader className="mb-2 text-center">
+          <DialogTitle className="text-2xl font-bold text-foreground">
+            Welcome Back
           </DialogTitle>
-          <p className="text-muted-foreground font-medium">
-            Log in to your account
+          <p className="text-muted-foreground text-sm mt-1">
+            Sign in to your Gopi ka Chatka account
           </p>
         </DialogHeader>
+
+        {/* Google Login — always shown */}
+        <div className="mb-2">
+          {open && (
+            <GoogleLogin
+              key="login-google"
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error('Google login failed')}
+            />
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="relative my-2">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-border" />
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="bg-card px-3 text-muted-foreground font-medium">
+              or sign in with email
+            </span>
+          </div>
+        </div>
 
         {/* Form */}
         <Form {...form}>
@@ -103,17 +124,17 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold uppercase text-xs tracking-wider">
+                  <FormLabel className="text-sm font-semibold text-foreground">
                     Email
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter your email"
+                      placeholder="you@example.com"
                       {...field}
-                      className="border-border focus-visible:ring-primary h-11 border-2 bg-input font-mono font-bold text-foreground placeholder:text-muted-foreground/50"
+                      className="h-11 rounded-xl border-border bg-background text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-primary"
                     />
                   </FormControl>
-                  <FormMessage className="font-bold text-destructive" />
+                  <FormMessage className="text-destructive text-xs" />
                 </FormItem>
               )}
             />
@@ -124,84 +145,60 @@ export function LoginModal({ open, onOpenChange }: LoginProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold uppercase text-xs tracking-wider">
-                    Password
-                  </FormLabel>
+                  <div className="flex items-center justify-between mb-1">
+                    <FormLabel className="text-sm font-semibold text-foreground">
+                      Password
+                    </FormLabel>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleClose();
+                        navigate('?forgot=true');
+                      }}
+                      className="text-xs text-primary hover:underline font-medium"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder="••••••••"
                       {...field}
-                      className="border-border focus-visible:ring-primary h-11 border-2 bg-input font-mono font-bold text-foreground placeholder:text-muted-foreground/50"
+                      className="h-11 rounded-xl border-border bg-background text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-primary"
                     />
                   </FormControl>
-                  <FormMessage className="font-bold text-destructive" />
+                  <FormMessage className="text-destructive text-xs" />
                 </FormItem>
               )}
             />
-
-            {/* Forgot Password */}
-            <div className="text-right">
-              <button
-                type="button"
-                onClick={() => {
-                  handleClose();
-                  navigate('?forgot=true');
-                }}
-                className="text-xs font-bold text-primary hover:underline"
-              >
-                Forgot Password?
-              </button>
-            </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
               disabled={loading.login || form.formState.isSubmitting}
-              className="h-12 w-full mt-2 text-lg font-black uppercase shadow-[4px_4px_0px_0px_var(--border)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_var(--border)] transition-all"
+              className="h-11 w-full rounded-xl font-semibold mt-2"
             >
-              {loading.login ? 'Logging in...' : 'Login'}
+              {loading.login ? 'Signing in...' : 'Sign In'}
             </Button>
 
           </form>
         </Form>
 
         {/* Switch to Register */}
-        <div className="mt-6 text-center text-sm font-medium text-muted-foreground">
-          New here?{' '}
+        <p className="mt-4 text-center text-sm text-muted-foreground">
+          Don't have an account?{' '}
           <button
             onClick={() => {
               handleClose();
               navigate('?register=true');
             }}
-            className="text-primary font-bold hover:underline decoration-2 underline-offset-2"
+            className="text-primary font-semibold hover:underline underline-offset-2"
           >
-            Create an account
+            Create one
           </button>
-        </div>
+        </p>
 
-        {/* Divider */}
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t-2 border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 font-bold text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        {/* Google Login */}
-        {open && (
-          <div className="flex justify-center">
-            <GoogleLogin
-              key="login-google"
-              onSuccess={handleGoogleSuccess}
-              onError={() => toast.error('Google login failed')}
-            />
-          </div>
-        )}
       </DialogContent>
     </Dialog>
   );

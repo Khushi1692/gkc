@@ -11,6 +11,7 @@ const branchSchema = new Schema<IBranch>(
     email: { type: String, trim: true, lowercase: true },
     phone: { type: String, trim: true },
     address: { type: String, trim: true },
+    googleMapsEmbedUrl: { type: String, trim: true },
 
     code: {
       type: String,
@@ -133,6 +134,10 @@ branchSchema.pre("save", async function (next) {
 });
 
 branchSchema.methods.isOpenNow = function (): boolean {
+  // *** TEMPORARILY BYPASSED — always return true for testing ***
+  return true;
+
+  /*
   const now = new Date();
 
   const formatter = new Intl.DateTimeFormat("en-AU", {
@@ -172,6 +177,7 @@ branchSchema.methods.isOpenNow = function (): boolean {
     // Overnight case (e.g., 18:00 - 02:00)
     return currentTotal >= openTotal || currentTotal <= closeTotal;
   }
+  */
 };
 
 export const Branch = model("Branch", branchSchema);

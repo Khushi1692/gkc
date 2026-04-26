@@ -66,7 +66,7 @@ export class EmailService {
       });
 
       const mailOptions = {
-        from: `"POP101" <${config.email.user}>`,
+        from: `"Gopi ka Chatka" <${config.email.user}>`,
         to,
         subject: "Verify Your Email",
         html,
@@ -100,7 +100,7 @@ export class EmailService {
       });
 
       const mailOptions = {
-        from: `"POP101" <${config.email.user}>`, // Verified sender
+        from: `"Gopi ka Chatka" <${config.email.user}>`, // Verified sender
         replyTo: to, // User email
         to: config.adminEmail,
         subject: `[Contact Us] ${subject}`,
@@ -131,7 +131,7 @@ export class EmailService {
       });
 
       const mailOptions = {
-        from: `"POP101" <${config.email.user}>`,
+        from: `"Gopi ka Chatka" <${config.email.user}>`,
         to,
         subject: "Reset Your Password",
         html,
@@ -186,7 +186,7 @@ export class EmailService {
       });
 
       const mailOptions = {
-        from: `"POP101" <${config.email.user}>`,
+        from: `"Gopi ka Chatka" <${config.email.user}>`,
         to,
         subject,
         html,

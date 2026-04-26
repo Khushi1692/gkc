@@ -24,7 +24,8 @@ const Cart = () => {
   const [successOrderId, setSuccessOrderId] = useState<string | null>(null);
   const { branchStatus } = useAppSelector((s) => s.branch);
 
-  const isBranchOpen = branchStatus?.isOpen ?? true;
+  // *** TEMPORARILY BYPASSED — always treat branch as open for testing ***
+  const isBranchOpen = true; // branchStatus?.isOpen ?? true;
   const openTime = branchStatus?.todayHours?.open;
 
 

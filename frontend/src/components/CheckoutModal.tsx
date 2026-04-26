@@ -88,7 +88,7 @@ const CheckoutModal = ({
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) throw new Error('Card element not found');
 
-      // 2️⃣ Confirm Payment
+      // 2️⃣ Confirm Payment with Stripe
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: { card: cardElement },
       });
@@ -100,6 +100,9 @@ const CheckoutModal = ({
       }
 
       if (paymentResult.paymentIntent?.status === 'succeeded') {
+        // We no longer call confirm-payment here. 
+        // The order will stay PENDING until the Stripe Webhook confirms it.
+
         await dispatch(clearCart()).unwrap();
         await dispatch(fetchCart());
 

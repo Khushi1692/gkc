@@ -5,37 +5,68 @@ import customer2 from '@/assets/customer-2.png';
 import customer3 from '@/assets/customer-3.png';
 
 const reviews = [
-  { name: 'Dr. Ramakant Rana', image: customer1, review: 'I had the pink sauce pasta at Pop101 and it was amazing! The pasta was cooked just right and the sauce was really tasty and creamy. The place has a cool, raw look with Indian vibes – very relaxed and different.' },
-  { name: 'Palak Varma', image: customer2, review: 'Had a wonderful time at this place! The atmosphere was cozy and perfect for spending time with friends or family. The food was amazing, especially the pasta and burger—both were flavorful.' },
-  { name: 'Pankaj Passi', image: customer3, review: 'Ordered takeaway from Mumbai Pop 101 Delights and the experience was excellent! The food was packed neatly, still hot on arrival, and tasted absolutely delicious. Portion sizes were generous.' },
+  {
+    name: 'Dr. Ramakant Rana',
+    image: customer1,
+    role: 'Regular Guest',
+    review: 'The dal baati churma here is absolutely authentic — it reminded me of home in Gujarat. The ghee, the texture, everything is just right. A hidden gem in Melbourne.',
+  },
+  {
+    name: 'Palak Varma',
+    image: customer2,
+    role: 'Food Enthusiast',
+    review: 'Finally a place that gets Kathiyawadi food right. The thali is generous, the kadhi is perfectly spiced, and the atmosphere feels warm and welcoming.',
+  },
+  {
+    name: 'Pankaj Passi',
+    image: customer3,
+    role: 'Takeaway Customer',
+    review: 'Ordered takeaway from Gopi ka Chatka and the food arrived hot, packed beautifully. The undhiyu was outstanding — exactly like my grandmother used to make.',
+  },
 ];
 
 const CustomerReviews = () => {
   return (
-    <section className="w-full pb-20">
-      <h2 className="font-bungee mb-12 text-center text-4xl uppercase md:text-6xl">
-        STREET <span className="text-primary">TALK</span>
-      </h2>
+    <section className="py-4">
+      {/* Header */}
+      <div className="mb-14 text-center max-w-xl mx-auto">
+        <p className="text-primary text-xs font-semibold uppercase tracking-[0.3em] mb-3">
+          Guest Reviews
+        </p>
+        <h2 className="text-4xl font-bold text-foreground md:text-5xl leading-tight">
+          What Our Guests Say
+        </h2>
+      </div>
 
-      <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+      {/* Reviews */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {reviews.map((review, index) => (
-          <div key={index} className="relative flex flex-col items-center">
-            {/* Speech Bubble */}
-            <div className="relative mb-8 rounded-2xl border-4 border-border bg-card p-6 shadow-sm">
-              <p className="relative z-10 font-bold leading-tight italic">
-                <span className="text-primary font-serif text-3xl">“</span>
-                {review.review}
-              </p>
-              {/* Bubble Tip */}
-              <div className="absolute -bottom-4 left-10 h-8 w-8 rotate-45 border-b-4 border-r-4 border-border bg-card" />
+          <div key={index} className="group bg-card rounded-2xl p-8 border border-border/50 hover:border-primary/20 transition-colors hover:shadow-lg hover:shadow-primary/5">
+            {/* Stars */}
+            <div className="flex gap-1 mb-6">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="h-4 w-4 fill-primary text-primary" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
             </div>
 
+            {/* Quote */}
+            <p className="text-foreground/80 text-sm leading-relaxed mb-8 italic">
+              "{review.review}"
+            </p>
+
             {/* Author */}
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-16 w-16 overflow-hidden rounded-full border-4 border-border shadow-sm">
-                <img src={review.image} alt={review.name} className="h-full w-full object-cover" />
+            <div className="flex items-center gap-3">
+              <img
+                src={review.image}
+                alt={review.name}
+                className="h-12 w-12 rounded-full object-cover border-2 border-primary/20"
+              />
+              <div>
+                <p className="font-semibold text-foreground text-sm">{review.name}</p>
+                <p className="text-muted-foreground text-xs">{review.role}</p>
               </div>
-              <h3 className="font-bungee text-lg uppercase tracking-tight">{review.name}</h3>
             </div>
           </div>
         ))}

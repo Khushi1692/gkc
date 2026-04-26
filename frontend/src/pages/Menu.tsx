@@ -7,6 +7,7 @@ import { clearProducts, fetchCategories, fetchProductsByCategory } from '@/store
 import type { Product } from '@/types/menu';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
 
 
 const Menu = () => {
@@ -98,45 +99,67 @@ const Menu = () => {
     <>
       {isLoading && <Loader loading message="Loading menu..." />}
 
-      <div className="bg-background min-h-screen px-4 py-8 sm:px-8 md:px-12 lg:px-20 xl:px-32">
-        {/* Hero Section */}
-        {/* Hero Section - Split Layout */}
-        <section className="mx-auto mb-12 w-full overflow-hidden rounded-3xl border-4 border-black bg-white shadow-sm">
-          <div className="grid grid-cols-1 md:grid-cols-2">
+      <div className="bg-background min-h-screen px-4 py-12 sm:px-8 md:px-12 lg:px-20 xl:px-32">
+        {/* Premium Hero Section */}
+        <section className="mx-auto mb-20 w-full overflow-hidden rounded-[4rem] bg-card/40 backdrop-blur-xl border border-border/40 relative shadow-3xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 -z-10" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 items-center">
             {/* Left: Text Content */}
-
-
-            <div className="flex flex-col justify-center px-6 py-12 md:px-12 lg:px-16 min-h-[500px]">
-              <div className="mb-4 inline-block self-start rounded-full border-2 border-black bg-[#FBCD06] px-4 py-1 text-xs font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_#000]">
+            <div className="flex flex-col justify-center px-10 py-16 md:px-16 lg:px-24 relative z-10">
+              <div className="mb-6 inline-flex items-center gap-2 self-start rounded-full bg-primary/10 px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.3em] text-primary border border-primary/20 backdrop-blur-sm animate-[fade-in_0.8s_ease-out]">
+                <Sparkles className="h-3 w-3" />
                 Skip the Line!
               </div>
-              <h1 className="font-bungee mb-6 text-5xl uppercase leading-none text-black sm:text-6xl lg:text-7xl">
-                CLICK & <span className="text-[#FBCD06] drop-shadow-[2px_2px_0px_#000] text-shadow-black" style={{ textShadow: '3px 3px 0 #000' }}>COLLECT</span>
+              <h1 className="font-black mb-6 text-6xl uppercase leading-[0.95] text-foreground sm:text-7xl lg:text-8xl tracking-tight animate-[slide-up_1s_ease-out]">
+                GKC <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary/60 italic drop-shadow-sm font-black pr-4">SPECIALS</span>
               </h1>
-              <p className="text-lg font-bold leading-relaxed text-black/80 md:text-xl">
-                Pre-order your favorites and grab them hot & ready. No waiting, just eating!
+              <p className="text-lg font-medium leading-relaxed text-muted-foreground md:text-xl max-w-lg mb-10 italic opacity-80 animate-[slide-up_1.2s_ease-out]">
+                "Pre-order your favorites and grab them hot & ready. Authentic Kathiyawadi goodness, without the wait."
               </p>
+              
+              <div className="flex items-center gap-8 animate-[slide-up_1.4s_ease-out]">
+                <div className="flex flex-col">
+                  <span className="text-4xl font-black text-foreground mb-1">100%</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Vegetarian</span>
+                </div>
+                <div className="h-12 w-px bg-border/60" />
+                <div className="flex flex-col">
+                  <span className="text-4xl font-black text-foreground mb-1">Fresh</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Every Day</span>
+                </div>
+              </div>
             </div>
 
-
-
-            <div className="relative min-h-[300px] border-t-4 border-black bg-black md:border-l-4 md:border-t-0 md:min-h-full">
+            {/* Right: Featured Image */}
+            <div className="relative min-h-[450px] md:min-h-[650px] overflow-hidden group">
               <img
-                src={`https://pop101.com.au/uploads/menu-hero.webp`}
-                alt="Delicious food"
-                className="absolute inset-0 h-full w-full object-cover opacity-90"
+                src={`https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=1200&auto=format`}
+                alt="Signature Dishes"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
               />
-              {/* Pattern Overlay */}
-              <div className="absolute inset-0 bg-[radial-gradient(#ffffff_2px,transparent_2px)] bg-[length:20px_20px] opacity-20"></div>
+              {/* Complex Overlay Gradients for Depth */}
+              <div className="absolute inset-0 bg-gradient-to-r from-card/90 via-card/20 to-transparent md:from-card md:to-transparent opacity-95"></div>
+              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-card to-transparent"></div>
+              
+              {/* Floating Accent */}
+              <div className="absolute top-1/2 -left-12 -translate-y-1/2 hidden lg:flex h-24 w-24 glass rounded-3xl items-center justify-center animate-float shadow-2xl border-white/20 z-20">
+                <Sparkles className="h-10 w-10 text-primary" />
+              </div>
             </div>
           </div>
+          
+          {/* Subtle Ambient Background */}
+          <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -z-10" />
+          <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10" />
         </section>
 
         {/* Menu Section */}
         <section className="mx-auto w-full">
           {categories.length === 0 ? (
-            <div className="py-12 text-center font-bold text-xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
-              No categories available.
+            <div className="py-24 text-center rounded-[3rem] border border-border/40 bg-card/50 backdrop-blur-sm shadow-xl">
+              <p className="text-xl font-bold text-muted-foreground uppercase tracking-widest animate-pulse">Preparing our menu... Please check back in a moment.</p>
             </div>
           ) : (
             <Tabs
@@ -145,13 +168,13 @@ const Menu = () => {
               className="w-full"
             >
               {/* Categories Scrollable List */}
-              <div className="mb-8 w-full overflow-x-auto pb-4">
-                <TabsList className="bg-transparent h-auto w-max min-w-full justify-start gap-4 p-0">
+              <div className="mb-16 w-full overflow-x-auto pb-6 scrollbar-hide">
+                <TabsList className="bg-transparent h-auto w-max min-w-full justify-center gap-4 p-0">
                   {categories.map((category) => (
                     <TabsTrigger
                       key={category._id}
                       value={category._id}
-                      className="data-[state=active]:bg-primary data-[state=active]:text-foreground border-2 border-black bg-white px-6 py-3 font-bold uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] data-[state=active]:translate-y-0 text-foreground text-lg"
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[1.5rem] border border-border/40 bg-card px-10 py-5 font-black uppercase tracking-[0.15em] shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 data-[state=active]:shadow-primary/25 data-[state=active]:scale-105 text-foreground text-[10px] md:text-xs"
                     >
                       {category.name}
                     </TabsTrigger>
@@ -159,16 +182,18 @@ const Menu = () => {
                 </TabsList>
               </div>
 
-              <TabsContent value={selectedCategoryId ?? ''} className="mt-4">
+              <TabsContent value={selectedCategoryId ?? ''} className="mt-8 outline-none reveal-on-scroll visible">
                 {products.length === 0 ? (
-                  <div className="py-12 text-center font-bold text-xl border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
-                    No items available in this category.
+                  <div className="py-24 text-center rounded-[3rem] border border-border/40 bg-card/50 backdrop-blur-sm shadow-xl">
+                    <p className="text-xl font-bold text-muted-foreground uppercase tracking-widest">No items currently available in this category.</p>
                   </div>
                 ) : (
                   // THE GRID LAYOUT
-                  <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {products.map((item) => (
-                      <ProductCard key={item._id} item={item} onAddToCart={setSelectedItem} />
+                  <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+                    {products.map((item, idx) => (
+                      <div key={item._id} className={`animate-[slide-up_0.5s_ease-out_forwards]`} style={{ animationDelay: `${idx * 0.1}s` }}>
+                        <ProductCard item={item} onAddToCart={setSelectedItem} />
+                      </div>
                     ))}
                   </div>
                 )}
@@ -189,4 +214,4 @@ const Menu = () => {
   );
 };
 
-export default Menu;
+export default Menu;

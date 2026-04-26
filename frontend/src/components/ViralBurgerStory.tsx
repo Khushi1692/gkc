@@ -1,48 +1,65 @@
 import { ExternalLink } from "lucide-react";
 
-const ViralBurgerStory = () => {
+const KathiyawadiStory = () => {
     return (
-        <section className="mx-auto mb-24 px-4">
+        <section className="mx-auto mb-32 px-4">
 
             {/* Section Title */}
-            <div className="mb-14 text-center">
-                <h2 className="font-bungee text-3xl uppercase leading-tight sm:text-4xl md:text-6xl">
-                    Pop101’s <span className="text-primary">Accidental</span> <br className="hidden sm:block" />
+            <div className="mb-16 text-center">
+                <h2 className="font-black text-3xl uppercase leading-tight sm:text-4xl md:text-6xl tracking-tighter">
+                    Gopi ka Chatka's <span className="text-primary italic">Accidental</span> <br className="hidden sm:block" />
                     Viral Burger
                 </h2>
+                <div className="mx-auto mt-6 h-1 w-32 rounded-full bg-primary/20"></div>
+                <p className="mt-6 text-muted-foreground font-medium max-w-2xl mx-auto text-lg">
+                    The story of how a home Kathiyawadi kitchen sparked Melbourne's most unexpected food sensation
+                </p>
             </div>
 
             {/* Main Card */}
-            <div className="border-border bg-card relative rounded-3xl border-4 shadow-[8px_8px_0px_0px_var(--border)] overflow-hidden">
+            <div className="bg-card relative rounded-[3rem] shadow-2xl overflow-hidden border border-border/50 transition-all hover:shadow-primary/5">
 
                 <div className="grid grid-cols-1 md:grid-cols-2">
 
                     {/* Image */}
-                    <div className="relative h-64 sm:h-72 md:h-full">
+                    <div className="relative h-80 sm:h-96 md:h-full group overflow-hidden">
                         <img
                             src="https://pop101.com.au/uploads/ufo-blog.webp"
-                            alt="Melbourne Viral UFO Burger"
-                            className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                            alt="Melbourne Viral Kathiyawadi Burger"
+                            className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        {/* Badge */}
+                        <div className="absolute top-6 left-6 bg-primary text-primary-foreground rounded-2xl px-4 py-2 shadow-lg">
+                            <p className="font-black text-xs uppercase tracking-widest">As seen on</p>
+                            <p className="font-black text-base">Seasoned Traveller</p>
+                        </div>
                     </div>
 
                     {/* Content */}
-                    <div className="flex flex-col justify-evenly p-6 sm:p-8 md:p-10">
-                        <h3 className="font-bungee mb-4 text-3xl uppercase leading-snug sm:text-4xl">
-                            Melbourne's First UFO Burger is Vegetarian with an Indian Twist
+                    <div className="flex flex-col justify-center p-8 sm:p-12 md:p-16">
+                        <h3 className="font-bold mb-8 text-3xl uppercase leading-tight sm:text-4xl tracking-tight text-foreground">
+                            Melbourne's First UFO Burger is Vegetarian with an <span className="text-primary">Indian Twist</span>
                         </h3>
 
-                        <p className="mb-6 text-base font-bold text-foreground/80 sm:text-xl">
-                            An Indian family function was the accidental birthplace of Melbourne's first viral UFO burger.
-                            Now Pop101 food truck serves one unlike anywhere else in the world.
-                        </p>
-                        <p className="mb-6 text-base font-medium text-foreground/80 sm:text-xl">Melbourne’s first UFO burgers didn’t arrive with a social-media strategy – they crash-landed by accident. Pop101 owner Jaynam “Jay” Shah was trying to prevent burger fillings from sliding out the back of the bun, when he unintentionally became the city’s first pilot of the viral “sealed” burger: a patty and toppings welded into a crusty, rimmed bun shaped like a flying saucer. In a social-media galaxy of UFO burgers, Jay’s is unique: it’s completely vegetarian with an Indian twist. </p>
+                        <div className="space-y-6">
+                            <p className="text-lg font-bold text-foreground/90 leading-relaxed italic border-l-4 border-primary pl-6">
+                                "An Indian family function was the accidental birthplace of Melbourne's first viral UFO burger —
+                                and it is 100% Kathiyawadi vegetarian."
+                            </p>
+                            <p className="text-base font-medium text-muted-foreground leading-relaxed">
+                                Gopi ka Chatka owner Jaynam "Jay" Shah was trying to prevent fillings from sliding out of the bun when he
+                                accidentally created Melbourne's first sealed "UFO burger" — a patty and Kathiyawadi spiced toppings welded into
+                                a crusty, rimmed bun shaped like a flying saucer. In a world of UFO burgers, Jay's is unique: completely vegetarian
+                                with an authentic Indian twist rooted in Kathiyawadi cuisine.
+                            </p>
+                        </div>
 
                         <a
                             href="https://seasonedtraveller.com/places/Melbourne-Viral-UFO-Burger"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group inline-flex w-fit items-center gap-2 font-black uppercase tracking-wide text-primary transition-all hover:translate-x-1 text-xl"
+                            className="group mt-10 inline-flex w-fit items-center gap-3 font-black uppercase tracking-[0.2em] text-primary transition-all hover:translate-x-2 text-sm"
                         >
                             Read Full Story
                             <ExternalLink className="h-4 w-4 transition-transform group-hover:rotate-12" />
@@ -54,4 +71,4 @@ const ViralBurgerStory = () => {
     );
 };
 
-export default ViralBurgerStory;
+export default KathiyawadiStory;

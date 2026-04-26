@@ -9,6 +9,8 @@ import { getMqttClient } from "./mqtt.client";
 
 export class PrinterService {
   static async printOrderReceipt(orderId: string): Promise<void> {
+    console.log("🖨 Skipping print (Printer disconnected temporarily)");
+    return;
     const order = (await Order.findById(orderId)
       .populate("branchId")
       .populate("items.productId")

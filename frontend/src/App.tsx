@@ -32,7 +32,7 @@ function App() {
 
   const skipSelectBranch = localStorage.getItem('skipSelectBranch') === 'true';
 
-  const APP_VERSION = "1.0.0"; // change this on breaking update
+  const APP_VERSION = "1.0.1"; // change this on breaking update
 
   useEffect(() => {
     const storedVersion = localStorage.getItem("app_version");

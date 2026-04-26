@@ -1,6 +1,5 @@
 // src/config/config.ts
 import dotenv from "dotenv";
-import mqtt from "mqtt/*";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -9,7 +8,7 @@ export const config = {
   port: process.env.PORT || 3000,
   adminEmail: process.env.ADMIN_EMAIL || "",
   mongodb: {
-    uri: process.env.MONGODB_URI || "mongodb://localhost:27017/pop101",
+    uri: process.env.MONGODB_URI || "mongodb://localhost:27017/gopikachatka",
   },
   jwt: {
     secret: process.env.JWT_SECRET || "default-secret-key",

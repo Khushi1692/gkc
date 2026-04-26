@@ -9,8 +9,8 @@ import { EmailService } from "../services/email.service";
 dotenv.config();
 
 const router = express.Router();
-const stripe = new Stripe(config.stripe.secretKey, {
-  apiVersion: "2025-09-30.clover",
+const stripe = new Stripe(config.stripe.secretKey || "sk_test_placeholder", {
+  apiVersion: "2025-09-30.clover" as any,
 });
 
 const endpointSecret = config.stripe.webhookSecret;

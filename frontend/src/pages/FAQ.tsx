@@ -3,7 +3,7 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
     {
-        question: "Is POP101 completely vegetarian?",
+        question: "Is Gopi ka Chatka completely vegetarian?",
         answer:
             "Yes! Every single item on our menu is 100% pure vegetarian. We do not serve any meat products.",
     },
@@ -20,12 +20,12 @@ const faqs = [
     {
         question: "Where are your food trucks located?",
         answer:
-            "We currently operate two POP101 food trucks in Melbourne — one in Clayton and one in Truganina.",
+            "We currently operate two Gopi ka Chatka food trucks in Melbourne — one in Clayton and one in Truganina.",
     },
     {
         question: "Are your fries and sides vegetarian too?",
         answer:
-            "Yes! Everything at POP101 — including fries, sauces, and sides — is completely vegetarian.",
+            "Yes! Everything at Gopi ka Chatka — including fries, sauces, and sides — is completely vegetarian.",
     },
     {
         question: "Do you cater for events?",
@@ -42,60 +42,58 @@ const FAQ = () => {
     };
 
     return (
-        <div className="bg-background min-h-screen px-4 py-12 sm:px-8 md:px-12 lg:px-20 xl:px-32">
+        <div className="bg-background min-h-screen px-4 py-20 sm:px-8 md:px-12 lg:px-20 xl:px-32">
 
             {/* ================= HERO ================= */}
-            <section className="mx-auto mb-20 max-w-4xl text-center">
-                <div className="border-border bg-primary mb-6 inline-block rounded-full border-2 px-4 py-1 text-xs font-black uppercase tracking-widest shadow-[2px_2px_0px_0px_var(--border)]">
+            <section className="mx-auto mb-24 max-w-4xl text-center">
+                <div className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary border border-primary/20 mb-8">
                     Got Questions?
                 </div>
 
-                <h1 className="text-foreground font-bungee mb-6 text-5xl uppercase sm:text-6xl">
+                <h1 className="text-foreground font-black mb-8 text-5xl uppercase sm:text-6xl tracking-tighter leading-tight">
                     Frequently Asked <br />
-                    <span className="text-primary drop-shadow-[3px_3px_0_var(--border)]">
-                        Questions
-                    </span>
+                    <span className="text-primary italic">Questions</span>
                 </h1>
 
-                <p className="text-foreground/70 text-lg font-bold">
-                    Everything you need to know about POP101.
+                <p className="text-muted-foreground text-lg font-medium max-w-2xl mx-auto">
+                    Everything you need to know about Gopi ka Chatka and our premium vegetarian experience.
                 </p>
             </section>
 
             {/* ================= FAQ LIST ================= */}
-            <section className="mx-auto max-w-4xl space-y-6">
+            <section className="mx-auto max-w-3xl space-y-4">
                 {faqs.map((faq, index) => {
                     const isActive = activeIndex === index;
 
                     return (
                         <div
                             key={index}
-                            className="border-border bg-card overflow-hidden rounded-2xl border-4 shadow-[6px_6px_0px_0px_var(--border)] transition-all"
+                            className={`group border border-border/50 bg-card overflow-hidden rounded-2xl transition-all duration-300 ${isActive ? "shadow-xl ring-1 ring-primary/20" : "shadow-sm hover:shadow-md"
+                                }`}
                         >
                             {/* Question */}
                             <button
                                 onClick={() => toggleFAQ(index)}
-                                className="flex w-full items-center justify-between px-6 py-5 text-left"
+                                className="flex w-full items-center justify-between px-8 py-6 text-left"
                             >
-                                <span className="font-bungee text-xl uppercase">
+                                <span className={`text-xl font-bold uppercase tracking-tight transition-colors ${isActive ? "text-primary" : "text-foreground"}`}>
                                     {faq.question}
                                 </span>
 
-                                <ChevronDown
-                                    className={`h-6 w-6 transition-transform duration-300 ${isActive ? "rotate-180 text-primary" : ""
-                                        }`}
-                                />
+                                <div className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 ${isActive ? "bg-primary text-primary-foreground rotate-180" : "bg-muted text-muted-foreground"}`}>
+                                    <ChevronDown className="h-5 w-5" />
+                                </div>
                             </button>
 
                             {/* Answer */}
                             <div
                                 className={`grid transition-all duration-300 ease-in-out ${isActive
-                                    ? "grid-rows-[1fr] opacity-100 px-6 pb-6"
+                                    ? "grid-rows-[1fr] opacity-100 px-8 pb-8"
                                     : "grid-rows-[0fr] opacity-0"
                                     }`}
                             >
                                 <div className="overflow-hidden">
-                                    <p className="text-foreground/80 font-medium leading-relaxed">
+                                    <p className="text-muted-foreground text-lg font-medium leading-relaxed max-w-2xl">
                                         {faq.answer}
                                     </p>
                                 </div>
@@ -106,21 +104,23 @@ const FAQ = () => {
             </section>
 
             {/* ================= CTA SECTION ================= */}
-            <section className="mx-auto mt-24 max-w-4xl text-center">
-                <div className="border-border bg-primary rounded-3xl border-4 p-10 shadow-[8px_8px_0px_0px_var(--border)]">
-                    <h2 className="font-bungee mb-4 text-3xl uppercase">
-                        Still Curious?
-                    </h2>
+            <section className="mx-auto mt-32 max-w-4xl text-center">
+                <div className="bg-primary text-primary-foreground rounded-[3rem] p-12 shadow-2xl relative overflow-hidden selection:bg-white selection:text-primary">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15)_1px,transparent_1px)] bg-[length:24px_24px]"></div>
+                    <div className="relative z-10">
+                        <h2 className="font-black mb-6 text-3xl uppercase tracking-tighter sm:text-4xl">
+                            Still Curious?
+                        </h2>
 
-                    <p className="text-foreground font-bold mb-6">
-                        Drop by one of our trucks or reach out to us directly.
-                        We’re always happy to help.
-                    </p>
+                        <p className="text-primary-foreground/90 font-bold mb-10 text-lg max-w-xl mx-auto">
+                            Drop by one of our trucks or reach out to us directly.
+                            We’re always happy to help our community.
+                        </p>
 
-                    <div className="font-bungee text-2xl uppercase">
-                        POP101
-                        <div className="text-sm font-bold mt-2">
-                            Where Veg Goes Premium.
+                        <div className="inline-flex flex-col items-center">
+                            <span className="font-black text-3xl uppercase tracking-tighter">Gopi ka Chatka</span>
+                            <div className="h-1 w-12 bg-primary-foreground/30 my-4 rounded-full"></div>
+                            <span className="text-sm font-bold uppercase tracking-[0.3em] opacity-80">Where Veg Goes Premium</span>
                         </div>
                     </div>
                 </div>

@@ -91,25 +91,60 @@ export class PaymentController {
         });
       }
 
-      // Create Stripe payment intent
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(totalAmount * 100), // cents
-        currency: "aud",
-        metadata: { userId: userId || "guest" },
-      });
+      // Create or update Stripe payment intent and order
+      let paymentIntent;
+      let order;
 
-      const readableOrderId = await generateOrderId();
+      let existingOrder = null;
+      if (userId) {
+        existingOrder = await Order.findOne({ userId, branchId, paymentStatus: "pending" });
+      }
 
-      const order = await Order.create({
-        orderId: readableOrderId,
-        userId,
-        items: validItems,
-        totalAmount,
-        paymentIntentId: paymentIntent.id,
-        paymentStatus: "pending",
-        branchId,
-        specialInstructions,
-      });
+      if (existingOrder) {
+        try {
+          // Attempt to update existing Stripe PaymentIntent
+          paymentIntent = await stripe.paymentIntents.update(existingOrder.paymentIntentId as string, {
+            amount: Math.round(totalAmount * 100),
+            metadata: { userId: userId || "guest" },
+          });
+        } catch (err) {
+          // If the intent cannot be updated (e.g. it was canceled), create a new one
+          paymentIntent = await stripe.paymentIntents.create({
+            amount: Math.round(totalAmount * 100), // cents
+            currency: "aud",
+            metadata: { userId: userId || "guest" },
+          });
+        }
+
+        // Update the existing order in the database
+        existingOrder.set("items", validItems);
+        existingOrder.totalAmount = totalAmount;
+        existingOrder.specialInstructions = specialInstructions;
+        existingOrder.paymentIntentId = paymentIntent.id;
+        await existingOrder.save();
+        
+        order = existingOrder;
+      } else {
+        // No existing pending order found, create a new intent and order
+        paymentIntent = await stripe.paymentIntents.create({
+          amount: Math.round(totalAmount * 100), // cents
+          currency: "aud",
+          metadata: { userId: userId || "guest" },
+        });
+
+        const readableOrderId = await generateOrderId();
+
+        order = await Order.create({
+          orderId: readableOrderId,
+          userId,
+          items: validItems,
+          totalAmount,
+          paymentIntentId: paymentIntent.id,
+          paymentStatus: "pending",
+          branchId,
+          specialInstructions,
+        });
+      }
 
       res.status(200).json({
         status: "success",

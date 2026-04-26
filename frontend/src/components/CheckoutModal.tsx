@@ -1,5 +1,6 @@
 'use client';
 
+import { apiClient } from '@/api/axiosClient';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -22,7 +23,7 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import type { StripeCardElementChangeEvent } from '@stripe/stripe-js';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -45,6 +46,7 @@ const CheckoutModal = ({
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const paymentInFlightRef = useRef(false);
 
   if (!cart || cart.items.length === 0) return null;
 
@@ -73,6 +75,9 @@ const CheckoutModal = ({
 
   const handlePayment = async () => {
     if (!stripe || !elements) return;
+    // Prevent double-clicks: ref updates synchronously unlike React state
+    if (paymentInFlightRef.current) return;
+    paymentInFlightRef.current = true;
 
     setIsProcessing(true);
     setPaymentError(null);
@@ -96,22 +101,34 @@ const CheckoutModal = ({
       if (paymentResult.error) {
         setPaymentError(formatErrorMessage(paymentResult.error.message));
         setIsProcessing(false);
+        paymentInFlightRef.current = false;
         return;
       }
 
       if (paymentResult.paymentIntent?.status === 'succeeded') {
-        // We no longer call confirm-payment here. 
-        // The order will stay PENDING until the Stripe Webhook confirms it.
+        // Confirm payment with our backend to update order status to "paid"
+        // This ensures the order is marked as paid even if the webhook fails
+        try {
+          await apiClient.post('/payments/confirm-payment', {
+            paymentIntentId: paymentResult.paymentIntent.id,
+            orderId,
+          });
+        } catch (confirmErr) {
+          // Non-fatal: the webhook can still handle it as a fallback
+          console.warn('Manual payment confirmation failed, webhook will handle it:', confirmErr);
+        }
 
         await dispatch(clearCart()).unwrap();
         await dispatch(fetchCart());
 
         setSuccessOrderId(orderId);
         setIsProcessing(false);
+        paymentInFlightRef.current = false;
       }
     } catch (err: any) {
       setPaymentError(formatErrorMessage(err?.message));
       setIsProcessing(false);
+      paymentInFlightRef.current = false;
     }
   };
 

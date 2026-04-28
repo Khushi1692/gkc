@@ -127,7 +127,7 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold uppercase text-xs tracking-wider text-foreground">Password</FormLabel>
+                  <FormLabel className="font-bold uppercase text-xs tracking-wider text-foreground data-[error=true]:text-amber-500">Password</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter your password"
@@ -136,7 +136,7 @@ export function SignUpModal({ open, onOpenChange }: SignUpProps) {
                       className="border-border focus-visible:ring-primary h-11 border-2 bg-input font-medium text-foreground placeholder:text-muted-foreground/50"
                     />
                   </FormControl>
-                  <FormMessage className="font-bold text-destructive" />
+                  <FormMessage className="font-bold text-amber-500" />
                 </FormItem>
               )}
             />

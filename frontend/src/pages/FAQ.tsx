@@ -20,7 +20,7 @@ const faqs = [
     {
         question: "Where are your food trucks located?",
         answer:
-            "We currently operate two Gopi ka Chatka food trucks in Melbourne — one in Clayton and one in Truganina.",
+            "We currently operate Gopi ka Chatka food truck in Clayton, Melbourne.",
     },
     {
         question: "Are your fries and sides vegetarian too?",

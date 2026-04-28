@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { logoutUser } from '@/store/slices/authSlice';
 import { fetchCart } from '@/store/slices/cartSlice';
-import { MapPin, ShoppingCart, User, Package, LogOut } from 'lucide-react';
+import { MapPin, ShoppingCart, User, Package, LogOut, ArrowRight } from 'lucide-react';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -150,34 +150,37 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
         <header
           ref={combinedRef}
           className={
-            'sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md px-4 md:px-6'
+            'sticky top-0 z-50 w-full border-b border-white/5 bg-background/60 backdrop-blur-2xl px-8 transition-all duration-500'
           }
         >
-          <div className="container mx-auto flex h-20 max-w-screen-2xl items-center justify-between gap-4">
-            {/* LEFT SIDE */}
-            <div className="flex flex-1 items-center gap-8">
+          <div className="container mx-auto flex h-24 max-w-screen-2xl items-center justify-between gap-12">
+            {/* LEFT SIDE - Brand */}
+            <div className="flex items-center gap-12">
               <button
                 onClick={() => navigate('/')}
-                className="group flex flex-shrink-0 items-center transition-transform hover:scale-105"
+                className="group flex flex-shrink-0 items-center transition-transform hover:scale-105 active:scale-95"
               >
-                <img src="/logo.png" alt="Gopi ka Chatka" className="h-16 w-auto transition-transform group-hover:scale-105" />
+                <img src="/logo.png" alt="Gopi ka Chatka" className="h-16 w-auto drop-shadow-2xl" />
               </button>
 
               {!isMobile && (
                 <NavigationMenu className="flex">
-                  <NavigationMenuList className="gap-1">
+                  <NavigationMenuList className="gap-2">
                     {navigationLinks.map((link, index) => (
                       <NavigationMenuItem key={index}>
                         <button
                           onClick={() => handleNavigation(link.href)}
                           className={cn(
-                            'inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold uppercase tracking-wider transition-all',
+                            'relative h-12 flex items-center justify-center rounded-2xl px-6 text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300 group',
                             isActive(link.href)
-                              ? 'bg-primary text-primary-foreground shadow-md'
-                              : 'text-foreground/70 hover:text-foreground hover:bg-accent'
+                              ? 'text-primary'
+                              : 'text-foreground/60 hover:text-foreground hover:bg-white/5'
                           )}
                         >
                           {link.label}
+                          {isActive(link.href) && (
+                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-primary rounded-full shadow-lg shadow-primary/40 animate-pulse-soft"></div>
+                          )}
                         </button>
                       </NavigationMenuItem>
                     ))}
@@ -186,138 +189,135 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
               )}
             </div>
 
-            {/* MIDDLE/RIGHT - Branch Selector & User Icons */}
-            <div className="flex items-center gap-4">
+            {/* RIGHT SIDE - Actions */}
+            <div className="flex items-center gap-6">
               {selectedBranch && (
                 <button
                   onClick={onSelectBranchClick}
-                  className="hidden sm:flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-2 text-xs font-bold uppercase transition-all hover:bg-accent shadow-sm"
+                  className="hidden sm:flex items-center gap-3 glass-card px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all hover:scale-105 group"
                 >
-                  <MapPin className="h-3.5 w-3.5 text-primary" />
-                  <span className="truncate max-w-[150px]">{selectedBranch.name}</span>
+                  <MapPin className="h-4 w-4 text-primary group-hover:animate-bounce" />
+                  <span className="truncate max-w-[150px] opacity-80 group-hover:opacity-100">{selectedBranch.name}</span>
                 </button>
               )}
 
-              {/* CART ICON */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative h-10 w-10 rounded-full bg-accent/50 hover:bg-primary hover:text-primary-foreground transition-all"
-                onClick={() => navigate('/cart')}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {cart?.items && cart.items.length > 0 && (
-                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                    {cart.items.length}
-                  </span>
-                )}
-              </Button>
-
-              {user ? (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="rounded-full ring-offset-background transition-all hover:ring-2 hover:ring-primary hover:ring-offset-2 overflow-hidden shadow-inner">
-                      {user.avatar ? (
-                        <img
-                          src={user.avatar}
-                          alt={user.name}
-                          className="h-10 w-10 rounded-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                            const fallback = e.currentTarget.parentElement?.querySelector('.fallback-avatar');
-                            if (fallback) (fallback as HTMLElement).style.display = 'flex';
-                          }}
-                        />
-                      ) : null}
-                      <div className={cn(
-                        "bg-primary/10 h-10 w-10 items-center justify-center rounded-full fallback-avatar",
-                        user.avatar ? "hidden" : "flex"
-                      )}>
-                        <User className="h-5 w-5 text-primary" />
-                      </div>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent align="end" className="w-64 p-2 rounded-2xl shadow-xl border-border/50">
-                    <PopoverClose asChild>
-                      <div className="flex flex-col space-y-1">
-                        <div className="px-4 py-3 mb-1 border-b border-border/10">
-                          <p className="text-sm font-bold truncate">{user.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          className="justify-start rounded-xl font-semibold text-sm"
-                          onClick={() => navigate('/orders')}
-                        >
-                          <Package className="mr-3 h-4 w-4 opacity-70" /> My Orders
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="justify-start rounded-xl font-semibold text-sm text-destructive hover:text-destructive hover:bg-destructive/5"
-                          onClick={handleLogout}
-                        >
-                          <LogOut className="mr-3 h-4 w-4 opacity-70" /> Logout
-                        </Button>
-                      </div>
-                    </PopoverClose>
-                  </PopoverContent>
-                </Popover>
-              ) : (
-                <div className="flex gap-2">
-                  <Button
+              <div className="flex items-center gap-3">
+                {/* CART ICON */}
+                <Button
                     variant="ghost"
-                    className="h-10 px-6 font-bold uppercase text-xs tracking-widest rounded-full"
-                    onClick={() => setLoginOpen(true)}
-                  >
-                    Log In
-                  </Button>
-                  {!isMobile && (
-                    <Button
-                      className="h-10 px-6 font-bold uppercase text-xs tracking-widest rounded-full shadow-lg shadow-primary/20"
-                      onClick={() => setSignUpOpen(true)}
-                    >
-                      Join
-                    </Button>
-                  )}
-                </div>
-              )}
+                    size="icon"
+                    className="relative h-12 w-12 rounded-2xl glass-card hover:bg-primary hover:text-primary-foreground group"
+                    onClick={() => navigate('/cart')}
+                >
+                    <ShoppingCart className="h-5 w-5 transition-transform group-hover:scale-110" />
+                    {cart?.items && cart.items.length > 0 && (
+                    <span className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground shadow-lg shadow-primary/20 ring-4 ring-background animate-bounce">
+                        {cart.items.length}
+                    </span>
+                    )}
+                </Button>
 
-              {isMobile && (
-                <Popover>
-                  <PopoverTrigger asChild>
+                {user ? (
+                    <Popover>
+                    <PopoverTrigger asChild>
+                        <button className="h-12 w-12 rounded-2xl glass-card flex items-center justify-center hover:border-primary transition-all overflow-hidden group shadow-lg shadow-black/5">
+                        {user.avatar ? (
+                            <img
+                            src={user.avatar}
+                            alt={user.name}
+                            className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                        ) : (
+                            <div className="bg-primary/5 h-full w-full flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                                <User className="h-5 w-5 text-primary" />
+                            </div>
+                        )}
+                        </button>
+                    </PopoverTrigger>
+                    <PopoverContent align="end" className="w-72 p-4 glass rounded-[2.5rem] shadow-2xl border-white/5 mt-4">
+                        <PopoverClose asChild>
+                        <div className="flex flex-col space-y-2">
+                            <div className="px-4 py-5 mb-2 rounded-3xl bg-white/5 border border-white/5">
+                            <p className="text-xs font-black uppercase tracking-widest opacity-40 mb-1">Authenticated</p>
+                            <p className="text-sm font-bold truncate">{user.name}</p>
+                            <p className="text-[10px] text-muted-foreground truncate opacity-60 font-medium">{user.email}</p>
+                            </div>
+                            <Button
+                            variant="ghost"
+                            className="justify-start h-12 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-primary/5 hover:text-primary group"
+                            onClick={() => navigate('/orders')}
+                            >
+                            <Package className="mr-4 h-4 w-4 opacity-50 group-hover:opacity-100" /> My Orders
+                            </Button>
+                            <Button
+                            variant="ghost"
+                            className="justify-start h-12 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-destructive hover:text-destructive hover:bg-destructive/5 group"
+                            onClick={handleLogout}
+                            >
+                            <LogOut className="mr-4 h-4 w-4 opacity-50 group-hover:opacity-100" /> Logout
+                            </Button>
+                        </div>
+                        </PopoverClose>
+                    </PopoverContent>
+                    </Popover>
+                ) : (
+                    <div className="flex gap-4">
+                    {!isMobile && (
+                        <Button
+                            variant="ghost"
+                            className="h-12 px-8 font-black uppercase text-[10px] tracking-[0.3em] rounded-2xl hover:bg-white/5"
+                            onClick={() => setLoginOpen(true)}
+                        >
+                            Log In
+                        </Button>
+                    )}
                     <Button
-                      className="h-10 w-10 rounded-full hover:bg-accent"
-                      variant="ghost"
-                      size="icon"
+                        className="h-12 px-10 font-black uppercase text-[10px] tracking-[0.3em] rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+                        onClick={() => setSignUpOpen(true)}
                     >
-                      <HamburgerIcon />
+                        Join Now
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent align="end" className="w-screen max-w-[300px] p-2 mt-2 rounded-[2rem] shadow-2xl border-border/50">
-                    <NavigationMenu className="w-full">
-                      <NavigationMenuList className="flex-col items-stretch gap-1 w-full">
-                        {navigationLinks.map((link, index) => (
-                          <NavigationMenuItem key={index} className="w-full">
-                            <PopoverClose asChild>
-                              <button
-                                onClick={() => handleNavigation(link.href)}
-                                className={cn(
-                                  'flex w-full items-center rounded-2xl px-5 py-4 text-sm font-bold uppercase tracking-widest transition-all',
-                                  isActive(link.href)
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'text-foreground/70 hover:bg-accent'
-                                )}
-                              >
-                                {link.label}
-                              </button>
-                            </PopoverClose>
-                          </NavigationMenuItem>
-                        ))}
-                      </NavigationMenuList>
-                    </NavigationMenu>
-                  </PopoverContent>
-                </Popover>
-              )}
+                    </div>
+                )}
+
+                {isMobile && (
+                    <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                        className="h-12 w-12 rounded-2xl glass-card"
+                        variant="ghost"
+                        size="icon"
+                        >
+                        <HamburgerIcon />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent align="end" className="w-[calc(100vw-2rem)] p-4 mt-4 glass rounded-[3rem] shadow-2xl border-white/5">
+                        <NavigationMenu className="w-full">
+                        <NavigationMenuList className="flex-col items-stretch gap-2 w-full">
+                            {navigationLinks.map((link, index) => (
+                            <NavigationMenuItem key={index} className="w-full">
+                                <PopoverClose asChild>
+                                <button
+                                    onClick={() => handleNavigation(link.href)}
+                                    className={cn(
+                                    'flex w-full items-center justify-between rounded-[2rem] px-8 py-5 text-[11px] font-black uppercase tracking-[0.3em] transition-all',
+                                    isActive(link.href)
+                                        ? 'bg-primary text-primary-foreground shadow-xl'
+                                        : 'text-foreground/70 hover:bg-white/5'
+                                    )}
+                                >
+                                    {link.label}
+                                    <ArrowRight className={cn("h-4 w-4 opacity-0 transition-all", isActive(link.href) ? "opacity-100 translate-x-0" : "-translate-x-4")} />
+                                </button>
+                                </PopoverClose>
+                            </NavigationMenuItem>
+                            ))}
+                        </NavigationMenuList>
+                        </NavigationMenu>
+                    </PopoverContent>
+                    </Popover>
+                )}
+              </div>
             </div>
           </div>
         </header>

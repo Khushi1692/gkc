@@ -81,7 +81,11 @@ const Footer = () => {
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary shrink-0">
                   <MapPin className="h-4 w-4" />
                 </div>
-                <span>Clayton & Truganina,<br />Melbourne VIC</span>
+                <div className="flex flex-col gap-1">
+                    <span>Clayton, Melbourne VIC</span>
+                    <span>Hawton, Melbourne VIC</span>
+                    <span>Adelaide, South Australia</span>
+                </div>
               </div>
             </div>
           </div>

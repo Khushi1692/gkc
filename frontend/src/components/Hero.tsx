@@ -1,83 +1,122 @@
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, UtensilsCrossed, Heart, Star, Clock, MapPin, Flame } from 'lucide-react';
 
 const Hero = () => {
     const navigate = useNavigate();
 
     return (
-        <section className="relative w-full overflow-hidden rounded-[2.5rem] min-h-[90vh] flex items-center shadow-2xl">
-            {/* Animated Background Image */}
-            <div className="absolute inset-0 overflow-hidden">
-                <img
-                    src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=1400&auto=format&fit=crop&q=85"
-                    alt="Authentic Kathiyawadi food"
-                    className="absolute inset-0 h-full w-full object-cover scale-105 animate-[ken-burns_20s_ease-out_infinite_alternate]"
-                />
-            </div>
+        <section className="relative w-full min-h-[85vh] lg:min-h-[92vh] flex flex-col lg:flex-row items-center justify-between gap-12 py-12 lg:py-0 overflow-visible">
+            {/* Background Decorative Elements */}
+            <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10"></div>
+            <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] -z-10"></div>
 
-            {/* Premium Overlay System */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20"></div>
-
-            {/* Content Container */}
-            <div className="relative z-10 px-6 py-20 md:px-20 lg:px-32 max-w-4xl">
-                {/* Eyebrow - Animated Reveal */}
-                <div className="overflow-hidden mb-6">
-                    <p className="text-primary text-xs font-bold uppercase tracking-[0.4em] animate-[slide-up_1s_ease-out_forwards]">
-                        Kathiyawadi Cuisine • Melbourne
-                    </p>
+            {/* Left Content Column */}
+            <div className="flex-1 z-10 text-center lg:text-left">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-[fade-in_0.8s_ease-out]">
+                    <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                    </span>
+                    <span className="text-primary text-[10px] font-black uppercase tracking-widest">
+                        Authentic Kathiyawadi Experience
+                    </span>
                 </div>
 
-                {/* Main Headline - Premium Stack */}
-                <h1 className="text-white text-5xl font-extrabold leading-[1.05] mb-8 sm:text-7xl lg:text-8xl tracking-tight animate-[slide-up_1.2s_ease-out_forwards]">
-                    Taste the <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">Heart</span><br />
-                    of Traditions
+                {/* Main Headline */}
+                <h1 className="text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.1] mb-8 tracking-tighter animate-[slide-up_1s_ease-out]">
+                    Taste the <span className="text-primary italic text-gradient-primary pr-4">Heart</span><br />
+                    of Traditions.
                 </h1>
 
-                {/* Subtext - Refined Typography */}
-                <p className="text-white/80 text-lg leading-relaxed mb-12 max-w-xl font-medium animate-[slide-up_1.4s_ease-out_forwards]">
-                    Authentic vegetarian recipes, passed down through generations. 
-                    Experience the bold, rustic flavors of Gujarat made with pure ghee and love.
+                {/* Subtext */}
+                <p className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 animate-[slide-up_1.2s_ease-out]">
+                    Experience the authentic soul of Kathiyawadi cuisine. 
+                    Generational recipes crafted with pure ghee, hand-ground spices, and a legacy of love.
                 </p>
 
-                {/* CTAs - Interactive & Premium */}
-                <div className="flex flex-wrap gap-6 animate-[slide-up_1.6s_ease-out_forwards]">
+                {/* CTAs */}
+                <div className="flex flex-wrap justify-center lg:justify-start items-center gap-6 animate-[slide-up_1.4s_ease-out] mb-12">
                     <Button
                         onClick={() => navigate('/menu')}
-                        className="h-14 px-10 text-base font-bold rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20 group"
+                        className="h-16 px-10 text-base font-bold rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20 group"
                     >
-                        Explore Our Menu
+                        Order Now
                         <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                     <Button
                         variant="outline"
                         onClick={() => navigate('/about')}
-                        className="h-14 px-10 text-base font-bold rounded-2xl bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/40 hover:scale-105 active:scale-95 backdrop-blur-md transition-all group"
+                        className="h-16 px-8 text-base font-bold rounded-2xl border-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all"
                     >
                         Our Story
                     </Button>
                 </div>
 
-                {/* Trust Section - Refined Icons */}
-                <div className="mt-16 pt-12 border-t border-white/10 flex flex-wrap items-center gap-x-12 gap-y-6 animate-[fade-in_2s_ease-out_forwards]">
+                {/* Trust Row */}
+                <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 animate-[fade-in_1.6s_ease-out]">
                     {[
-                        { label: '100% Vegetarian', icon: '🌿' },
-                        { label: 'Jain Friendly', icon: '❤️' },
-                        { label: 'Homestyle Recipes', icon: '🔥' },
-                    ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 group">
-                            <span className="text-xl grayscale group-hover:grayscale-0 transition-all">{item.icon}</span>
-                            <span className="text-white/60 text-sm font-bold uppercase tracking-widest">{item.label}</span>
+                        { icon: UtensilsCrossed, label: 'Authentic', sub: 'Kathiyawadi' },
+                        { icon: Star, label: '100% Veg', sub: 'Pure & Jain' },
+                        { icon: Clock, label: 'Fastest', sub: 'Pre-Order' },
+                    ].map((item, idx) => (
+                        <div key={idx} className="flex flex-col items-center lg:items-start gap-1">
+                            <div className="flex items-center gap-2 mb-1">
+                                <item.icon className="h-4 w-4 text-primary" />
+                                <span className="font-bold text-sm">{item.label}</span>
+                            </div>
+                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{item.sub}</span>
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* Floating scroll indicator */}
-            <div className="absolute bottom-10 right-10 hidden lg:flex flex-col items-center gap-4">
-                <span className="[writing-mode:vertical-lr] text-white/40 text-[10px] uppercase font-bold tracking-[0.5em]">Scroll to explore</span>
-                <div className="w-px h-24 bg-gradient-to-b from-primary to-transparent"></div>
+            {/* Right Image Column */}
+            <div className="flex-1 relative animate-[fade-in_1.5s_ease-out]">
+                <div className="relative z-10 w-full max-w-[600px] aspect-square mx-auto">
+                    {/* Decorative Rings */}
+                    <div className="absolute inset-0 border-[20px] border-primary/5 rounded-[4rem] -rotate-6 scale-105 -z-10"></div>
+                    <div className="absolute inset-0 border border-primary/10 rounded-[4rem] rotate-3 scale-110 -z-10"></div>
+
+                    {/* Main Image Card */}
+                    <div className="relative h-full w-full overflow-hidden rounded-[3.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] group">
+                        <img
+                            src="/assets/hero-collage.png"
+                            alt="Signature Kathiyawadi Dishes"
+                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        
+                        {/* Floating Price/Badge on Image */}
+                        <div className="absolute bottom-8 left-8 glass p-4 rounded-2xl shadow-2xl animate-float">
+                            <div className="flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+                                    GK
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">Signature Dish</p>
+                                    <p className="text-sm font-black pr-4">Kathiyawadi Thali</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Floating Decorative Elements */}
+                    <div className="absolute -top-6 -right-6 h-24 w-24 bg-white dark:bg-black rounded-3xl shadow-2xl flex items-center justify-center animate-float [animation-delay:1s] z-20 border border-border">
+                        <Flame className="h-8 w-8 text-orange-500 fill-orange-500/20" />
+                    </div>
+                    
+                    <div className="absolute -bottom-4 -right-12 hidden lg:flex items-center gap-4 glass-card p-6 rounded-3xl animate-float [animation-delay:2s] z-20">
+                         <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                            <MapPin className="h-6 w-6 text-primary" />
+                         </div>
+                         <div>
+                            <p className="text-xs font-bold">Find us in</p>
+                            <p className="text-sm font-black">Clayton, Hawton, Adelaide</p>
+                         </div>
+                    </div>
+                </div>
             </div>
         </section>
     );

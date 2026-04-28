@@ -5,7 +5,7 @@ const ExperienceBanner = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative overflow-hidden rounded-[4rem] bg-card border border-border/40 shadow-2xl p-10 md:p-20">
+    <section className="relative overflow-hidden rounded-[4rem] bg-card border border-border/40 shadow-2xl p-8 md:p-12">
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent z-0" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10" />
 
@@ -55,8 +55,8 @@ const ExperienceBanner = () => {
         <div className="relative group cursor-pointer" onClick={() => navigate('/about')}>
           <div className="relative aspect-[3/4] rounded-[3rem] overflow-hidden shadow-2xl">
             <img 
-              src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format" 
-              alt="Restaurant Interior" 
+              src="/assets/food-truck.png" 
+              alt="Gopi Ka Chatka Food Truck" 
               className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -70,11 +70,6 @@ const ExperienceBanner = () => {
             </div>
           </div>
           
-          {/* Floating Element */}
-          <div className="absolute top-10 -right-10 glass p-6 rounded-[1.5rem] shadow-xl border-white/40 hidden xl:block animate-float">
-            <UtensilsCrossed className="h-10 w-10 text-primary mb-2" />
-            <p className="text-xs font-bold leading-tight uppercase font-black tracking-widest">Est. Traditions</p>
-          </div>
         </div>
       </div>
     </section>

@@ -206,44 +206,6 @@ async function seed() {
       }
     });
 
-    console.log("Creating Branch (Truganina)...");
-    await Branch.create({
-      name: "Gopi ka Chatka - Truganina",
-      email: "truganina@gopikachatka.com",
-      phone: "0400 111 222",
-      address: "Truganina, VIC-3029, Australia",
-      location: { type: "Point", coordinates: [144.75, -37.83] },
-      code: "TRU01",
-      isActive: true,
-      operatingHours: [
-        { day: "monday", open: "12:00", close: "22:00", isClosed: false },
-        { day: "tuesday", open: "12:00", close: "22:00", isClosed: false },
-        { day: "wednesday", open: "12:00", close: "22:00", isClosed: false },
-        { day: "thursday", open: "12:00", close: "22:00", isClosed: false },
-        { day: "friday", open: "10:30", close: "23:30", isClosed: false },
-        { day: "saturday", open: "10:30", close: "23:30", isClosed: false },
-        { day: "sunday", open: "12:00", close: "22:00", isClosed: false },
-      ],
-      menu: Object.values(categories).map((cat: any) => ({
-        categoryId: cat._id,
-        products: createdProducts
-          .filter(p => p.categoryId.toString() === cat._id.toString())
-          .map(p => ({
-            productId: p._id,
-            price: p.basePrice,
-            isAvailable: true
-          }))
-      })),
-      printer: {
-        enabled: false,
-        mqtt: {
-          cmdTopic: "branches/TRU01/commands",
-          statusTopic: "branches/TRU01/status",
-          heartbeatTopic: "branches/TRU01/heartbeat"
-        }
-      }
-    });
-
     console.log("Seeding complete with all menu items!");
     process.exit(0);
   } catch (err) {

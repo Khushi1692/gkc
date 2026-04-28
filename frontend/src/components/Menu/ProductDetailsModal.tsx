@@ -18,8 +18,6 @@ import type { Product } from '@/types/menu';
 import { Minus, Plus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-const placeholder = '/logo.png';
-
 interface ProductDetailsModalProps {
   open: boolean;
   onClose: () => void;
@@ -167,30 +165,29 @@ export const ProductDetailsModal = ({
 
         <div className="space-y-4">
           <div className="flex gap-4">
-            <div className="h-52 w-auto flex-1 rounded-md bg-black overflow-hidden flex items-center justify-center p-4">
-              {product.image ? (
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="h-full w-full object-fill"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                    const container = (e.target as HTMLElement).parentElement;
-                    if (container) {
-                      const placeholderImg = document.createElement('img');
-                      placeholderImg.src = placeholder;
-                      placeholderImg.className = 'max-h-full max-w-full object-contain';
-                      container.appendChild(placeholderImg);
-                    }
-                  }}
-                />
-              ) : (
-                <img
-                  src={placeholder}
-                  alt={product.name}
-                  className="max-h-full max-w-full object-contain"
-                />
-              )}
+            <div className="h-52 w-auto flex-1 rounded-2xl bg-[#0a0a0a] overflow-hidden flex items-center justify-center p-4 relative border border-primary/10">
+              {/* Decorative Cross Lines */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+                <div className="text-primary/5 text-6xl font-black uppercase whitespace-nowrap rotate-[35deg] transform scale-150">
+                  {product.name}
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-primary/5 text-6xl font-black uppercase whitespace-nowrap -rotate-[35deg] transform scale-150">
+                    {product.name}
+                  </div>
+                </div>
+              </div>
+
+              {/* Central Name */}
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="h-1 w-12 bg-primary/30 mb-2" />
+                <span className="text-xl font-black uppercase tracking-widest text-foreground text-center">
+                  {product.name}
+                </span>
+                <div className="h-1 w-12 bg-primary/30 mt-2" />
+              </div>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             </div>
 
             {product.description && (

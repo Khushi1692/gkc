@@ -1,4 +1,5 @@
-import { Leaf, Heart, Flame, Sparkles, History, MapPin, Truck, Milestone } from 'lucide-react';
+import { Leaf, Heart, Flame, Sparkles, History, MapPin, Truck, Milestone, Quote, ArrowRight } from 'lucide-react';
+import kitchenHeroImg from '../assets/gopis_kitchen_bright.png';
 
 const values = [
   {
@@ -6,7 +7,7 @@ const values = [
     number: '01',
     title: 'Pure Vegetarian',
     body: 'Every item on our menu is 100% vegetarian — crafted with fresh produce, whole spices, and time-honoured Kathiyawadi methods.',
-    color: 'oklch(0.7 0.15 150)',
+    color: 'oklch(0.73 0.16 140)',
     bg: 'bg-emerald-50/50',
   },
   {
@@ -14,7 +15,7 @@ const values = [
     number: '02',
     title: 'Jain Friendly',
     body: 'Dedicated Jain options with no onion and no garlic — so every guest at the table can dine with full confidence and joy.',
-    color: 'oklch(0.7 0.15 20)',
+    color: 'oklch(0.6 0.18 25)',
     bg: 'bg-rose-50/50',
   },
   {
@@ -33,44 +34,84 @@ const AboutUs = () => {
     <div className="bg-background min-h-screen selection:bg-primary selection:text-white">
 
       {/* ── HERO ─────────────────────────────────────── */}
-      <section className="relative h-[85vh] min-h-[600px] overflow-hidden rounded-b-[4rem] shadow-2xl">
-        <img
-          src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1400&auto=format&fit=crop&q=85"
-          alt="Authentic Kathiyawadi thali"
-          className="absolute inset-0 h-full w-full object-cover scale-105 animate-[ken-burns_25s_ease-out_infinite_alternate]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
-        
-        <div className="relative z-10 container mx-auto h-full flex flex-col justify-end pb-32 px-6 md:px-20 lg:px-32">
-          <div className="max-w-4xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.3em] animate-[fade-in_1s_ease-out]">
-              <History className="h-3 w-3" />
-              Our Legacy
+      <section className="relative min-h-[90vh] flex items-center bg-white overflow-hidden">
+        <div className="container mx-auto px-8 md:px-20 lg:px-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            
+            {/* Left: Text Content */}
+            <div className="relative z-10 space-y-12 py-20">
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/5 border border-primary/10">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+                  <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em]">Our Legacy</span>
+                </div>
+                
+                <h1 className="text-6xl md:text-8xl font-black text-foreground leading-[1] tracking-tighter">
+                  Born From <br />
+                  <span className="text-primary italic font-serif">Gopi's Kitchen</span>
+                </h1>
+                
+                <div className="h-1 w-24 bg-primary/20 rounded-full"></div>
+              </div>
+
+              <div className="space-y-8">
+                <p className="text-muted-foreground text-2xl font-medium leading-relaxed max-w-xl italic opacity-90">
+                  "A family love affair with Kathiyawadi food that traveled from the heart of Gujarat to the bustling streets of Melbourne."
+                </p>
+                
+                <div className="flex flex-wrap gap-12 pt-8">
+                  <div className="space-y-1">
+                    <p className="text-4xl font-black text-foreground">1980s</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">The Origin</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-4xl font-black text-foreground">100%</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Authentic</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-10">
+                <button className="group flex items-center gap-4 px-8 py-4 bg-primary text-primary-foreground rounded-full font-black uppercase tracking-widest text-xs hover:shadow-2xl hover:shadow-primary/30 transition-all hover:-translate-y-1">
+                  Read Our Story
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-2" />
+                </button>
+              </div>
             </div>
-            <h1 className="text-white text-6xl font-extrabold leading-[1.05] tracking-tight md:text-8xl animate-[slide-up_1.2s_ease-out]">
-              Born From <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">Gopi's Kitchen</span>
-            </h1>
-            <p className="text-white/70 text-lg md:text-xl font-medium max-w-2xl animate-[slide-up_1.4s_ease-out]">
-              A family love affair with Kathiyawadi food that traveled from the heart of Gujarat to the streets of Melbourne.
-            </p>
+
+            {/* Right: Visual Content */}
+            <div className="relative h-[600px] lg:h-[800px] w-full">
+              <div className="absolute inset-0 bg-primary/5 rounded-[4rem] -rotate-3 transition-transform duration-1000 group-hover:rotate-0"></div>
+              <div className="relative h-full w-full rounded-[4rem] overflow-hidden shadow-3xl border-8 border-white">
+                <img
+                  src={kitchenHeroImg}
+                  alt="Gopi's Kitchen Legacy"
+                  className="h-full w-full object-cover transition-transform duration-[4s] hover:scale-110"
+                />
+              </div>
+              
+              {/* Floating Decorative Elements */}
+              <div className="absolute -top-10 -right-10 h-40 w-40 bg-secondary rounded-full blur-[80px] opacity-30 animate-pulse"></div>
+              <div className="absolute -bottom-10 -left-10 h-60 w-60 bg-primary rounded-full blur-[100px] opacity-20"></div>
+            </div>
+
           </div>
         </div>
       </section>
 
       {/* ── STORY ────────────────────────────────────── */}
-      <section className="container mx-auto px-6 py-32 md:px-20 lg:px-32">
-        <div className="grid grid-cols-1 gap-20 lg:grid-cols-2 items-center">
-          <div className="space-y-12 animate-[slide-up_1s_ease-out]">
-            <div className="space-y-6">
-              <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em]">Our Roots</span>
-              <h2 className="text-5xl font-extrabold text-foreground tracking-tight leading-[1.1]">
-                It Started at the<br />Family Table
+      <section className="container mx-auto px-8 py-20 md:px-20 lg:px-32">
+        <div className="grid grid-cols-1 gap-24 lg:grid-cols-2 items-center">
+          <div className="space-y-16">
+            <div className="space-y-8">
+              <span className="text-primary text-[10px] font-black uppercase tracking-[0.5em] block">The Genesis</span>
+              <h2 className="text-6xl font-extrabold text-foreground tracking-tight leading-[1.1]">
+                It Started at the<br />
+                <span className="italic text-primary/80">Family Table</span>
               </h2>
             </div>
             
-            <div className="space-y-8 text-muted-foreground text-lg leading-relaxed font-medium">
+            <div className="space-y-10 text-muted-foreground text-xl leading-relaxed font-medium italic opacity-80">
               <p>
                 Gopi ka Chatka was not born in a boardroom. It was born at home — over a steaming
                 Kathiyawadi thali that had the whole family silent in appreciation.
@@ -79,12 +120,14 @@ const AboutUs = () => {
                 Gopi's recipes, passed down through generations, carry the soul of a region
                 known for its bold spices and the art of cooking with pure ghee.
               </p>
-              <div className="relative p-10 rounded-[2.5rem] bg-secondary/50 border border-border overflow-hidden group shadow-inner">
-                <blockquote className="relative z-10 text-foreground text-xl font-bold italic leading-relaxed">
+              
+              <div className="relative p-12 rounded-[3.5rem] glass-card overflow-hidden group">
+                <Quote className="absolute -top-4 -left-4 h-24 w-24 text-primary/5 group-hover:scale-110 transition-transform duration-700 rotate-12" />
+                <blockquote className="relative z-10 text-foreground text-2xl font-black italic leading-tight tracking-tight">
                   "Why should Melbourne not have access to truly authentic Kathiyawadi food?"
                 </blockquote>
-                <Sparkles className="absolute -bottom-4 -right-4 h-24 w-24 text-primary/10 group-hover:scale-110 transition-transform duration-700" />
               </div>
+              
               <p>
                 That question became a food truck in Clayton. The same heart-driven food —
                 deeply rooted in Kathiyawad, made fresh every single day.
@@ -92,22 +135,23 @@ const AboutUs = () => {
             </div>
           </div>
 
-          <div className="relative lg:pl-12 animate-[scale-up_1s_ease-out]">
-            <div className="relative rounded-[3rem] overflow-hidden shadow-2xl group">
+          <div className="relative lg:pl-20">
+            <div className="relative rounded-[4rem] overflow-hidden shadow-2xl group border-[12px] border-card">
               <img
-                src="https://images.unsplash.com/photo-1567337710282-00832b415979?w=800&auto=format&fit=crop&q=85"
+                src="https://images.unsplash.com/photo-1567337710282-00832b415979?w=1000&auto=format"
                 alt="Kathiyawadi home-style cooking"
-                className="w-full aspect-[4/5] object-cover transition-transform duration-1000 group-hover:scale-105"
+                className="w-full aspect-[4/5] object-cover transition-transform duration-[2.5s] group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
             </div>
-            {/* Experience Badge - Simplified */}
-            <div className="absolute -bottom-10 -left-10 glass p-8 rounded-[2rem] shadow-xl hidden md:block animate-float border-white/40">
-              <div className="flex items-center gap-4">
-                <div className="h-14 w-1 flex bg-primary rounded-full" />
+            
+            {/* Experience Badge */}
+            <div className="absolute -bottom-12 -left-12 glass p-12 rounded-[3.5rem] shadow-2xl hidden md:block animate-float border-white/20">
+              <div className="flex items-center gap-6">
+                <div className="h-20 w-[2px] bg-primary rounded-full shadow-lg shadow-primary/20" />
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Hand-Picked</p>
-                  <p className="text-4xl font-extrabold text-foreground">Premium</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-1">Authenticity</p>
+                  <p className="text-5xl font-black text-foreground tracking-tighter">Premium</p>
                 </div>
               </div>
             </div>
@@ -116,40 +160,43 @@ const AboutUs = () => {
       </section>
 
       {/* ── VALUES ───────────────────────────────────── */}
-      <section className="bg-secondary/30 py-32 rounded-[4rem]">
-        <div className="container mx-auto px-6 md:px-20 lg:px-32">
-          <div className="mb-24 text-center max-w-3xl mx-auto space-y-6">
-            <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em]">Our Core Values</span>
-            <h2 className="text-5xl font-extrabold text-foreground tracking-tight leading-tight">
-              Our Promise to You
+      <section className="bg-mesh py-20 rounded-[5rem] border-y border-white/5">
+        <div className="container mx-auto px-8 md:px-20 lg:px-32">
+          <div className="mb-32 text-center max-w-4xl mx-auto space-y-8">
+            <div className="flex justify-center">
+                <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-[0.4em]">
+                    Our Philosophy
+                </div>
+            </div>
+            <h2 className="text-6xl font-extrabold text-foreground tracking-tighter leading-[1.1]">
+              Our Promise to <span className="text-gradient-primary italic">You</span>
             </h2>
-            <p className="text-muted-foreground text-lg font-medium italic">
+            <p className="text-muted-foreground text-xl font-medium italic opacity-80 max-w-2xl mx-auto leading-relaxed">
               Three principles that guide every dish we cook and every guest we serve.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
             {values.map((item) => {
               const Icon = item.icon;
               return (
                 <div
                   key={item.number}
-                  className="group relative rounded-[3rem] bg-card border border-border/40 p-12 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/5 overflow-hidden shadow-sm"
+                  className="group relative rounded-[3.5rem] glass-card p-12 hover:-translate-y-4 overflow-hidden"
                 >
-                  {/* Decorative background number */}
-                  <span className="absolute top-8 right-8 text-8xl font-black text-foreground/[0.08] leading-none transition-transform duration-700 group-hover:scale-110 group-hover:text-primary/10">
+                  <span className="absolute top-10 right-10 text-9xl font-black text-foreground/[0.03] leading-none transition-all duration-700 group-hover:text-primary/10 group-hover:scale-110">
                     {item.number}
                   </span>
                   
                   <div 
-                    className={`mb-10 flex h-20 w-20 items-center justify-center rounded-[2rem] ${item.bg} border border-white/20 shadow-xl transition-transform duration-500 group-hover:scale-110`}
+                    className={`mb-12 flex h-24 w-24 items-center justify-center rounded-[2.5rem] ${item.bg} border border-white/20 transition-all duration-700 group-hover:scale-110 group-hover:rotate-[15deg] shadow-xl shadow-black/5`}
                   >
-                    <Icon className="h-8 w-8" style={{ color: item.color }} strokeWidth={1.5} />
+                    <Icon className="h-10 w-10" style={{ color: item.color }} strokeWidth={1.2} />
                   </div>
                   
-                  <h3 className="text-2xl font-bold text-foreground mb-4">{item.title}</h3>
-                  <p className="text-muted-foreground text-base leading-relaxed font-medium relative z-10 italic">
-                    {item.body}
+                  <h3 className="text-3xl font-black text-foreground mb-6 tracking-tight leading-none">{item.title}</h3>
+                  <p className="text-muted-foreground text-base leading-relaxed font-medium italic opacity-70 group-hover:opacity-100 transition-opacity">
+                    "{item.body}"
                   </p>
                 </div>
               );
@@ -159,94 +206,87 @@ const AboutUs = () => {
       </section>
 
       {/* ── OUR JOURNEY ──────────────────────────────── */}
-      <section className="container mx-auto px-6 py-32 md:px-20 lg:px-32 relative overflow-hidden">
-        {/* Background Decorative Line */}
-        <div className="absolute left-[50%] top-64 bottom-32 w-px border-l-2 border-dashed border-border/60 hidden lg:block" />
+      <section className="container mx-auto px-8 py-20 md:px-20 lg:px-32 relative overflow-hidden">
+        <div className="absolute left-1/2 top-96 bottom-40 w-px bg-gradient-to-b from-primary/40 via-primary/10 to-transparent hidden lg:block" />
 
-        <div className="text-center mb-32 space-y-6 relative z-10">
-          <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em]">Milestones</span>
-          <h2 className="text-6xl font-extrabold text-foreground tracking-tight">
-            Our Journey
+        <div className="text-center mb-24 space-y-8 relative z-10">
+          <div className="flex justify-center">
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-[0.4em]">
+                Milestones
+            </div>
+          </div>
+          <h2 className="text-7xl font-extrabold text-foreground tracking-tighter leading-[1.1]">
+            Our <span className="text-gradient-primary italic">Journey</span>
           </h2>
-          <p className="text-muted-foreground text-xl font-medium italic max-w-2xl mx-auto">
-            "Every mile traveled is a flavor discovered."
+          <p className="text-muted-foreground text-2xl font-medium italic opacity-60 max-w-2xl mx-auto">
+            "Growing with the love of our community, one branch at a time."
           </p>
         </div>
 
-        {/* Polaroid/Journal Layout */}
-        <div className="space-y-40 relative z-10">
+        <div className="space-y-56 relative z-10">
           {[
             {
               id: '01',
               title: 'Clayton (2024)',
               body: 'Sleepless nights, recipe refinements, and equipment challenges. But the love from Clayton was overwhelming. Customers became family.',
               icon: Truck,
-              img: 'https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?w=600&auto=format&fit=crop',
+              img: 'https://images.unsplash.com/photo-1565123409695-7b5ef63a2efb?w=800&auto=format&fit=crop',
               rotate: '-rotate-2',
               side: 'left',
               tag: 'The Beginning',
             },
             {
               id: '02',
-              title: 'Truganina',
-              body: 'This wasn’t just expansion. It was proof that people truly wanted something different — vegetarian, flavour-driven, and made with heart.',
-              icon: MapPin,
-              img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop',
-              rotate: 'rotate-1',
+              title: 'The Love of Clayton',
+              body: 'This wasn’t just a location. It was proof that people truly wanted something different — vegetarian, flavour-driven, and made with heart.',
+              icon: Heart,
+              img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop',
+              rotate: 'rotate-2',
               side: 'right',
-              tag: 'Expansion',
+              tag: 'Community',
             },
             {
               id: '03',
-              title: 'The Future',
-              body: 'New locations, new neighbors, same authentic soul. We’re bringing Gopi’s secrets to every corner of Melbourne and beyond.',
+              title: 'Hawton & Adelaide (2025)',
+              body: 'Expanding our roots to Hawton and Adelaide. New neighbors, same authentic soul. We’re bringing Gopi’s secrets to every corner of the city.',
               icon: Milestone,
-              img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&auto=format&fit=crop',
-              rotate: '-rotate-1',
+              img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&auto=format&fit=crop',
+              rotate: '-rotate-2',
               side: 'left',
-              tag: 'Next Chapter',
+              tag: 'Expansion',
             },
           ].map((item, idx) => (
-            <div key={idx} className={`flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-32 w-full ${item.side === 'right' ? 'lg:flex-row-reverse' : ''}`}>
+            <div key={idx} className={`flex flex-col lg:flex-row items-center justify-center gap-24 lg:gap-40 w-full ${item.side === 'right' ? 'lg:flex-row-reverse' : ''}`}>
               
-              {/* Journal Card */}
-              <div className={`w-full max-w-lg p-10 lg:p-14 bg-card rounded-2xl shadow-2xl border border-border/50 relative hover:scale-[1.02] transition-transform duration-500 group`}>
-                {/* ID Number Pin */}
-                <div className="absolute -top-6 left-10 flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground font-black text-sm shadow-xl z-20">
+              {/* Content Card */}
+              <div className="w-full max-w-xl p-12 lg:p-16 glass-card rounded-[3.5rem] relative hover:scale-[1.02] transition-transform duration-700 group">
+                <div className="absolute -top-10 left-12 flex items-center justify-center h-20 w-20 rounded-full bg-primary text-primary-foreground font-black text-xl shadow-2xl z-20 ring-8 ring-background">
                   {item.id}
                 </div>
                 
-                {/* Decorative Tape */}
-                <div className={`absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-6 bg-primary/20 backdrop-blur-md rounded-full rotate-2 z-10`} />
-
-                <div className="space-y-6 pt-4">
-                  <div className="flex items-center gap-3">
-                    <item.icon className="h-5 w-5 text-primary" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">{item.tag}</span>
+                <div className="space-y-8 pt-6">
+                  <div className="flex items-center gap-4">
+                    <item.icon className="h-6 w-6 text-primary" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary/60">{item.tag}</span>
                   </div>
-                  <h4 className="text-4xl font-extrabold text-foreground tracking-tighter">{item.title}</h4>
-                  <p className="text-muted-foreground text-lg leading-relaxed font-medium italic opacity-80">
+                  <h4 className="text-5xl font-black text-foreground tracking-tighter leading-none">{item.title}</h4>
+                  <p className="text-muted-foreground text-xl leading-relaxed font-medium italic opacity-80">
                     "{item.body}"
                   </p>
                 </div>
               </div>
 
-              {/* Visual Node */}
-              <div className="hidden lg:flex flex-col items-center">
-                <div className="h-16 w-16 rounded-2xl bg-primary flex items-center justify-center shadow-xl shadow-primary/20 z-20">
-                  <item.icon className="h-8 w-8 text-primary-foreground" />
-                </div>
-              </div>
-
               {/* Polaroid Image */}
-              <div className={`w-full max-w-sm p-4 pb-16 bg-white shadow-2xl ${item.rotate} transition-all duration-700 hover:rotate-0 hover:scale-105 group`}>
-                <div className="overflow-hidden bg-muted aspect-square mb-6">
-                  <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+              <div className={`w-full max-w-md p-6 pb-20 bg-white shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] ${item.rotate} transition-all duration-1000 hover:rotate-0 hover:scale-105 group relative`}>
+                <div className="overflow-hidden bg-muted aspect-square mb-8 rounded-sm">
+                  <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110" />
                 </div>
-                <div className="px-2">
-                  <div className="h-2 w-1/3 bg-primary/10 rounded-full mb-2" />
-                  <div className="h-2 w-1/2 bg-secondary rounded-full opacity-30" />
+                <div className="px-4 space-y-3">
+                  <div className="h-2 w-1/3 bg-primary/20 rounded-full" />
+                  <div className="h-2 w-1/2 bg-secondary/40 rounded-full" />
                 </div>
+                {/* Decorative Tape */}
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-32 h-10 bg-primary/10 backdrop-blur-md rounded-lg rotate-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               </div>
             </div>
           ))}
@@ -254,29 +294,30 @@ const AboutUs = () => {
       </section>
 
       {/* ── CLOSING BANNER ───────────────────────────── */}
-      <section className="px-6 py-12 pb-24">
-        <div className="container mx-auto max-w-5xl rounded-[3.5rem] bg-primary relative overflow-hidden shadow-2xl shadow-primary/20">
+      <section className="px-8 py-24 pb-48">
+        <div className="container mx-auto max-w-6xl rounded-[5rem] bg-primary relative overflow-hidden shadow-2xl shadow-primary/30 group">
           {/* Decorative shapes */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-50" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl opacity-50" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px] opacity-50 group-hover:scale-110 transition-transform duration-[3s]" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-[100px] opacity-50 group-hover:scale-110 transition-transform duration-[3s]" />
           
-          <div className="relative z-10 py-20 px-10 text-center space-y-8">
-            <div className="space-y-4">
-              <span className="text-primary-foreground text-[10px] font-black uppercase tracking-[0.4em] opacity-70">Gopi ka Chatka</span>
-              <h2 className="text-4xl md:text-6xl font-extrabold text-primary-foreground tracking-tight leading-[1.1]">
-                Kathiyawadi Food,<br />Made with Love.
+          <div className="relative z-10 py-32 px-12 text-center space-y-12">
+            <div className="space-y-6">
+              <span className="text-primary-foreground/60 text-[10px] font-extrabold uppercase tracking-[0.5em]">Gopi ka Chatka</span>
+              <h2 className="text-5xl md:text-8xl font-extrabold text-primary-foreground tracking-tighter leading-[1]">
+                Kathiyawadi Food,<br />
+                <span className="italic text-white">Made with Love.</span>
               </h2>
             </div>
             
-            <div className="flex flex-col md:flex-row items-center justify-center gap-10 border-t border-primary-foreground/20 pt-10">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-16 border-t border-white/10 pt-16">
               <div className="flex flex-col items-center">
-                <span className="text-primary-foreground/60 text-[10px] font-black uppercase tracking-widest mb-1">locations</span>
-                <span className="text-primary-foreground text-xl font-bold">Growing Daily</span>
+                <span className="text-primary-foreground/40 text-[10px] font-black uppercase tracking-[0.4em] mb-2">Locations</span>
+                <span className="text-primary-foreground text-2xl font-black tracking-tight">Growing Daily</span>
               </div>
-              <div className="h-px w-10 md:h-10 md:w-px bg-primary-foreground/20" />
+              <div className="hidden md:block h-16 w-px bg-white/10" />
               <div className="flex flex-col items-center">
-                <span className="text-primary-foreground/60 text-[10px] font-black uppercase tracking-widest mb-1">flavors</span>
-                <span className="text-primary-foreground text-xl font-bold">Truly Authentic</span>
+                <span className="text-primary-foreground/40 text-[10px] font-black uppercase tracking-[0.4em] mb-2">Flavors</span>
+                <span className="text-primary-foreground text-2xl font-black tracking-tight">Truly Authentic</span>
               </div>
             </div>
           </div>

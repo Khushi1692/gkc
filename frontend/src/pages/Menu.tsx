@@ -8,6 +8,7 @@ import type { Product } from '@/types/menu';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
+import specialsHeroImg from '@/assets/gkc_actual_food_truck.png';
 
 
 const Menu = () => {
@@ -135,7 +136,7 @@ const Menu = () => {
             {/* Right: Featured Image */}
             <div className="relative min-h-[450px] md:min-h-[650px] overflow-hidden group">
               <img
-                src={`https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=1200&auto=format`}
+                src={specialsHeroImg}
                 alt="Signature Dishes"
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
               />

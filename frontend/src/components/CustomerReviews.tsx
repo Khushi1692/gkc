@@ -1,27 +1,23 @@
 'use client';
 
-import customer1 from '@/assets/customer-1.png';
-import customer2 from '@/assets/customer-2.png';
-import customer3 from '@/assets/customer-3.png';
+
+
 
 const reviews = [
   {
-    name: 'Dr. Ramakant Rana',
-    image: customer1,
+    name: 'the nik take',
+    role: 'Food Blogger',
+    review: 'Gopi Ka Chatka in Clayton is a fantastic spot for authentic Indian street food 🌶️ The pani puri cart is a real highlight, offering four different flavoured pani, each refreshing and full of flavour.',
+  },
+  {
+    name: 'Gaurav Gulati',
     role: 'Regular Guest',
-    review: 'The dal baati churma here is absolutely authentic — it reminded me of home in Gujarat. The ghee, the texture, everything is just right. A hidden gem in Melbourne.',
+    review: 'Walking into Gopi Ka Chatka Clayton gives you a feeling of Indian street food corner. The vibe is exotic with vibrant colors and limited seating, but the kids’ play corner and gaming zone are thoughtful touches. Lot of options to try ranging from Pani Puri to Pav Bhaji.',
   },
   {
-    name: 'Palak Varma',
-    image: customer2,
-    role: 'Food Enthusiast',
-    review: 'Finally a place that gets Kathiyawadi food right. The thali is generous, the kadhi is perfectly spiced, and the atmosphere feels warm and welcoming.',
-  },
-  {
-    name: 'Pankaj Passi',
-    image: customer3,
-    role: 'Takeaway Customer',
-    review: 'Ordered takeaway from Gopi ka Chatka and the food arrived hot, packed beautifully. The undhiyu was outstanding — exactly like my grandmother used to make.',
+    name: 'Aarti Babbar',
+    role: 'Happy Customer',
+    review: 'I had an absolutely amazing experience! The food was incredibly delicious, fresh, and full of flavor. Every bite felt perfectly balanced, with just the right amount of spices and seasoning. The presentation was also beautiful, which made the meal even more enjoyable.',
   },
 ];
 
@@ -58,11 +54,9 @@ const CustomerReviews = () => {
 
             {/* Author */}
             <div className="flex items-center gap-3">
-              <img
-                src={review.image}
-                alt={review.name}
-                className="h-12 w-12 rounded-full object-cover border-2 border-primary/20"
-              />
+              <div className="h-12 w-12 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-primary font-black text-lg uppercase shrink-0">
+                {review.name.charAt(0)}
+              </div>
               <div>
                 <p className="font-semibold text-foreground text-sm">{review.name}</p>
                 <p className="text-muted-foreground text-xs">{review.role}</p>

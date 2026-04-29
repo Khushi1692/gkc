@@ -99,65 +99,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* ── STORY ────────────────────────────────────── */}
-      <section className="container mx-auto px-8 py-20 md:px-20 lg:px-32">
-        <div className="grid grid-cols-1 gap-24 lg:grid-cols-2 items-center">
-          <div className="space-y-16">
-            <div className="space-y-8">
-              <span className="text-primary text-[10px] font-black uppercase tracking-[0.5em] block">The Genesis</span>
-              <h2 className="text-6xl font-extrabold text-foreground tracking-tight leading-[1.1]">
-                It Started at the<br />
-                <span className="italic text-primary/80">Family Table</span>
-              </h2>
-            </div>
-            
-            <div className="space-y-10 text-muted-foreground text-xl leading-relaxed font-medium italic opacity-80">
-              <p>
-                Gopi ka Chatka was not born in a boardroom. It was born at home — over a steaming
-                Kathiyawadi thali that had the whole family silent in appreciation.
-              </p>
-              <p>
-                Gopi's recipes, passed down through generations, carry the soul of a region
-                known for its bold spices and the art of cooking with pure ghee.
-              </p>
-              
-              <div className="relative p-12 rounded-[3.5rem] glass-card overflow-hidden group">
-                <Quote className="absolute -top-4 -left-4 h-24 w-24 text-primary/5 group-hover:scale-110 transition-transform duration-700 rotate-12" />
-                <blockquote className="relative z-10 text-foreground text-2xl font-black italic leading-tight tracking-tight">
-                  "Why should Melbourne not have access to truly authentic Kathiyawadi food?"
-                </blockquote>
-              </div>
-              
-              <p>
-                That question became a food truck in Clayton. The same heart-driven food —
-                deeply rooted in Kathiyawad, made fresh every single day.
-              </p>
-            </div>
-          </div>
 
-          <div className="relative lg:pl-20">
-            <div className="relative rounded-[4rem] overflow-hidden shadow-2xl group border-[12px] border-card">
-              <img
-                src="https://images.unsplash.com/photo-1567337710282-00832b415979?w=1000&auto=format"
-                alt="Kathiyawadi home-style cooking"
-                className="w-full aspect-[4/5] object-cover transition-transform duration-[2.5s] group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-            </div>
-            
-            {/* Experience Badge */}
-            <div className="absolute -bottom-12 -left-12 glass p-12 rounded-[3.5rem] shadow-2xl hidden md:block animate-float border-white/20">
-              <div className="flex items-center gap-6">
-                <div className="h-20 w-[2px] bg-primary rounded-full shadow-lg shadow-primary/20" />
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-1">Authenticity</p>
-                  <p className="text-5xl font-black text-foreground tracking-tighter">Premium</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── VALUES ───────────────────────────────────── */}
       <section className="bg-mesh py-20 rounded-[5rem] border-y border-white/5">
@@ -169,7 +111,7 @@ const AboutUs = () => {
                 </div>
             </div>
             <h2 className="text-6xl font-extrabold text-foreground tracking-tighter leading-[1.1]">
-              Our Promise to <span className="text-gradient-primary italic">You</span>
+              Our Promise to <span className="text-gradient-primary italic pr-2">You</span>
             </h2>
             <p className="text-muted-foreground text-xl font-medium italic opacity-80 max-w-2xl mx-auto leading-relaxed">
               Three principles that guide every dish we cook and every guest we serve.
@@ -216,7 +158,7 @@ const AboutUs = () => {
             </div>
           </div>
           <h2 className="text-7xl font-extrabold text-foreground tracking-tighter leading-[1.1]">
-            Our <span className="text-gradient-primary italic">Journey</span>
+            Our <span className="text-gradient-primary italic pr-2">Journey</span>
           </h2>
           <p className="text-muted-foreground text-2xl font-medium italic opacity-60 max-w-2xl mx-auto">
             "Growing with the love of our community, one branch at a time."
@@ -237,24 +179,34 @@ const AboutUs = () => {
             },
             {
               id: '02',
-              title: 'The Love of Clayton',
-              body: 'This wasn’t just a location. It was proof that people truly wanted something different — vegetarian, flavour-driven, and made with heart.',
+              title: 'Hawthorn',
+              body: 'Expanding our roots to Hawthorn. New neighbors, same authentic soul. We’re bringing Gopi’s secrets to every corner of the city.',
               icon: Heart,
               img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop',
               rotate: 'rotate-2',
               side: 'right',
-              tag: 'Community',
+              tag: 'Expansion',
             },
             {
               id: '03',
-              title: 'Hawton & Adelaide (2025)',
-              body: 'Expanding our roots to Hawton and Adelaide. New neighbors, same authentic soul. We’re bringing Gopi’s secrets to every corner of the city.',
+              title: 'St. Kilda',
+              body: 'Bringing the vibrant flavors of Kathiyawad to the iconic streets of St. Kilda. A new chapter in sharing our generational recipes.',
               icon: Milestone,
               img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&auto=format&fit=crop',
               rotate: '-rotate-2',
               side: 'left',
-              tag: 'Expansion',
+              tag: 'Growth',
             },
+            {
+              id: '04',
+              title: 'Clyde North',
+              body: 'Our newest destination. We continue to spread the love of pure, home-style cooking to the wonderful community of Clyde North.',
+              icon: MapPin,
+              img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop',
+              rotate: 'rotate-2',
+              side: 'right',
+              tag: 'Latest Branch',
+            }
           ].map((item, idx) => (
             <div key={idx} className={`flex flex-col lg:flex-row items-center justify-center gap-24 lg:gap-40 w-full ${item.side === 'right' ? 'lg:flex-row-reverse' : ''}`}>
               
@@ -294,13 +246,13 @@ const AboutUs = () => {
       </section>
 
       {/* ── CLOSING BANNER ───────────────────────────── */}
-      <section className="px-8 py-24 pb-48">
-        <div className="container mx-auto max-w-6xl rounded-[5rem] bg-primary relative overflow-hidden shadow-2xl shadow-primary/30 group">
+      <section className="px-8 py-10 pb-16 selection:bg-black/20 selection:text-white">
+        <div className="container mx-auto max-w-6xl rounded-[4rem] bg-primary relative overflow-hidden shadow-2xl shadow-primary/30 group">
           {/* Decorative shapes */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px] opacity-50 group-hover:scale-110 transition-transform duration-[3s]" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-[100px] opacity-50 group-hover:scale-110 transition-transform duration-[3s]" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px] opacity-50 pointer-events-none group-hover:scale-110 transition-transform duration-[3s]" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-[100px] opacity-50 pointer-events-none group-hover:scale-110 transition-transform duration-[3s]" />
           
-          <div className="relative z-10 py-32 px-12 text-center space-y-12">
+          <div className="relative z-10 py-16 px-12 text-center space-y-10">
             <div className="space-y-6">
               <span className="text-primary-foreground/60 text-[10px] font-extrabold uppercase tracking-[0.5em]">Gopi ka Chatka</span>
               <h2 className="text-5xl md:text-8xl font-extrabold text-primary-foreground tracking-tighter leading-[1]">

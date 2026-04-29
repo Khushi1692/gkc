@@ -3,7 +3,7 @@ import FeaturedMenu from "@/components/FeaturedMenu";
 import Hero from "@/components/Hero";
 import TraditionSection from "@/components/TraditionSection";
 import ExperienceBanner from "@/components/ExperienceBanner";
-import WhyGopiKaChatka from "@/components/WhyGopiKaChatka";
+
 
 const Home = () => {
   return (
@@ -13,7 +13,7 @@ const Home = () => {
         <div className="mt-8 space-y-12">
           <FeaturedMenu />
           <TraditionSection />
-          <WhyGopiKaChatka />
+
           <ExperienceBanner />
           <CustomerReviews />
         </div>

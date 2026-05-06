@@ -46,9 +46,9 @@ const AboutUs = () => {
                   <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em]">Our Legacy</span>
                 </div>
                 
-                <h1 className="text-6xl md:text-8xl font-black text-foreground leading-[1] tracking-tighter">
+                <h1 className="text-6xl md:text-8xl font-extrabold text-foreground leading-[1.05] tracking-tighter">
                   Born From <br />
-                  <span className="text-primary italic font-serif">Gopi's Kitchen</span>
+                  <span className="text-gradient-primary italic pr-2 mt-2 inline-block">Gopi's Kitchen</span>
                 </h1>
                 
                 <div className="h-1 w-24 bg-primary/20 rounded-full"></div>

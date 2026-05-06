@@ -1,5 +1,5 @@
 import { Leaf, Heart, Flame, MapPin, Truck, Milestone, ArrowRight } from 'lucide-react';
-import kitchenHeroImg from '../assets/gopis_kitchen_bright.png';
+import kitchenHeroImg from '../assets/gkc_actual_food_truck.png';
 
 const values = [
   {
@@ -43,12 +43,12 @@ const AboutUs = () => {
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/5 border border-primary/10">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
-                  <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em]">Our Legacy</span>
+                  <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em]">Our Story</span>
                 </div>
                 
                 <h1 className="text-6xl md:text-8xl font-extrabold text-foreground leading-[1.05] tracking-tighter">
-                  Born From <br />
-                  <span className="text-gradient-primary italic pr-2 mt-2 inline-block">Gopi's Kitchen</span>
+                  The Heart of <br />
+                  <span className="text-gradient-primary italic pr-2 mt-2 inline-block">Gopi Ka Chatka</span>
                 </h1>
                 
                 <div className="h-1 w-24 bg-primary/20 rounded-full"></div>
@@ -56,7 +56,7 @@ const AboutUs = () => {
 
               <div className="space-y-8">
                 <p className="text-muted-foreground text-2xl font-medium leading-relaxed max-w-xl italic opacity-90">
-                  "A family love affair with Kathiyawadi food that traveled from the heart of Gujarat to the bustling streets of Melbourne."
+                  "Authentic Kathiyawadi flavors, crafted with tradition and served with love — straight from the heart of Gujarat to Melbourne."
                 </p>
                 
                 <div className="flex flex-wrap gap-12 pt-8">

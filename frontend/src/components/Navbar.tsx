@@ -13,6 +13,7 @@ import { logoutUser } from '@/store/slices/authSlice';
 import { fetchCart } from '@/store/slices/cartSlice';
 import { MapPin, ShoppingCart, User, Package, LogOut, ArrowRight } from 'lucide-react';
 import * as React from 'react';
+import logoImg from '@/assets/logo.png';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoginModal } from './LoginModal';
@@ -160,7 +161,7 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                 onClick={() => navigate('/')}
                 className="group flex flex-shrink-0 items-center transition-transform hover:scale-105 active:scale-95"
               >
-                <img src="/logo.png" alt="Gopi ka Chatka" className="h-16 w-auto drop-shadow-2xl" />
+                <img src={logoImg} alt="Gopi ka Chatka" className="h-16 w-auto drop-shadow-2xl" />
               </button>
 
               {!isMobile && (

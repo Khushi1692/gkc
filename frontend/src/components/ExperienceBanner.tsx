@@ -11,7 +11,7 @@ const ExperienceBanner = () => {
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -z-10" />
 
         <div className="relative z-10 flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
-          <div className="w-full lg:w-1/2 space-y-12">
+          <div className="w-full lg:w-2/5 space-y-12">
             <div className="space-y-6">
               <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-foreground tracking-tighter leading-[1.05]">
                 Ready to <br />
@@ -53,8 +53,8 @@ const ExperienceBanner = () => {
             </div>
           </div>
 
-          <div className="w-full lg:w-1/2 relative group cursor-pointer" onClick={() => navigate('/about')}>
-            <div className="relative w-full aspect-[4/5] rounded-[3.5rem] overflow-hidden shadow-2xl border-[12px] border-white">
+          <div className="w-full lg:w-3/5 relative group cursor-pointer" onClick={() => navigate('/about')}>
+            <div className="relative w-full aspect-[3/4] rounded-[3.5rem] overflow-hidden shadow-2xl border-[12px] border-white">
               <img 
                 src="/assets/food-truck.png" 
                 alt="Gopi Ka Chatka Food Truck" 

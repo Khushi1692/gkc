@@ -1,5 +1,6 @@
 import { Facebook, Instagram, Mail, MapPin, Phone, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import logoImg from '@/assets/logo.png';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -15,7 +16,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="flex flex-col gap-6 lg:col-span-1">
             <Link to="/" className="inline-block group">
-              <img src="/logo.png" alt="Gopi ka Chatka" className="h-16 w-auto transition-transform group-hover:scale-105" />
+              <img src={logoImg} alt="Gopi ka Chatka" className="h-16 w-auto transition-transform group-hover:scale-105" />
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
               Bringing the authentic soul of Kathiyawadi vegetarian cuisine to the heart of Melbourne. Made fresh, every single day.
@@ -60,13 +61,13 @@ const Footer = () => {
             <h3 className="text-sm font-bold uppercase tracking-widest text-foreground">Contact</h3>
             <div className="flex flex-col gap-4">
               <a 
-                href="tel:+61000000000" 
+                href="tel:+61478925473" 
                 className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary">
                   <Phone className="h-4 w-4" />
                 </div>
-                <span>+61 (000) 000-000</span>
+                <span>0478 925 473</span>
               </a>
               <a 
                 href="mailto:hello@gopikachatka.com"
@@ -82,9 +83,7 @@ const Footer = () => {
                   <MapPin className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <span>Clayton, Melbourne VIC</span>
-                    <span>Hawton, Melbourne VIC</span>
-                    <span>Adelaide, South Australia</span>
+                    <span>421 Clayton Rd, Clayton VIC 3169</span>
                 </div>
               </div>
             </div>

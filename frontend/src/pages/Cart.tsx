@@ -13,7 +13,8 @@ import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import placeholder from '@/assets/logo.jpeg';
+import logoImg from '@/assets/logo.png';
+const placeholder = logoImg;
 
 const Cart = () => {
   const { cart } = useAppSelector((s) => s.cart);

@@ -113,7 +113,7 @@ const Hero = () => {
                          </div>
                          <div>
                             <p className="text-xs font-bold">Find us in</p>
-                            <p className="text-sm font-black">Clayton, Hawton, Adelaide</p>
+                            <p className="text-sm font-black">421 Clayton Rd, Clayton VIC 3169</p>
                          </div>
                     </div>
                 </div>

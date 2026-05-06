@@ -4,6 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import path from "path";
 
 import userRoutes from "./routes/user.routes";
 import menuRoutes from "./routes/menu.routes";
@@ -38,6 +39,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Serve static product images
+app.use("/products", express.static(path.join(process.cwd(), "public/products")));
 
 // Routes
 app.use("/api/users", userRoutes);

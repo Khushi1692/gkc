@@ -3,18 +3,25 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import type { Product } from '@/types/menu';
-const placeholder = '/logo.png';
+import logoImg from '@/assets/logo.png';
 import { Plus, Sparkles } from 'lucide-react';
+
+const placeholder = logoImg;
 
 interface MenuCardProps {
   item: Product;
   onAddToCart: React.Dispatch<React.SetStateAction<Product | null>>;
 }
 
+const BACKEND_URL = (import.meta.env.VITE_API_BASE_URL as string || 'http://localhost:3000/api').replace('/api', '');
+
 export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
   const [imageError, setImageError] = useState(false);
 
-  const displayImage = !item.image || imageError ? placeholder : item.image;
+  const resolvedImage = item.image?.startsWith('/') 
+    ? `${BACKEND_URL}${item.image}` 
+    : item.image;
+  const displayImage = !resolvedImage || imageError ? placeholder : resolvedImage;
 
   return (
     <Card className="group flex h-full flex-col overflow-hidden rounded-[2.5rem] border border-border/40 bg-card shadow-lg transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 p-0 gap-0 relative">

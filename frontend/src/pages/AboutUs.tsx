@@ -1,4 +1,4 @@
-import { Leaf, Heart, Flame, Sparkles, History, MapPin, Truck, Milestone, Quote, ArrowRight } from 'lucide-react';
+import { Leaf, Heart, Flame, MapPin, Truck, Milestone, ArrowRight } from 'lucide-react';
 import kitchenHeroImg from '../assets/gopis_kitchen_bright.png';
 
 const values = [

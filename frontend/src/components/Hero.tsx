@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, UtensilsCrossed, Heart, Star, Clock, MapPin, Flame } from 'lucide-react';
+import { ArrowRight, UtensilsCrossed, Star, Clock, MapPin, Flame } from 'lucide-react';
 
 const Hero = () => {
     const navigate = useNavigate();

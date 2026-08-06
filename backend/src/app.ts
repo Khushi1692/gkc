@@ -28,7 +28,11 @@ app.use(
 );
 
 // Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 app.use(
   cors({
     origin: config.frontend.url, // your frontend URL

@@ -15,7 +15,10 @@ export interface PrintableOrder {
   userId?: {
     _id: Types.ObjectId;
     name?: string;
+    email?: string;
   };
+  customerEmail?: string;
+  customerPhone?: string;
   branchId: {
     _id: Types.ObjectId;
     name: string;

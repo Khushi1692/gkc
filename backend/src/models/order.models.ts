@@ -33,6 +33,8 @@ const OrderSchema = new Schema(
     totalAmount: { type: Number, required: true },
     specialInstructions: { type: String },
     paymentIntentId: { type: String },
+    customerEmail: { type: String },
+    customerPhone: { type: String },
     paymentStatus: {
       type: String,
       enum: ["pending", "paid", "failed"],

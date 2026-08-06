@@ -17,7 +17,6 @@ const endpointSecret = config.stripe.webhookSecret;
 
 router.post(
   "/",
-  express.raw({ type: "application/json" }),
   async (req: Request, res: Response) => {
     const sig = req.headers["stripe-signature"];
 

@@ -19,11 +19,13 @@ export class EmailService {
 
   // Read and return the email template content from the specified file
   private static async getTemplate(templateName: string): Promise<string> {
-    const templatePath = path.join(
-      __dirname,
-      "templates",
-      `${templateName}.html`
-    );
+    let templateDir = path.join(__dirname, "templates");
+    try {
+      await fs.access(templateDir);
+    } catch {
+      templateDir = path.join(__dirname, "..", "templates");
+    }
+    const templatePath = path.join(templateDir, `${templateName}.html`);
     return await fs.readFile(templatePath, "utf-8");
   }
 
@@ -183,6 +185,9 @@ export class EmailService {
         totalAmount: order.totalAmount.toFixed(2),
         orderItems: orderItemsHtml,
         specialInstructions: order.specialInstructions || "-",
+        customerName: customerName || (order.userId?.name) || "-",
+        customerEmail: order.customerEmail || (order.userId?.email) || to,
+        customerPhone: order.customerPhone || "-",
       });
 
       const mailOptions = {

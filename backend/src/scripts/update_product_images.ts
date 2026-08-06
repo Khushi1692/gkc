@@ -15,6 +15,16 @@ const imageMap: Record<string, string> = {
   "Indian Style Pizza":       "/products/pizza.png",
   "Spicy Panner Pizza":       "/products/pizza.png",
   "Kids Pizza":               "/products/pizza.png",
+  "Gujarati Kadhi-Khichdi":   "/products/gujarati_kadhi_khichdi_grey.png",
+  "Masala Chaas (Smoked)":    "/products/masala_chaas_smoked_grey.png",
+  "Surti Undhiyu":            "/products/surti_undhiyu_grey.png",
+  "Vagharelo Rotlo":          "/products/vagharelo_rotlo_grey.png",
+  "Ringan No Oro":            "/products/ringan_no_oro_grey.png",
+  "Dabeli":                   "/products/dabeli_grey.png",
+  "Vadapav":                  "/products/vadapav_grey.png",
+  "Hot & Sour Soup":          "/products/hot_sour_soup_grey.png",
+  "Manchow Soup":             "/products/manchow_soup_grey.png",
+  "Cheese Tomato Sandwich":   "/products/cheese_tomato_sandwich_grey.png",
 };
 
 async function updateImages() {

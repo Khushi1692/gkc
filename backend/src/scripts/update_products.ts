@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { config } from "../config/config";
 import { Product } from "../models/product.models";
 
-const authenticKathiyawadi = [
+const authenticGujarati = [
   {
     name: "Surti Undhiyu",
     description: "The crown jewel of Gujarati cuisine. Slow-cooked winter vegetables with fenugreek dumplings.",
@@ -28,7 +28,7 @@ const authenticKathiyawadi = [
     description: "Baby potatoes sautéed in a fiery red garlic chutney. Bold and addictive.",
   },
   {
-    name: "Kathiyawadi Kadhi-Khichdi",
+    name: "Gujarati Kadhi-Khichdi",
     description: "Spicy and tangy yogurt curry served with comforting lentil-rice mishmash.",
   },
   {
@@ -55,11 +55,11 @@ async function updateProducts() {
     console.log("Current products count:", currentProducts.length);
 
     for (let i = 0; i < currentProducts.length; i++) {
-        if (authenticKathiyawadi[i]) {
+        if (authenticGujarati[i]) {
             const product = currentProducts[i];
             const originalName = product.name;
-            product.name = authenticKathiyawadi[i].name;
-            product.description = authenticKathiyawadi[i].description;
+            product.name = authenticGujarati[i].name;
+            product.description = authenticGujarati[i].description;
             await product.save();
             console.log(`Updated "${originalName}" -> "${product.name}"`);
         }

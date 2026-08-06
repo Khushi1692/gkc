@@ -77,10 +77,15 @@ export async function generateReceiptBase64(
 
     // ORDER INFO
     printLine(`Order : ${order.orderId}`, 10, { bold: true });
-    printLine(`Customer : ${order.userId?.name || "Unknown"}`, 10, {
-      bold: true,
-    });
-    printLine(`Date : ${new Date(order.createdAt).toLocaleString()}`);
+    printLine(`Customer : ${order.userId?.name || "Unknown"}`, 10, { bold: true });
+
+    // Contact info
+    const email = order.customerEmail || order.userId?.email || "";
+    const phone = order.customerPhone || "";
+    if (email) printLine(`Email   : ${email}`, 10);
+    if (phone) printLine(`Phone   : ${phone}`, 10);
+
+    printLine(`Date    : ${new Date(order.createdAt).toLocaleString()}`);
 
     printLine(lineSeparator(doc));
     printLine(leftRight("Item", "Total"), 10, { bold: true });

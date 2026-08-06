@@ -171,7 +171,7 @@ async function seed() {
     await Branch.create({
       name: "Gopi ka Chatka - Clayton",
       email: "clayton@gopikachatka.com",
-      phone: "0400 000 000",
+      phone: "+61 415 974 125",
       address: "Clayton South, VIC-3168, Australia",
       googleMapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3146.884805513835!2d145.1203073!3d-37.9331215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad668346ae2c0c9%3A0x20d2bcae8822407c!2sGopi%20Ka%20Chatka%20Clayton!5e0!3m2!1sen!2sin!4v1774770829000!5m2!1sen!2sin",
       location: { type: "Point", coordinates: [145.1203073, -37.9331215] },

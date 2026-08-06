@@ -5,6 +5,7 @@ import { CartService } from "../services/cart.service";
 import { Order } from "../models/order.models";
 import { generateOrderId } from "../utils/orderUtils";
 import { Branch } from "../models/branch.models";
+import { PrinterService } from "../services/printer.service";
 
 const stripe = new Stripe(config.stripe.secretKey || "sk_test_placeholder", {
   apiVersion: "2025-09-30.clover" as any,
@@ -14,7 +15,7 @@ export class PaymentController {
   static async createPaymentIntent(req: Request, res: Response) {
     try {
       const { userId, sessionId } = req;
-      const { branchId, specialInstructions } = req.body;
+      const { branchId, specialInstructions, customerPhone, customerEmail } = req.body;
 
       if (!branchId) {
         return res
@@ -143,6 +144,8 @@ export class PaymentController {
           paymentStatus: "pending",
           branchId,
           specialInstructions,
+          customerPhone,
+          customerEmail,
         });
       }
 
@@ -160,56 +163,4 @@ export class PaymentController {
     }
   }
 
-  /**
-   * Confirm payment — called by frontend after stripe.confirmCardPayment succeeds.
-   * This is a fallback for local development where webhooks can't reach localhost.
-   * In production, the webhook handles this automatically.
-   */
-  static async confirmPayment(req: Request, res: Response) {
-    try {
-      const { paymentIntentId, orderId } = req.body;
-
-      if (!paymentIntentId) {
-        return res
-          .status(400)
-          .json({ status: "error", message: "paymentIntentId is required" });
-      }
-
-      // Verify with Stripe that the payment actually succeeded
-      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-
-      if (paymentIntent.status !== "succeeded") {
-        return res.status(400).json({
-          status: "error",
-          message: `Payment not succeeded. Status: ${paymentIntent.status}`,
-        });
-      }
-
-      // Update order to paid
-      const order = await Order.findOneAndUpdate(
-        { paymentIntentId: paymentIntentId },
-        { paymentStatus: "paid" },
-        { new: true }
-      );
-
-      if (!order) {
-        return res
-          .status(404)
-          .json({ status: "error", message: "Order not found" });
-      }
-
-      console.log(`✅ Order ${order.orderId} confirmed as paid (manual confirm)`);
-
-      res.status(200).json({
-        status: "success",
-        message: "Payment confirmed",
-        data: { orderId: order.orderId, paymentStatus: order.paymentStatus },
-      });
-    } catch (error) {
-      console.error("Confirm payment error:", error);
-      res
-        .status(500)
-        .json({ status: "error", message: "Payment confirmation failed" });
-    }
-  }
 }

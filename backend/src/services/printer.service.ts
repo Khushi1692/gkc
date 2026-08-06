@@ -2,19 +2,21 @@ import { Order } from "../models/order.models";
 import { PrintableOrder } from "../types/order.types";
 import { generateReceiptBase64 } from "../utils/escpos";
 import { getMqttClient } from "./mqtt.client";
-// import { printJobs } from "./print.jobs";
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
+
+const isDev = process.env.NODE_ENV !== "production";
 
 // const MAX_RETRIES = 3;
 // const ACK_TIMEOUT = 50000;
 
 export class PrinterService {
   static async printOrderReceipt(orderId: string): Promise<void> {
-    console.log("🖨 Skipping print (Printer disconnected temporarily)");
-    return;
     const order = (await Order.findById(orderId)
       .populate("branchId")
       .populate("items.productId")
-      .populate("userId", "name")) as PrintableOrder | null;
+      .populate("userId", "name email")) as PrintableOrder | null;
 
     console.log(order);
 
@@ -25,45 +27,43 @@ export class PrinterService {
     }
 
     const printer = order.branchId.printer;
-    if (!printer?.enabled) {
+
+    // In production, skip if printer is disabled
+    if (!isDev && !printer?.enabled) {
       console.log("⚠️ Printer disabled for this branch");
       return;
     }
 
-    // Use a simplified unique ID for the print job
-    const jobId = `job_${order._id}`;
-    const client = getMqttClient();
-
-    // 1️⃣ Generate Professional ESC/POS Receipt
-
+    // 1️⃣ Generate receipt PDF
     const base64 = await generateReceiptBase64(order);
 
-    // 2. Build payload
-    const payload = {
-      ticket_id: order.orderId,
-      data_type: "pdf",
-      data_base64: base64,
-      paper_type: 1,
-      paper_width_mm: 72,
-      paper_height_mm: 0,
-      cut_paper: 1,
-    };
+    // 🧪 DEV MODE: Save receipt PDF to disk for easy inspection
+    if (isDev) {
+      const __dirname = path.dirname(fileURLToPath(import.meta.url));
+      const outputDir = path.join(__dirname, "../../receipts");
+      if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+      const filePath = path.join(outputDir, `receipt_${order.orderId}.pdf`);
+      fs.writeFileSync(filePath, Buffer.from(base64, "base64"));
+      console.log(`📄 [DEV] Receipt PDF saved to: ${filePath}`);
+    }
 
-    // 2️⃣ Build HS-830 Binary Packet
-    const flag = Buffer.from([0x03]); // Need Reply
-    const replyTopic = Buffer.from([0x00]); // Default reply topic
-    const ticketId = Buffer.concat([
-      Buffer.from(jobId, "utf-8"),
-      Buffer.from([0x00]), // Null terminator
-    ]);
+    // 2️⃣ PRODUCTION: Publish to MQTT printer
+    if (!isDev && printer?.enabled) {
+      const payload = {
+        ticket_id: order.orderId,
+        data_type: "pdf",
+        data_base64: base64,
+        paper_type: 1,
+        paper_width_mm: 72,
+        paper_height_mm: 0,
+        cut_paper: 1,
+      };
+      const client = getMqttClient();
+      client.publish(printer.mqtt.cmdTopic, JSON.stringify(payload), { qos: 0 });
+      console.log("🖨 Print command sent via MQTT");
+    }
 
-    client.publish(printer.mqtt.cmdTopic, JSON.stringify(payload), {
-      qos: 0, // no delivery guarantee
-    });
-
-    console.log("🖨 Print command sent");
-
-    // Immediately mark as printed (optimistic)
+    // Mark as printed
     await Order.findByIdAndUpdate(order._id, {
       printedAt: new Date(),
       printStatus: "printed",

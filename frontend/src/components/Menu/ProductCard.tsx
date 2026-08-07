@@ -18,9 +18,10 @@ const BACKEND_URL = (import.meta.env.VITE_API_BASE_URL as string || 'http://loca
 export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
   const [imageError, setImageError] = useState(false);
 
+  const isDefaultBurger = item.image?.includes('photo-1594212699903-ec8a3eca50f5');
   const resolvedImage = item.image?.startsWith('/') 
     ? `${BACKEND_URL}${item.image}` 
-    : item.image;
+    : (isDefaultBurger ? '' : item.image);
   const displayImage = !resolvedImage || imageError ? placeholder : resolvedImage;
 
   return (
@@ -44,7 +45,7 @@ export const ProductCard = ({ item, onAddToCart }: MenuCardProps) => {
             alt={item.name}
             className={cn(
               "transition-transform duration-1000 group-hover:scale-110",
-              (!item.image || imageError) 
+              (!resolvedImage || imageError) 
                 ? "max-h-[70%] max-w-[70%] object-contain p-4" 
                 : "absolute inset-0 h-full w-full object-cover"
             )}

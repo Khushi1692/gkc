@@ -90,7 +90,7 @@ const FeaturedMenu = () => {
           Our <span className="text-gradient-primary italic pr-4">Signature</span> Creations
         </h2>
         <p className="text-muted-foreground text-xl max-w-2xl mx-auto font-medium italic opacity-80 leading-relaxed">
-          "From the bustling streets of Mumbai to the rustic flavor of Kathiyawad, we bring the true soul of Indian street food to your plate."
+          "From the bustling streets of Mumbai to the authentic flavors of Gujarat, we bring the true soul of Indian street food to your plate."
         </p>
       </div>
 

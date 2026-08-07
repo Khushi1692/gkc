@@ -1,6 +1,5 @@
 'use client';
 
-import { apiClient } from '@/api/axiosClient';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -37,6 +36,7 @@ const CheckoutModal = ({
   setSuccessOrderId,
 }: CheckoutModalProps) => {
   const { cart, loading } = useAppSelector((s) => s.cart);
+  const user = useAppSelector((s) => s.auth?.user);
   const dispatch = useAppDispatch();
   const stripe = useStripe();
   const elements = useElements();
@@ -44,6 +44,7 @@ const CheckoutModal = ({
   const branchId = localStorage.getItem('selectedBranchId') || '';
 
   const [specialInstructions, setSpecialInstructions] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const paymentInFlightRef = useRef(false);
@@ -85,7 +86,12 @@ const CheckoutModal = ({
     try {
       // 1️⃣ Create PaymentIntent
       const resultAction = await dispatch(
-        createPaymentIntent({ branchId, specialInstructions })
+        createPaymentIntent({
+          branchId,
+          specialInstructions,
+          customerPhone,
+          customerEmail: user?.email,
+        })
       ).unwrap();
 
       const { clientSecret, orderId } = resultAction;
@@ -106,18 +112,6 @@ const CheckoutModal = ({
       }
 
       if (paymentResult.paymentIntent?.status === 'succeeded') {
-        // Confirm payment with our backend to update order status to "paid"
-        // This ensures the order is marked as paid even if the webhook fails
-        try {
-          await apiClient.post('/payments/confirm-payment', {
-            paymentIntentId: paymentResult.paymentIntent.id,
-            orderId,
-          });
-        } catch (confirmErr) {
-          // Non-fatal: the webhook can still handle it as a fallback
-          console.warn('Manual payment confirmation failed, webhook will handle it:', confirmErr);
-        }
-
         await dispatch(clearCart()).unwrap();
         await dispatch(fetchCart());
 
@@ -141,6 +135,15 @@ const CheckoutModal = ({
         </DialogHeader>
 
         <div className="mt-2 space-y-4">
+          {/* Phone Number */}
+          <input
+            type="tel"
+            placeholder="Phone number (for receipt)"
+            value={customerPhone}
+            onChange={(e) => setCustomerPhone(e.target.value)}
+            className="w-full rounded-md border border-border p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+
           {/* Special Instructions */}
           <textarea
             placeholder="Special instructions (optional)"

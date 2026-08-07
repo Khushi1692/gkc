@@ -45,7 +45,7 @@ const WhyGopiKaChatka = () => {
           The Pillars of <span className="text-primary italic pr-2">Quality</span>
         </h2>
         <p className="text-muted-foreground text-xl font-medium max-w-xl mx-auto italic opacity-80 leading-relaxed">
-          "More than just a restaurant, we are a tribute to the timeless traditions of Kathiyawad."
+          "More than just a restaurant, we are a tribute to the timeless traditions of India."
         </p>
       </div>
 

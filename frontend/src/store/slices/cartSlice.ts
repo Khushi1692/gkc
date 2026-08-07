@@ -141,13 +141,20 @@ export const clearCart = createAsyncThunk<
 export const createPaymentIntent = createAsyncThunk(
   'checkout/createPaymentIntent',
   async (
-    { branchId, specialInstructions }: { branchId: string; specialInstructions: string },
+    { branchId, specialInstructions, customerPhone, customerEmail }: {
+      branchId: string;
+      specialInstructions: string;
+      customerPhone?: string;
+      customerEmail?: string;
+    },
     { rejectWithValue }
   ) => {
     try {
       const { data } = await apiClient.post('/payments/create-intent', {
         branchId,
         specialInstructions,
+        customerPhone,
+        customerEmail,
       });
       return data;
     } catch (err: any) {

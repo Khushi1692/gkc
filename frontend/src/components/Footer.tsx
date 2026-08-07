@@ -19,7 +19,7 @@ const Footer = () => {
               <img src={logoImg} alt="Gopi ka Chatka" className="h-16 w-auto transition-transform group-hover:scale-105" />
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
-              Bringing the authentic soul of Kathiyawadi vegetarian cuisine to the heart of Melbourne. Made fresh, every single day.
+              Bringing the authentic soul of traditional Indian vegetarian cuisine to the heart of Melbourne. Made fresh, every single day.
             </p>
             <div className="flex gap-4">
               <Link
@@ -61,13 +61,13 @@ const Footer = () => {
             <h3 className="text-sm font-bold uppercase tracking-widest text-foreground">Contact</h3>
             <div className="flex flex-col gap-4">
               <a 
-                href="tel:+61478925473" 
+                href="tel:+61415974125" 
                 className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary">
                   <Phone className="h-4 w-4" />
                 </div>
-                <span>0478 925 473</span>
+                <span>+61 415 974 125</span>
               </a>
               <a 
                 href="mailto:hello@gopikachatka.com"

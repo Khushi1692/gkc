@@ -18,9 +18,9 @@ const faqs = [
             "Yes! We proudly offer No Onion, No Garlic options across multiple menu items. Vegetarian food should be inclusive for everyone.",
     },
     {
-        question: "Where are your food trucks located?",
+        question: "Where are your branches located?",
         answer:
-            "We currently operate Gopi ka Chatka food truck in Clayton, Melbourne.",
+            "We currently operate Gopi ka Chatka in Clayton, Melbourne.",
     },
     {
         question: "Are your fries and sides vegetarian too?",
@@ -113,7 +113,7 @@ const FAQ = () => {
                         </h2>
 
                         <p className="text-primary-foreground/90 font-bold mb-10 text-lg max-w-xl mx-auto">
-                            Drop by one of our trucks or reach out to us directly.
+                            Drop by one of our branches or reach out to us directly.
                             We’re always happy to help our community.
                         </p>
 

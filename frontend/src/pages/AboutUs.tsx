@@ -1,12 +1,12 @@
 import { Leaf, Heart, Flame, MapPin, Truck, Milestone, ArrowRight } from 'lucide-react';
-import kitchenHeroImg from '../assets/gkc_actual_food_truck.png';
+import kitchenHeroImg from '../assets/indian_thali_hero.png';
 
 const values = [
   {
     icon: Leaf,
     number: '01',
     title: 'Pure Vegetarian',
-    body: 'Every item on our menu is 100% vegetarian — crafted with fresh produce, whole spices, and time-honoured Kathiyawadi methods.',
+    body: 'Every item on our menu is 100% vegetarian — crafted with fresh produce, whole spices, and time-honoured traditional Indian methods.',
     color: 'oklch(0.73 0.16 140)',
     bg: 'bg-emerald-50/50',
   },
@@ -56,7 +56,7 @@ const AboutUs = () => {
 
               <div className="space-y-8">
                 <p className="text-muted-foreground text-2xl font-medium leading-relaxed max-w-xl italic opacity-90">
-                  "Authentic Kathiyawadi flavors, crafted with tradition and served with love — straight from the heart of Gujarat to Melbourne."
+                  "Authentic Indian flavors, crafted with tradition and served with love — straight from the heart of Gujarat to Melbourne."
                 </p>
                 
                 <div className="flex flex-wrap gap-12 pt-8">
@@ -126,7 +126,7 @@ const AboutUs = () => {
                   key={item.number}
                   className="group relative rounded-[3.5rem] glass-card p-12 hover:-translate-y-4 overflow-hidden"
                 >
-                  <span className="absolute top-10 right-10 text-9xl font-black text-foreground/[0.03] leading-none transition-all duration-700 group-hover:text-primary/10 group-hover:scale-110">
+                  <span className="absolute top-10 right-10 text-9xl font-black text-foreground/[0.15] leading-none transition-all duration-700 group-hover:text-primary/[0.3] group-hover:scale-110">
                     {item.number}
                   </span>
                   
@@ -190,7 +190,7 @@ const AboutUs = () => {
             {
               id: '03',
               title: 'St. Kilda',
-              body: 'Bringing the vibrant flavors of Kathiyawad to the iconic streets of St. Kilda. A new chapter in sharing our generational recipes.',
+              body: 'Bringing the vibrant flavors of India to the iconic streets of St. Kilda. A new chapter in sharing our generational recipes.',
               icon: Milestone,
               img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&auto=format&fit=crop',
               rotate: '-rotate-2',
@@ -256,7 +256,7 @@ const AboutUs = () => {
             <div className="space-y-6">
               <span className="text-primary-foreground/60 text-[10px] font-extrabold uppercase tracking-[0.5em]">Gopi ka Chatka</span>
               <h2 className="text-5xl md:text-8xl font-extrabold text-primary-foreground tracking-tighter leading-[1]">
-                Kathiyawadi Food,<br />
+                Authentic Indian Food,<br />
                 <span className="italic text-white">Made with Love.</span>
               </h2>
             </div>

@@ -1,6 +1,6 @@
 import { ExternalLink } from "lucide-react";
 
-const KathiyawadiStory = () => {
+const IndianBurgerStory = () => {
     return (
         <section className="mx-auto mb-32 px-4">
 
@@ -12,7 +12,7 @@ const KathiyawadiStory = () => {
                 </h2>
                 <div className="mx-auto mt-6 h-1 w-32 rounded-full bg-primary/20"></div>
                 <p className="mt-6 text-muted-foreground font-medium max-w-2xl mx-auto text-lg">
-                    The story of how a home Kathiyawadi kitchen sparked Melbourne's most unexpected food sensation
+                    The story of how a home Indian kitchen sparked Melbourne's most unexpected food sensation
                 </p>
             </div>
 
@@ -25,7 +25,7 @@ const KathiyawadiStory = () => {
                     <div className="relative h-80 sm:h-96 md:h-full group overflow-hidden">
                         <img
                             src="https://pop101.com.au/uploads/ufo-blog.webp"
-                            alt="Melbourne Viral Kathiyawadi Burger"
+                            alt="Melbourne Viral Indian Burger"
                             className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -45,13 +45,13 @@ const KathiyawadiStory = () => {
                         <div className="space-y-6">
                             <p className="text-lg font-bold text-foreground/90 leading-relaxed italic border-l-4 border-primary pl-6">
                                 "An Indian family function was the accidental birthplace of Melbourne's first viral UFO burger —
-                                and it is 100% Kathiyawadi vegetarian."
+                                and it is 100% Indian vegetarian."
                             </p>
                             <p className="text-base font-medium text-muted-foreground leading-relaxed">
                                 Gopi ka Chatka owner Jaynam "Jay" Shah was trying to prevent fillings from sliding out of the bun when he
-                                accidentally created Melbourne's first sealed "UFO burger" — a patty and Kathiyawadi spiced toppings welded into
+                                accidentally created Melbourne's first sealed "UFO burger" — a patty and Indian spiced toppings welded into
                                 a crusty, rimmed bun shaped like a flying saucer. In a world of UFO burgers, Jay's is unique: completely vegetarian
-                                with an authentic Indian twist rooted in Kathiyawadi cuisine.
+                                with an authentic Indian twist rooted in Gujarati cuisine.
                             </p>
                         </div>
 
@@ -71,4 +71,4 @@ const KathiyawadiStory = () => {
     );
 };
 
-export default KathiyawadiStory;
+export default IndianBurgerStory;

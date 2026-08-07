@@ -4,7 +4,7 @@ const stats = [
   {
     icon: Utensils,
     title: 'Authentic Spices',
-    description: 'Directly sourced from the heart of Kathiyawad for that genuine local flavor.',
+    description: 'Directly sourced from the heart of India for that genuine local flavor.',
   },
   {
     icon: Flame,
@@ -19,7 +19,7 @@ const stats = [
   {
     icon: Users,
     title: 'Community First',
-    description: 'More than a restaurant, we are a gathering place for the Kathiyawadi family.',
+    description: 'More than a restaurant, we are a gathering place for the GKC family.',
   },
 ];
 
@@ -35,7 +35,7 @@ const TraditionSection = () => {
           <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em]">Our Heritage</span>
         </div>
         <h2 className="text-5xl lg:text-7xl font-extrabold text-foreground tracking-tight leading-[1.1]">
-          The Soul of <span className="text-gradient-primary italic pr-4">Kathiyawadi</span> Tradition
+          The Soul of <span className="text-gradient-primary italic pr-4">Gujarati Indian</span> Tradition
         </h2>
         <p className="text-muted-foreground text-xl font-medium leading-relaxed italic opacity-80 max-w-2xl">
           "We don't just cook food; we recreate memories of Gopi's kitchen in every single bite."

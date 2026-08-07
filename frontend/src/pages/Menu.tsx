@@ -8,7 +8,7 @@ import type { Product } from '@/types/menu';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
-import specialsHeroImg from '@/assets/gkc_actual_food_truck.png';
+import specialsHeroImg from '@/assets/pav_bhaji_hero.png';
 
 
 const Menu = () => {
@@ -117,7 +117,7 @@ const Menu = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary/60 italic drop-shadow-sm font-black pr-4">SPECIALS</span>
               </h1>
               <p className="text-lg font-medium leading-relaxed text-muted-foreground md:text-xl max-w-lg mb-10 italic opacity-80 animate-[slide-up_1.2s_ease-out]">
-                "Pre-order your favorites and grab them hot & ready. Authentic Kathiyawadi goodness, without the wait."
+                "Pre-order your favorites and grab them hot & ready. Authentic Indian goodness, without the wait."
               </p>
               
               <div className="flex items-center gap-8 animate-[slide-up_1.4s_ease-out]">
@@ -168,9 +168,9 @@ const Menu = () => {
               onValueChange={handleTabChange}
               className="w-full"
             >
-              {/* Categories Scrollable List */}
-              <div className="mb-16 w-full overflow-x-auto pb-6 scrollbar-hide">
-                <TabsList className="bg-transparent h-auto w-max min-w-full justify-center gap-4 p-0">
+              {/* Categories List */}
+              <div className="mb-16 w-full">
+                <TabsList className="bg-transparent h-auto w-full flex-wrap justify-center gap-4 p-0">
                   {categories.map((category) => (
                     <TabsTrigger
                       key={category._id}

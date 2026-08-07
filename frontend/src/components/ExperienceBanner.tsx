@@ -16,7 +16,7 @@ const ExperienceBanner = () => {
               <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-foreground tracking-tighter leading-[1.05]">
                 Ready to <br />
                 <span className="text-gradient-primary italic pr-2 mt-2 inline-block">Experience</span><br />
-                Kathiyawad?
+                the Feast?
               </h2>
               <p className="text-muted-foreground text-xl md:text-2xl font-medium max-w-lg italic opacity-80 leading-relaxed">
                 "Whether it's a family gathering or a quick solo thali, we have a seat waiting for you."
@@ -56,8 +56,8 @@ const ExperienceBanner = () => {
           <div className="w-full lg:w-3/5 relative group cursor-pointer" onClick={() => navigate('/about')}>
             <div className="relative w-full aspect-[3/4] rounded-[3.5rem] overflow-hidden shadow-2xl border-[12px] border-white">
               <img 
-                src="/assets/food-truck.png" 
-                alt="Gopi Ka Chatka Food Truck" 
+                src="/assets/pani_puri_banner.png" 
+                alt="Gopi Ka Chatka Signature Pani Puri" 
                 className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />

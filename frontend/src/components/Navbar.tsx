@@ -172,7 +172,7 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                         <button
                           onClick={() => handleNavigation(link.href)}
                           className={cn(
-                            'relative h-12 flex items-center justify-center rounded-2xl px-6 text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300 group',
+                            'relative h-12 flex items-center justify-center rounded-2xl px-6 text-sm font-black uppercase tracking-[0.15em] transition-all duration-300 group',
                             isActive(link.href)
                               ? 'text-primary'
                               : 'text-foreground/60 hover:text-foreground hover:bg-white/5'
@@ -195,7 +195,7 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
               {selectedBranch && (
                 <button
                   onClick={onSelectBranchClick}
-                  className="hidden sm:flex items-center gap-3 glass-card px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all hover:scale-105 group"
+                  className="hidden sm:flex items-center gap-3 glass-card px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all hover:scale-105 group"
                 >
                   <MapPin className="h-4 w-4 text-primary group-hover:animate-bounce" />
                   <span className="truncate max-w-[150px] opacity-80 group-hover:opacity-100">{selectedBranch.name}</span>
@@ -266,14 +266,14 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                     {!isMobile && (
                         <Button
                             variant="ghost"
-                            className="h-12 px-8 font-black uppercase text-[10px] tracking-[0.3em] rounded-2xl hover:bg-white/5"
+                            className="h-12 px-8 font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-white/5"
                             onClick={() => setLoginOpen(true)}
                         >
                             Log In
                         </Button>
                     )}
                     <Button
-                        className="h-12 px-10 font-black uppercase text-[10px] tracking-[0.3em] rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+                        className="h-12 px-10 font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
                         onClick={() => setSignUpOpen(true)}
                     >
                         Join Now
@@ -301,7 +301,7 @@ export const Navbar = React.forwardRef<HTMLElement, { onSelectBranchClick: () =>
                                 <button
                                     onClick={() => handleNavigation(link.href)}
                                     className={cn(
-                                    'flex w-full items-center justify-between rounded-[2rem] px-8 py-5 text-[11px] font-black uppercase tracking-[0.3em] transition-all',
+                                    'flex w-full items-center justify-between rounded-[2rem] px-8 py-5 text-sm font-black uppercase tracking-[0.2em] transition-all',
                                     isActive(link.href)
                                         ? 'bg-primary text-primary-foreground shadow-xl'
                                         : 'text-foreground/70 hover:bg-white/5'

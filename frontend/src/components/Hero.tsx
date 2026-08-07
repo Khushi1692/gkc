@@ -20,7 +20,7 @@ const Hero = () => {
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                     </span>
                     <span className="text-primary text-[10px] font-black uppercase tracking-widest">
-                        Authentic Kathiyawadi Experience
+                        Authentic Indian Experience
                     </span>
                 </div>
 
@@ -32,7 +32,7 @@ const Hero = () => {
 
                 {/* Subtext */}
                 <p className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 animate-[slide-up_1.2s_ease-out]">
-                    Experience the authentic soul of Kathiyawadi cuisine. 
+                    Experience the authentic soul of Indian cuisine. 
                     Generational recipes crafted with pure ghee, hand-ground spices, and a legacy of love.
                 </p>
 
@@ -57,7 +57,7 @@ const Hero = () => {
                 {/* Trust Row */}
                 <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 animate-[fade-in_1.6s_ease-out]">
                     {[
-                        { icon: UtensilsCrossed, label: 'Authentic', sub: 'Kathiyawadi' },
+                        { icon: UtensilsCrossed, label: 'Authentic', sub: 'Indian Cuisine' },
                         { icon: Star, label: '100% Veg', sub: 'Pure & Jain' },
                         { icon: Clock, label: 'Fastest', sub: 'Pre-Order' },
                     ].map((item, idx) => (
@@ -83,7 +83,7 @@ const Hero = () => {
                     <div className="relative h-full w-full overflow-hidden rounded-[3.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] group">
                         <img
                             src="/assets/hero-collage.png"
-                            alt="Signature Kathiyawadi Dishes"
+                            alt="Signature Indian Dishes"
                             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -96,7 +96,7 @@ const Hero = () => {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">Signature Dish</p>
-                                    <p className="text-sm font-black pr-4">Kathiyawadi Thali</p>
+                                    <p className="text-sm font-black pr-4">Gujarati Indian Thali</p>
                                 </div>
                             </div>
                         </div>

@@ -59,8 +59,7 @@ async function seed() {
       },
       { 
         name: "Bhel Puri", basePrice: 12.00, categoryId: categories.plates._id, 
-        description: "A light and crunchy mix of puffed rice, chutneys, vegetables, and sev, offering a refreshing and tangy taste.",
-        image: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?w=800&auto=format"
+        description: "A light and crunchy mix of puffed rice, chutneys, vegetables, and sev, offering a refreshing and tangy taste."
       },
       { 
         name: "South Special Masala Puri", basePrice: 14.00, categoryId: categories.plates._id, 
@@ -69,8 +68,7 @@ async function seed() {
       },
       { 
         name: "South Special Ragda Samosa Chaat", basePrice: 15.00, categoryId: categories.plates._id, 
-        description: "Crushed samosa topped with warm ragda (white peas curry), chutneys, and spices for a rich and hearty chaat experience.",
-        image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format"
+        description: "Crushed samosa topped with warm ragda (white peas curry), chutneys, and spices for a rich and hearty chaat experience."
       },
       { 
         name: "Veggie Samosa (2 Pieces)", basePrice: 13.00, categoryId: categories.plates._id, 
@@ -89,8 +87,7 @@ async function seed() {
       },
       { 
         name: "Spicy Panner Pizza", basePrice: 15.00, categoryId: categories.plates._id, 
-        description: "Delicious pizza topped with spicy marinated paneer, fresh veggies, and melted cheese for a rich and flavorful bite.",
-        image: "https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?w=800&auto=format"
+        description: "Delicious pizza topped with spicy marinated paneer, fresh veggies, and melted cheese for a rich and flavorful bite."
       },
 
       // Street Food Snacks

@@ -13,7 +13,6 @@ const imageMap: Record<string, string> = {
   "Dry Manchurian":           "/products/dry_manchurian.png",
   "Gravy Manchurian":         "/products/dry_manchurian.png",
   "Indian Style Pizza":       "/products/pizza.png",
-  "Spicy Panner Pizza":       "/products/pizza.png",
   "Kids Pizza":               "/products/pizza.png",
   "Gujarati Kadhi-Khichdi":   "/products/gujarati_kadhi_khichdi_grey.png",
   "Masala Chaas (Smoked)":    "/products/masala_chaas_smoked_grey.png",

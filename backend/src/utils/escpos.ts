@@ -85,7 +85,7 @@ export async function generateReceiptBase64(
     if (email) printLine(`Email   : ${email}`, 10);
     if (phone) printLine(`Phone   : ${phone}`, 10);
 
-    printLine(`Date    : ${new Date(order.createdAt).toLocaleString()}`);
+    printLine(`Date    : ${new Date(order.createdAt).toLocaleString("en-AU", { timeZone: "Australia/Melbourne" })}`);
 
     printLine(lineSeparator(doc));
     printLine(leftRight("Item", "Total"), 10, { bold: true });

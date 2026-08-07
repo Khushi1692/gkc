@@ -181,7 +181,7 @@ export class EmailService {
         greeting,
         orderId: order.orderId,
         branchName,
-        orderDate: new Date(order.createdAt).toLocaleString(),
+        orderDate: new Date(order.createdAt).toLocaleString("en-AU", { timeZone: "Australia/Melbourne" }),
         totalAmount: order.totalAmount.toFixed(2),
         orderItems: orderItemsHtml,
         specialInstructions: order.specialInstructions || "-",

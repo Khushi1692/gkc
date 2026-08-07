@@ -2,6 +2,7 @@ import { NodeSSH } from 'node-ssh';
 import mongoose from 'mongoose';
 import { Product } from '../models/product.models';
 import { Category } from '../models/category.models';
+import { Branch } from '../models/branch.models';
 import { config } from '../config/config';
 
 const ssh = new NodeSSH();
@@ -19,7 +20,7 @@ async function syncDatabase() {
     await ssh.execCommand('git pull origin main', { cwd: '/var/www/gkc' });
     
     console.log("Running export script on VPS...");
-    const cmd = await ssh.execCommand('npx tsx src/scripts/export_menu.ts', { cwd: '/var/www/gkc/backend' });
+    const cmd = await ssh.execCommand('source ~/.nvm/nvm.sh && npx tsx src/scripts/export_menu.ts', { cwd: '/var/www/gkc/backend' });
     
     ssh.dispose();
 
@@ -33,9 +34,9 @@ async function syncDatabase() {
     }
     
     const jsonStr = output.substring(startIndex, endIndex).trim();
-    const { products, categories } = JSON.parse(jsonStr);
+    const { products, categories, branches } = JSON.parse(jsonStr);
 
-    console.log(`Fetched ${products.length} products and ${categories.length} categories from VPS!`);
+    console.log(`Fetched ${products.length} products, ${categories.length} categories, and ${branches.length} branches from VPS!`);
 
     console.log("Connecting to local MongoDB...");
     await mongoose.connect(config.mongodb.uri);
@@ -43,10 +44,12 @@ async function syncDatabase() {
     console.log("Clearing local collections...");
     await Product.deleteMany({});
     await Category.deleteMany({});
+    await Branch.deleteMany({});
 
     console.log("Inserting data into local database...");
     if (categories.length > 0) await Category.insertMany(categories);
     if (products.length > 0) await Product.insertMany(products);
+    if (branches.length > 0) await Branch.insertMany(branches);
 
     console.log("✅ Local menu database successfully synced with the VPS!");
     process.exit(0);

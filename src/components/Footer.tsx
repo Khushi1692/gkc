@@ -61,29 +61,20 @@ const Footer = () => {
             <h3 className="text-sm font-bold uppercase tracking-widest text-foreground">Contact</h3>
             <div className="flex flex-col gap-4">
               <a 
-                href="tel:+61415974125" 
+                href="tel:+61412658983" 
                 className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary">
                   <Phone className="h-4 w-4" />
                 </div>
-                <span>+61 415 974 125</span>
-              </a>
-              <a 
-                href="mailto:hello@gopikachatka.com"
-                className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary">
-                  <Mail className="h-4 w-4" />
-                </div>
-                <span>hello@gopikachatka.com</span>
+                <span>+61 412 658 983</span>
               </a>
               <div className="flex items-start gap-3 text-sm text-muted-foreground">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary shrink-0">
                   <MapPin className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <span>421 Clayton Rd, Clayton VIC 3169</span>
+                    <span>23 Meriton Pl, Clayton South VIC 3169, Australia</span>
                 </div>
               </div>
             </div>
@@ -94,12 +85,12 @@ const Footer = () => {
             <h3 className="text-sm font-bold uppercase tracking-widest text-foreground">Opening Hours</h3>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Mon - Thu</span>
-                <span className="font-medium">12:00 PM - 10:00 PM</span>
+                <span className="text-muted-foreground">Sun - Thu</span>
+                <span className="font-medium">5:00 PM - 11:00 PM</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Fri - Sun</span>
-                <span className="font-medium text-primary">12:00 PM - 11:30 PM</span>
+                <span className="text-muted-foreground">Fri - Sat</span>
+                <span className="font-medium text-primary">5:30 PM - 12:00 AM</span>
               </div>
               <p className="pt-2 text-xs text-muted-foreground italic">
                 * Hours may vary by location.

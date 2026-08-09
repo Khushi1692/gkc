@@ -13,7 +13,7 @@ import { resetContactState, sendContactMessage } from '@/store/slices/contactSli
 import type { BranchWithOpeningHours } from '@/types/branch';
 import { contactUsSchema, type ContactUsInput } from '@/validators/contact';
 
-import { Clock, Mail, MapPin, Phone, SendHorizontal, Sparkles } from 'lucide-react';
+import { Clock, MapPin, Phone, SendHorizontal, Sparkles } from 'lucide-react';
 
 interface OperatingHour {
   day: string;

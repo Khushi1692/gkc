@@ -1,5 +1,5 @@
 import { Leaf, Heart, Flame, MapPin, Truck, Milestone, ArrowRight } from 'lucide-react';
-import kitchenHeroImg from '../assets/indian_thali_hero.png';
+import kitchenHeroImg from '../assets/bombay_style_vadapav.png';
 
 const values = [
   {

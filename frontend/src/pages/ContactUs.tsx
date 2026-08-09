@@ -210,16 +210,7 @@ const ContactUs = () => {
                 </div>
               </div>
 
-              {/* Email */}
-              <div className="flex items-center gap-8 group">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.25rem] bg-white/10 backdrop-blur-xl shadow-lg border border-white/20 transition-transform group-hover:scale-110">
-                  <Mail className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-60 mb-1">Email</h3>
-                  <p className="text-2xl font-bold tracking-tight break-all group-hover:text-white transition-colors">{branchInfo.email}</p>
-                </div>
-              </div>
+
 
               {/* Address */}
               <div className="flex items-center gap-8 group">
